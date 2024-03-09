@@ -19,7 +19,7 @@ class BGGear extends Component {
 	// ！最佳实践的旋转并不是用state实现的…………
 
 	render() {
-		const { isRotate } = this.props;
+		const { isMonitorRunning } = this.props;
 		// ！！！！！Via TY，类组件必须这样才能读取props！下面三个都不行
 		return (
 			<div className="w-full h-fit fixed bg-gray-400 -z-10">
@@ -32,9 +32,9 @@ class BGGear extends Component {
 				<img className="absolute" style={{ width: "250px", height: "250px", top: "106px", right: "470px" }} src={setting} alt="" /> */}
 				{/* ！记得{} */}
 
-				<img className={`absolute ${isRotate ? 'rotate' : ''}`} style={{ width: "200px", height: "200px", top: "30px", right: "319px", transition: "0.1s" }} src={setting} alt="" />
-				<img className={`absolute ${isRotate ? 'rotate' : ''}`} style={{ width: "250px", height: "250px", top: "102px", right: "123px", transition: "0.1s" }} src={setting} alt="" />
-				<img className={`absolute ${isRotate ? 'rotate' : ''}`} style={{ width: "250px", height: "250px", top: "106px", right: "470px", transition: "0.1s" }} src={setting} alt="" />
+				<img className={`absolute ${isMonitorRunning ? 'rotate' : ''}`} style={{ width: "200px", height: "200px", top: "30px", right: "319px", transition: "0.1s" }} src={setting} alt="" />
+				<img className={`absolute ${isMonitorRunning ? 'rotate' : ''}`} style={{ width: "250px", height: "250px", top: "102px", right: "123px", transition: "0.1s" }} src={setting} alt="" />
+				<img className={`absolute ${isMonitorRunning ? 'rotate' : ''}`} style={{ width: "250px", height: "250px", top: "106px", right: "470px", transition: "0.1s" }} src={setting} alt="" />
 			</div>
 
 		)
