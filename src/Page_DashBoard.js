@@ -8,7 +8,7 @@ function PageDashBoard(props) {
 	console.log(isMonitorRunning);
 	let isMonitorRunnin = true, isOverseersRunning = true;
 	return (
-		<div className="w-full h-screen" style={{ scrollSnapAlign: "start" }}>
+		<div className="w-full h-screen bg-blue-300 bg-opacity-40" style={{ scrollSnapAlign: "start" }}>
 			<BGGear isMonitorRunning={isMonitorRunning} />
 			<div className="w-full h-3/4 absolute bottom-0 bg-gray-300 rounded-t-2xl border-t-2 border-black ">
 				<MainSwitch toggleState={props.toggleState} isMonitorRunning={isMonitorRunning} />

@@ -1,14 +1,17 @@
+// npx tailwindcss -i ./src/input.css -o ./src/MainView.css --watch
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import App from './App';
+import reportWebVitals from './reportWebVitals';
 import PageDashBoard from './Page_DashBoard';
 import PageAppDetail from './Page_AppDetail';
-import reportWebVitals from './reportWebVitals';
+import SlideBar from './Components/Layout/SideBar';
 
 var runningState = true;
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
+    <SlideBar />
     <div className='w-screen h-screen absolute overflow-auto overflow-x-hidden -z-50' style={{ scrollSnapType: 'y mandatory' }}>
       {/* ！wok！！！！才知道这个overflow-auto是必须的！！！！！！！ */}
       {/* ！同时这里加absolute可以防止子元素相对root定位而超过滚动条……………… */}
