@@ -22,7 +22,7 @@ class BGGear extends Component {
 		const { isRotate } = this.props;
 		// ！！！！！Via TY，类组件必须这样才能读取props！下面三个都不行
 		return (
-			<div className="w-full h-fit bg-gray-400">
+			<div className="w-full h-fit fixed bg-gray-400 -z-10">
 				{/* // ！两种方式都不对…………<img className="absolute" style={{ width: `${props.size}px`, height: `${props.size}px`, top: `${props.top}px`, right: `${props.right}px`, transition: "0.1s", transformt: `rotate(${this.state.rotate}}deg)` }} src={setting} alt="" /> */}
 				{/* <img className="absolute" style={{ width: `${this.state.size}px`, height: `${this.state.size}px`, top: `${this.state.top}px`, right: `${this.state.right}px`, transition: "0.1s", transformt: `rotate(${this.state.rotate}}deg)` }} src={setting} alt="" /> */}
 				{/* <img className="absolute" style={{ width: `${this.props.size}px`, height: `${this.props.size}px`, top: `${this.props.top}px`, right: `${this.props.right}px`, transition: "0.1s", transformt: `rotate(${this.state.rotate}}deg)` }} src={setting} alt="" /> */}

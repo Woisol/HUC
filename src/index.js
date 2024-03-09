@@ -8,8 +8,10 @@ import reportWebVitals from './reportWebVitals';
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
-    <div className='w-scree h-screen overflow-auto overflow-x-hidden' style={{ scrollSnapType: 'y mandatory' }}>
+    <div className='w-screen h-screen absolute overflow-auto overflow-x-hidden -z-50' style={{ scrollSnapType: 'y mandatory' }}>
       {/* ！wok！！！！才知道这个overflow-auto是必须的！！！！！！！ */}
+      {/* ！同时这里加absolute可以防止子元素相对root定位而超过滚动条……………… */}
+      {/* ！！！！必须用absolute！！用relative可能导致鼠标在子元素上时无法滚动 */}
       <PageDashBoard />
       <PageAppDetail />
     </div>
