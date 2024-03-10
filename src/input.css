@@ -36,3 +36,7 @@
 	/* TY这里漏了个20s导致没有效果………… */
 	/* 设置为无限次、线性运动 */
 }
+
+div.Page {
+	scroll-behavior: smooth;
+}
