@@ -1,5 +1,5 @@
 import { Component } from "react";
-import setting from "../Asset/setting.svg";
+import setting from "../../Asset/setting.svg";
 
 
 class BGGear extends Component {

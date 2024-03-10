@@ -1,5 +1,5 @@
 import { useState } from "react";
-import Logo from "../Asset/Logo.svg"
+import Logo from "../../Asset/Logo.svg"
 export default function MainSwitch(props) {// isMonitorRunning, setState
 	// const [isMonitorRunning, toggleState] = useState(props.isMonitorRunning)
 	return (

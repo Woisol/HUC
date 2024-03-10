@@ -21,7 +21,4 @@ export default function App() {
     setIsMonitorRunning(!isMonitorRunning);
     console.log(isMonitorRunning);
   }
-  function getState() {
-    return isMonitorRunning;
-  }
 }
