@@ -1,5 +1,5 @@
 // npx tailwindcss -i ./src/input.css -o ./src/MainView.css --watch
-import React from 'react';
+import React, { useState } from 'react';
 import ReactDOM from 'react-dom/client';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
@@ -7,7 +7,7 @@ import PageDashBoard from './Page_DashBoard';
 import PageAppDetail from './Page_AppDetail';
 import SlideBar from './Components/Layout/SideBar';
 
-var runningState = true;
+let runningState = true;
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
@@ -23,7 +23,7 @@ root.render(
 );
 function toggleState() {
   runningState = !runningState;
-  // console.log(runningState);
+  console.log(runningState);
 }
 function getState() {
   return runningState;
