@@ -10,6 +10,7 @@
     "electron": "^29.1.1",
     "fs": "^0.0.1-security",
     "jquery": "^3.7.1",
+    "line-reader": "^0.4.0",
     "path": "^0.12.7",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
@@ -43,6 +44,7 @@
     ]
   },
   "devDependencies": {
-    "@types/jquery": "^3.5.29"
+    "@types/jquery": "^3.5.29",
+    "@types/line-reader": "^0.0.37"
   }
 }

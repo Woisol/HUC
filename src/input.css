@@ -40,3 +40,7 @@
 div.Page {
 	scroll-behavior: smooth;
 }
+
+div.console::-webkit-scrollbar {
+	width: 0;
+}

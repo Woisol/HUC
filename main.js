@@ -1,3 +1,4 @@
+// import React from 'react';
 const { app, BrowserWindow, ipcMain } = require('electron');
 const createWindow = () => {
 	const win = new BrowserWindow({
@@ -17,16 +18,26 @@ const createWindow = () => {
 	win.webContents.openDevTools();
 	// app.whenReady().then(createWindow());
 	// ！艹为什么一定是这个写法…………上面那个之前明明行的…………
-	const runtimeLogFileStream = require("fs")
+	const runtimeLogFileStream = require("fs");
+	// const readLine = require("line-reader");
+	// ~~被迫引入模块…………
 	ipcMain.once("GetRuntimeLog", DeliverContent)
 	// ！最后是改once解决的！！
+	runtimeLogFileStream.watch("./src/Monitor/runtimeLog.rlf", DeliverContent)
 	function DeliverContent() {
 		// ipcMain.("ContentUpdate", runtimeLogFileStream.readFileSync("./src/Monitor/runtimeLog.rlf", "utf8"));
-		win.webContents.send("ContentUpdate", runtimeLogFileStream.readFileSync("./src/Monitor/runtimeLog.rlf", "utf8"))
+		// let msg = <br />;
+		// readLine.eachLine("./src/Monitor/runtimeLog.rlf", (line, last) => {
+		// 	msg += line + (<br />);
+		// 	win.webContents.send("ContentUpdate", msg)
+		// })
 		// ！ipcMain不能主动发送消息…………有点复杂…………
+
+		const origContent = runtimeLogFileStream.readFileSync("./src/Monitor/runtimeLog.rlf", "utf8")
+		const lines = origContent.split("\n");
+		win.webContents.send("ContentUpdate", lines)
 	}
-	DeliverContent();//!不能在这里调用，react还没创建…………
-	runtimeLogFileStream.watch("./src/Monitor/runtimeLog.rlf", DeliverContent)
+	// DeliverContent();//!在这里调用也没用，react还没创建…………
 }
 app.on('ready', createWindow);
 //!艹注意这个不要放里面…………

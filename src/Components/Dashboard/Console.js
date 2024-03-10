@@ -1,4 +1,6 @@
-import { useState } from "react";
+import React, { useState } from "react";
+import close from "../../Asset/x-lg.svg"
+import { event } from "jquery";
 // import { ipcRenderer } from 'electron';
 const { ipcRenderer } = window.require("electron");
 // ！艹又忘记了要先有preload.js………………
@@ -15,11 +17,30 @@ export default function Console(props) {
 	const [content, UpdateContent] = useState("2024-03-07 20:56 STAT APP Started");
 	ipcRenderer.send("GetRuntimeLog");//！似乎每次更新属性都会重新运行一遍函数，导致反复刷新了…………
 	ipcRenderer.on("ContentUpdate", function (event, arg) {
-		UpdateContent(arg);
+		function Line(item) {
+			return (
+				<p>${item}</p>
+			)
+		}
+		let content = <Line item="" key={-1} />;
+		// ！难以返回一个元素…………
+		arg.map((item, index) => {
+			content += <Line item={item} key={index} />;
+		})
+		// let content = React.createElement("p");
+
+		UpdateContent(content);
 	})
 	const [isOpen, setIsOpen] = useState(false);
 	return (
-		<div className="absolute right-0 z-10 overflow-hidden rounded-2xl bg-gradient-to-t from-black to-gray-500 text-wrap text-xs text-white" style={isOpen ? { width: "300px", height: "600px", top: "50%", padding: "20px", transform: "translateY(-50%)", transition: "0.5s" } : { width: "20px", height: "120px", top: "50%", transform: "translateY(-50%)", transition: "0.5s" }} onClick={toggleIsOpen}>{isOpen ? content : ""}</div>
+		<div className="console absolute right-0 z-10 overflow-scroll rounded-2xl bg-gradient-to-t from-black to-gray-500 text-xs text-white"
+			style={isOpen ? { width: "300px", height: "600px", top: "50%", padding: "20px", transform: "translateY(-50%)", transition: "0.5s" } : { width: "20px", height: "120px", top: "50%", transform: "translateY(-50%)", transition: "0.5s" }}
+			onClick={() => setIsOpen(true)}>
+			{/* //！woq真的神奇…………下面设置完false以后上面再次设回了true导致看似没有效果 */}
+			{/* //！解决方法：使用下面的event.stopPropagation() */}
+			<div className={isOpen ? "w-8 h-8 absolute right-4 top-2 rounded-lg transition-all hover:bg-gray-400" : "hidden"} onClick={(event) => { event.stopPropagation(); setIsOpen(false) }}><img className="w-8 h-8 bg-transparent" src={close} alt="" /></div>
+			{isOpen ? content : ""}
+		</div>
 	);
 	function toggleIsOpen() {
 		setIsOpen(!isOpen);
