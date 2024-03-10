@@ -33,9 +33,9 @@ class BGGear extends Component {
 				<img className="absolute" style={{ width: "250px", height: "250px", top: "106px", right: "470px" }} src={setting} alt="" /> */}
 				{/* ！记得{} */}
 
-				<img className={`absolute  ${isMonitorRunning ? 'rotate-reverse' : ''}`} style={{ width: "200px", height: "200px", top: "30px", right: "319px", transition: "0.1s" }} src={setting} alt="" />
-				<img className={`absolute  ${isMonitorRunning ? 'rotate' : ''}`} style={{ width: "250px", height: "250px", top: "102px", right: "123px", transition: "0.1s" }} src={setting} alt="" />
-				<img className={`absolute  ${isMonitorRunning ? 'rotate' : ''}`} style={{ width: "250px", height: "250px", top: "106px", right: "470px", transition: "0.1s" }} src={setting} alt="" />
+				<img className={`absolute ${isMonitorRunning ? 'rotate-reverse' : ''}`} style={{ width: "200px", height: "200px", top: "30px", right: "319px", transition: "0.1s" }} src={setting} alt="" />
+				<img className={`absolute ${isMonitorRunning ? 'rotate' : ''}`} style={{ width: "250px", height: "250px", top: "102px", right: "123px", transition: "0.1s" }} src={setting} alt="" />
+				<img className={`absolute ${isMonitorRunning ? 'rotate' : ''}`} style={{ width: "250px", height: "250px", top: "106px", right: "470px", transition: "0.1s" }} src={setting} alt="" />
 			</div>
 
 		)
