@@ -11,14 +11,6 @@ const { ipcRenderer } = window.require("electron");
 //https://blog.csdn.net/weixin_42728767/article/details/129499927
 // https://segmentfault.com/a/1190000021898410
 //！搜的electron react fs才出来这么多精品文章！！！
-
-function mutiLines() {
-	const lines = [];
-
-	// line.innerText = "2024-03-07 20:56 STAT APP Started";
-	// lines.push(line);
-	return lines;
-}
 // ！用不了，addEventListener不是函数，本质就就是用不了
 // $("#console").addEventListener("click", () => { $("#ContextMenu").hide() })
 // $("#console").addEventListener('contextmenu', function (event) {
@@ -57,7 +49,7 @@ export default function Console(props) {
 	})
 	const [isOpen, setIsOpen] = useState(false);
 	return (
-		<div id="console" className="console absolute right-0 z-10 overflow-scroll rounded-2xl bg-gradient-to-t from-black to-gray-500 text-xs text-white"
+		<div id="console" className="console absolute right-0 z-10 overflow-scroll rounded-2xl bg-gradient-to-t from-black to-gray-500 text-xs text-white text-nowrap"
 			style={isOpen ? { width: "300px", height: "600px", top: "50%", padding: "20px", transform: "translateY(-50%)", transition: "0.5s" } : { width: "20px", height: "120px", top: "50%", transform: "translateY(-50%)", transition: "0.5s" }}
 			onClick={() => setIsOpen(true)}>
 			{/* //!woq真的神奇…………下面设置完false以后上面再次设回了true导致看似没有效果 */}
@@ -70,7 +62,4 @@ export default function Console(props) {
 			{/* //！electron添加右键菜单不太一样……暂放 */}
 		</div >
 	);
-	function toggleIsOpen() {
-		setIsOpen(!isOpen);
-	}
 }

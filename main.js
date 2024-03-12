@@ -12,7 +12,7 @@ const createWindow = () => {
 			// !啊所以为什么不用preload了？是因为上面关了上下文隔离？确实…………而且再打开以后react无法使用windows.require了…………
 		},
 	});
-	// win.removeMenu();
+	win.removeMenu();
 	// win.loadFile("./src/test/ScollTest.html")
 	win.loadURL('http://localhost:3000/');
 	win.webContents.openDevTools();
@@ -33,7 +33,7 @@ const createWindow = () => {
 		// })
 		// ！ipcMain不能主动发送消息…………有点复杂…………
 
-		const origContent = runtimeLogFileStream.readFileSync("./src/Monitor/runtimeLog.rlf", "utf8")
+		const origContent = runtimeLogFileStream.readFileSync("./src/Monitor/output.rlf", "utf8")
 		const lines = origContent.split("\n");
 		win.webContents.send("ContentUpdate", lines)
 	}

@@ -1,7 +1,8 @@
+// td 用headlessUI重构
 import "./MainView.css"
-import BGGear from "./Components/Dashboard/BG_Gear";
-import MainSwitch from "./Components/Dashboard/MainSwitch";
-import Console from "./Components/Dashboard/Console";
+import BGGear from "./Components/Dashboard/BG_Gear.js";
+import MainSwitch from "./Components/Dashboard/MainSwitch.js";
+import Console from "./Components/Dashboard/Console.js";
 // ！记得react导入外部文件要通过这种方式！直接输路径localhost上面没有！
 export default function PageDashBoard(props) {
 	// td暂时放下状态变量的传递先…………
