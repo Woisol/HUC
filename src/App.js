@@ -2,6 +2,7 @@ import { React, useState } from 'react';
 import PageDashBoard from './Page_DashBoard';
 import PageAppDetail from './Page_AppDetail';
 import SlideBar from './Components/Layout/SideBar';
+const ipcRenderer = window.require('electron').ipcRenderer;
 
 export default function App() {
   const [isMonitorRunning, setIsMonitorRunning] = useState(true);
@@ -19,6 +20,12 @@ export default function App() {
   );
   function toggleState() {
     setIsMonitorRunning(!isMonitorRunning);
-    console.log(isMonitorRunning);
+    if (isMonitorRunning) {
+      ipcRenderer.send("MonitorStateChange", false);
+    }
+    else {
+      ipcRenderer.send("MonitorStateChange", true);
+    }
   }
+  // console.log(isMonitorRunning);
 }

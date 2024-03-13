@@ -1,5 +1,8 @@
 // import React from 'react';
+// import { spawn } from 'child_process';
+const spawn = require("child_process").spawn;
 const { app, BrowserWindow, ipcMain } = require('electron');
+var MonitorPcs = spawn("./src/Monitor/Nodejs Child_Process Test.exe");
 const createWindow = () => {
 	const win = new BrowserWindow({
 		width: 1440,
@@ -23,7 +26,8 @@ const createWindow = () => {
 	// ~~被迫引入模块…………
 	ipcMain.once("GetRuntimeLog", DeliverContent)
 	// ！最后是改once解决的！！
-	runtimeLogFileStream.watch("./src/Monitor/runtimeLog.rlf", DeliverContent)
+	runtimeLogFileStream.watch("./output.rlf", DeliverContent)
+	// !真奇怪，这个watch必须要vsc获得了焦点才能即时反应…………其它应用都不行…………希望实际打包以后能实现吧…………
 	function DeliverContent() {
 		// ipcMain.("ContentUpdate", runtimeLogFileStream.readFileSync("./src/Monitor/runtimeLog.rlf", "utf8"));
 		// let msg = <br />;
@@ -33,7 +37,7 @@ const createWindow = () => {
 		// })
 		// ！ipcMain不能主动发送消息…………有点复杂…………
 
-		const origContent = runtimeLogFileStream.readFileSync("./src/Monitor/output.rlf", "utf8")
+		const origContent = runtimeLogFileStream.readFileSync("./output.rlf", "utf8")
 		const lines = origContent.split("\n");
 		win.webContents.send("ContentUpdate", lines)
 	}
@@ -41,3 +45,19 @@ const createWindow = () => {
 }
 app.on('ready', createWindow);
 //!艹注意这个不要放里面…………
+ipcMain.on("MonitorStateChange", (event, arg) => {
+	console.log(`MonitorStateChange: ${arg}`);
+	if (arg) {
+		MonitorPcs = spawn("./src/Monitor/Nodejs Child_Process Test.exe");
+	}
+	else {
+		MonitorPcs.kill();
+	}
+})
+// MonitorPcs.on("message", (msg, sendHendle) => {
+// 	console.log(`MonitorPcs: ${msg}`);
+// })
+// MonitorPcs.stdout.on("data", (data) => {
+// 	console.log(`stdout: ${data}`);
+// 	// !可以证明在运行…………但是就是无法写入文件…………
+// })
