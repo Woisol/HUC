@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import close from "../../Asset/x-lg.svg"
 import $ from "jquery";
 // import $ from "jquery";
@@ -25,8 +25,16 @@ const { ipcRenderer } = window.require("electron");
 export default function Console(props) {
 	// const runtimeLogFileStream = require("fs").createReadStream("../../Monitor/runtimeLog.rlf");
 	//！ wok注意渲染进程没有权限！！！
-	let [content, UpdateContent] = useState(["2024-03-07 20:56 STAT APP Started"]);
-	ipcRenderer.send("GetRuntimeLog");//！似乎每次更新属性都会重新运行一遍函数，导致反复刷新了…………
+	let [content, UpdateContent] = useState(["Monitor Started"]);
+	useEffect(() => {
+		// $("#console").scrollTop = $("#console").scrollHeight;
+		if (!isOpen) return;
+		const console = document.getElementById("console");
+		console.scrollTop = console.scrollHeight;
+		// 芜湖实现
+		// ！注意jQuery的语法和js的不完全一样…………注意区分…………
+	})
+	// ipcRenderer.send("GetRuntimeLog");//！似乎每次更新属性都会重新运行一遍函数，导致反复刷新了…………
 	ipcRenderer.on("ContentUpdate", function (event, arg) {
 		// function Line(item) {
 		// 	return (
@@ -45,21 +53,36 @@ export default function Console(props) {
 		// 	line.innerText = item;
 		// 	content.push(line);
 		// })
-		UpdateContent(arg);
+		// if (arg == content[content.length - 1]) return;
+		// ！人傻了被迫补牢…………
+		// content.push(arg)
+		// UpdateContent();
+		// !人傻了加了这句content就不是数组了？？？
+		// $("#console").append(`<p>${arg}</p>`)
+		// ！而且这样useEffect会失效…………
+
+		//！啊啊官网的教程！！！！！！！就是针对数组的！
+		UpdateContent([...content, arg]);
+		// ！艹完美解决！！！！！之前重复输入的问题果然是Update导致的！！！！
 	})
 	const [isOpen, setIsOpen] = useState(false);
 	return (
-		<div id="console" className="console absolute right-0 z-10 overflow-scroll rounded-2xl bg-gradient-to-t from-black to-gray-500 text-xs text-white text-nowrap"
+		<div className="absolute right-0 top-0 z-10 rounded-2xl bg-gradient-to-t from-black to-gray-500"
 			style={isOpen ? { width: "300px", height: "600px", top: "50%", padding: "20px", transform: "translateY(-50%)", transition: "0.5s" } : { width: "20px", height: "120px", top: "50%", transform: "translateY(-50%)", transition: "0.5s" }}
 			onClick={() => setIsOpen(true)}>
-			{/* //!woq真的神奇…………下面设置完false以后上面再次设回了true导致看似没有效果 */}
-			{/* //！解决方法：使用下面的event.stopPropagation() */}
 			<div className={isOpen ? "w-8 h-8 absolute right-4 top-2 rounded-lg transition-all hover:bg-gray-400" : "hidden"} onClick={(event) => { event.stopPropagation(); setIsOpen(false) }}><img className="w-8 h-8 bg-transparent" src={close} alt="" /></div>
-			{isOpen ? content.map((item, index) => {
-				return <p key={index}>{item}</p>
-			}) : ""}
-			{/* //！艹啊啊啊啊啊啊其实巨简单啊啊啊为什么一定要拘泥于那个变量啊啊啊啊啊啊！！！ */}
-			{/* //！electron添加右键菜单不太一样……暂放 */}
-		</div >
+			<div id="console" className="console w-full h-full overflow-scroll text-white text-nowrap"
+			>
+				{/* //!woq真的神奇…………下面设置完false以后上面再次设回了true导致看似没有效果 */}
+				{/* //！解决方法：使用下面的event.stopPropagation() */}
+				{isOpen ? content.map((item, index) => {
+					return <p key={index}>{item}</p>
+				}) : ""}
+				{/* //！艹啊啊啊啊啊啊其实巨简单啊啊啊为什么一定要拘泥于那个变量啊啊啊啊啊啊！！！ */}
+				{/* //！electron添加右键菜单不太一样……暂放 */}
+				{/* {$("#console").scrollTop = $("#console").height; } */}
+				{/* //！TY：无法在jsx模板内使用js，且最佳实践应该是用react的状态 */}
+			</div >
+		</div>
 	);
 }

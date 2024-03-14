@@ -45,6 +45,10 @@ div.Page::-webkit-scrollbar {
 	width: 0;
 }
 
+div.console {
+	overflow-anchor: none;
+}
+
 div.console::-webkit-scrollbar {
 	width: 0;
 }

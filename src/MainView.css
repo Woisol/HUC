@@ -571,6 +571,10 @@ video {
   top: 0.5rem;
 }
 
+.top-0 {
+  top: 0px;
+}
+
 .-z-10 {
   z-index: -10;
 }
@@ -623,6 +627,10 @@ video {
 
 .h-screen {
   height: 100vh;
+}
+
+.h-full {
+  height: 100%;
 }
 
 .w-14 {
@@ -685,6 +693,10 @@ video {
 
 .overflow-x-hidden {
   overflow-x: hidden;
+}
+
+.overflow-y-scroll {
+  overflow-y: scroll;
 }
 
 .text-nowrap {
@@ -851,6 +863,10 @@ div.Page {
 
 div.Page::-webkit-scrollbar {
   width: 0;
+}
+
+div.console {
+  overflow-anchor: none;
 }
 
 div.console::-webkit-scrollbar {
