@@ -2,7 +2,8 @@
 // import { spawn } from 'child_process';
 const spawn = require("child_process").spawn;
 const { app, BrowserWindow, ipcMain } = require('electron');
-var MonitorPcs = spawn("./src/Monitor/Nodejs Child_Process Test.exe");
+var MonitorPcs = spawn("./src/Monitor/HUC.exe");
+// ！az在electron里面打开没办法初始化文件………………
 const createWindow = () => {
 	const win = new BrowserWindow({
 		width: 1440,
@@ -45,8 +46,13 @@ const createWindow = () => {
 	}
 	// DeliverContent();//!在这里调用也没用，react还没创建…………
 	MonitorPcs.stdout.on("data", (data) => {
-		console.log(`stdout: ${data}`);
+		// var datas = d.toString().split("\n");
+		// datas.forEach((data) => {
+		// 	if (data === "") return;//！原来就是用的return！
+		// console.log(`stdout: ${data}`);
 		win.webContents.send("ContentUpdate", data.toString());
+		// });
+		// !似乎在这边处理会导致传输过快反应不及时漏掉信息…………去那边处理了…………
 	})
 }
 app.on('ready', createWindow);
@@ -55,12 +61,12 @@ ipcMain.on("MonitorStateChange", (event, arg) => {
 	console.log(`MonitorStateChange: ${arg}`);
 	if (arg) {
 		// MonitorPcs = spawn("./src/Monitor/Nodejs Child_Process Test.exe");
-		MonitorPcs.stdin.write("start\n");
+		MonitorPcs.stdin.write("Monitor on\n");
 		// ！\n别忘了不然没用艹
 		// !啊啊啊啊啊啊你个s这里写到stdout啦！！！！！！！！！
 	}
 	else {
-		MonitorPcs.stdin.write("stop\n");
+		MonitorPcs.stdin.write("Monitor off\n");
 	}
 })
 // MonitorPcs.on("message", (msg, sendHendle) => {
