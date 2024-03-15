@@ -15,7 +15,7 @@ export default function PageDashBoard(props) {
 		<div id="Page_DashBoard" className="w-full h-screen bg-blue-300 bg-opacity-40" style={{ scrollSnapAlign: "start" }}>
 			<BGGear isMonitorRunning={props.isMonitorRunning} />
 			<div className="w-full h-3/4 p-20 absolute bottom-0 bg-gray-300 rounded-t-2xl border-t-2 border-black ">
-				<MainSwitch toggleState={props.toggleState} isMonitorRunning={props.isMonitorRunning} />
+				<MainSwitch isMonitorRunning={props.isMonitorRunning} />
 				<Console />
 				<div className="w-full h-full flex flex-col items-center">
 					<AppRunnningBar />

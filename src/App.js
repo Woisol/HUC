@@ -6,6 +6,10 @@ const ipcRenderer = window.require('electron').ipcRenderer;
 
 export default function App() {
   const [isMonitorRunning, setIsMonitorRunning] = useState(true);
+  ipcRenderer.on('MonitorStateChange', (event, arg) => {
+    setIsMonitorRunning(arg);
+  });
+
   return (
     <>
       <SlideBar />

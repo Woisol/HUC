@@ -35,7 +35,7 @@ export default function Console(props) {
 		// ！注意jQuery的语法和js的不完全一样…………注意区分…………
 	})
 	// ipcRenderer.send("GetRuntimeLog");//！似乎每次更新属性都会重新运行一遍函数，导致反复刷新了…………
-	ipcRenderer.on("ContentUpdate", function (event, contents) {
+	ipcRenderer.on("ContentUpdate", function (event, newContents) {
 		// function Line(item) {
 		// 	return (
 		// 		<p>${item}</p>
@@ -61,10 +61,9 @@ export default function Console(props) {
 		// $("#console").append(`<p>${arg}</p>`)
 		// ！而且这样useEffect会失效…………
 
-		var newcontents = contents.toString().split("\n").filter((item) => item != "");//！TY！~
 
 		//！啊啊官网的教程！！！！！！！就是针对数组的！
-		UpdateContent([...content, ...newcontents]);
+		UpdateContent([...content, ...newContents]);
 		// ！艹完美解决！！！！！之前重复输入的问题果然是Update导致的！！！！
 	})
 	const [isOpen, setIsOpen] = useState(false);
