@@ -1,7 +1,7 @@
 import { React, useState } from 'react';
-import PageDashBoard from './Page_DashBoard';
-import PageAppDetail from './Page_AppDetail';
-import SlideBar from './Components/Layout/SideBar';
+import PageDashBoard from './Page_DashBoard.js';
+import PageAppDetail from './Page_AppDetail.tsx';
+import SlideBar from './Components/Layout/SideBar.js';
 const ipcRenderer = window.require('electron').ipcRenderer;
 
 ipcRenderer.send("UIInited");
