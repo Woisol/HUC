@@ -236,10 +236,14 @@ function UpdateRunTime(date) {
 				}
 				let tmpTime = [];
 				res.forEach(row => {
-					let tmpStarMin = row.StartTime.getHours() * 60 + row.StartTime.getMinutes() + row.StartTime.getSeconds() / 60 - 240;
-					let tmpEndmin = row.EndTime.getHours() * 60 + row.EndTime.getMinutes() + row.EndTime.getSeconds() / 60 - 240;
-					tmpTime.push([tmpStarMin > 0 ? tmpStarMin : tmpStarMin + 1440, tmpEndmin > 0 ? tmpEndmin : tmpEndmin + 1440])
+					tmpTime.push([row.StartTime, row.EndTime]);
 				})
+				// let tmpTime = [];
+				// res.forEach(row => {
+				// 	let tmpStarMin = row.StartTime.getHours() * 60 + row.StartTime.getMinutes() + row.StartTime.getSeconds() / 60 - 240;
+				// 	let tmpEndmin = row.EndTime.getHours() * 60 + row.EndTime.getMinutes() + row.EndTime.getSeconds() / 60 - 240;
+				// 	tmpTime.push([tmpStarMin > 0 ? tmpStarMin : tmpStarMin + 1440, tmpEndmin > 0 ? tmpEndmin : tmpEndmin + 1440])
+				// })
 				tmpRunTimeInfo.push(tmpTime);
 				runTimeInfo.push(tmpRunTimeInfo);
 				win.webContents.send("UpdateRunTime", runTimeInfo);

@@ -3,9 +3,10 @@ import { data, event } from 'jquery';
 import React, { useState } from 'react';
 import ReactEcharts from 'echarts-for-react';
 import $ from 'jquery';
+import { transform } from '@babel/core';
 const ipcRenderer = window.require("electron").ipcRenderer;
 // ipcRenderer.send("UpdateRunTime");
-const today = new Date();
+var today = new Date();
 var option = {
 	xAxis: {
 		data: [`${today.getMonth() + 1}-${today.getDate() - 7}`, `${today.getMonth() + 1}-${today.getDate() - 6}`, `${today.getMonth() + 1}-${today.getDate() - 5}`, `${today.getMonth() + 1}-${today.getDate() - 4}`, `${today.getMonth() + 1}-${today.getDate() - 3}`, `${today.getMonth() + 1}-${today.getDate() - 2}`, `${today.getMonth() + 1}-${today.getDate() - 1}`, `${today.getMonth() + 1}-${today.getDate()}`]
@@ -44,14 +45,17 @@ export default function PageAppRunTime() {
 	var [NearSevenRunTime, UpdateNearSevenRunTime] = useState([]);
 	var [RunTimeData, UpdateRunTimeData] = useState([]);
 	var [pxPerMin, UpdatePxPerMin] = useState(0);
+	today = new Date();
 	ipcRenderer.on("UpdateRunTime", (event, data) => {
 		UpdateRunTimeData(data);
 	})
 	function TimeCard({ data }) {
 		// !艹…………又是渲染先后的问题…………这个计算必须放在Showcase外面…………
 		return (
-			<div className="w-full absolute bg-gray-400" style={{ height: `${(data[1] - data[0]) * pxPerMin}px`, bottom: `${data[0] * pxPerMin}px` }
-			} ></div>
+			<div className="w-full absolute bg-gray-400 text-xs text-center text-transparent transition-all hover:text-black flex flex-col justify-center" style={{ height: `${(data[1] - data[0]) * pxPerMin}px`, bottom: `${data[0] * pxPerMin}px` }} >
+				<span className='absolute right-5 z-10 ' style={{ transform: "rotate(270deg)" }}>{data[2][0].toLocaleTimeString()}<br />{data[2][1].toLocaleTimeString()}</span>
+			</div >
+
 		);
 	}
 	function AppRunTimeShowcase({ data }) {
@@ -61,8 +65,11 @@ export default function PageAppRunTime() {
 			<div className='w-32 h-full p-2 mx-2 flex flex-col items-center rounded-2xl shadow-xl transition-all hover:shadow-2xl' style={{ backgroundColor: `${data[2]}` }}>
 				<div className="AppRunTimeShowcase w-7 h-full relative right-2 bg-gray-300 shadow-lg rounded-lg transition-all hover:shadow-2xl">
 					{data[4].map((item, index) => {
+						let tmpStarMin = item[0].getHours() * 60 + item[0].getMinutes() + item[0].getSeconds() / 60 - 240;
+						let tmpEndmin = item[1].getHours() * 60 + item[1].getMinutes() + item[1].getSeconds() / 60 - 240;
+
 						return (
-							<TimeCard key={index} data={item} />
+							<TimeCard key={index} data={[tmpStarMin, tmpEndmin, item]} />
 						)
 					})}
 					{/* //~~傻………………明明可以在return的时候用js的……………… */}
@@ -80,10 +87,14 @@ export default function PageAppRunTime() {
 			</div>
 		)
 	}
+	const todayDateString = today.getFullYear() + "-" + String(today.getMonth() + 1).padStart(2, '0') + "-" + String(today.getDate()).padStart(2, '0')
+	//！ From TY，这格式要求也太严格吧……………………估计是差了0就不得…………………
 	return (
 		<div id="Page_AppDetail" className="w-screen h-screen pl-20 pr-1 py-6 bg-gray-300 border-y-2 border-black flex" style={{ scrollSnapAlign: "start" }}>
 			<div className='w-40 h-full py-8 bg-gray-100 rounded-2xl'>
-				<input className='w-full h-10 border-b-2 border-black text-center bg-transparent hover:shadow-2xl transition-all hover:bg-gray-300' type={"Date"} defaultValue={new Date().toLocaleDateString()} />
+				<input className='w-full h-10 border-b-2 border-black text-center bg-transparent hover:shadow-2xl transition-all hover:bg-gray-300' type={"Date"} defaultValue={todayDateString} max={todayDateString} onChange={(event) => {
+					ipcRenderer.send("UpdateRunTime", new Date(event.target.value))
+				}} />
 				<SideBarTemplate data={NearSevenRunTime} />
 				<SideBarSpace />
 				<SideBarOption Title="日视图" OnClickFunc={{}} />
@@ -101,7 +112,7 @@ export default function PageAppRunTime() {
 					{RunTimeData.map((data, index) => {
 						return (
 							<AppRunTimeShowcase key={index} data={data} />
-							// !这个data同名好像可以隐藏？
+							// ~~~这个data同名好像可以隐藏？并不行
 						)
 					})}
 				</div>
