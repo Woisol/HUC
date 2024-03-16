@@ -10,7 +10,7 @@ const ipcRenderer = window.require("electron").ipcRenderer;
 function AppRunning(props) {
 
 	return (
-		<div className="w-16 h-16 mx-1 p-2 rounded-2xl bg-blue-300 shadow-2xl transition-all hover:bg-blue-400" > <img className="w-full h-full" src={props.img} alt="More" /> </div>
+		<div className="w-16 h-16 mx-1 p-2 relative rounded-2xl bg-blue-300 shadow-2xl transition-all hover:bg-blue-400 text-transparent hover:text-black" > <img className="w-full h-full" src={props.img} alt="More" /> <span className='w-12 absolute bottom-0 text-center'>{props.appName}</span></div>
 	);
 	// ！艹艹艹啊啊啊啊啊又是props的问题！！！！！！！！！！！！！
 }
@@ -43,7 +43,7 @@ export default function AppRunnningBar() {
 			<span className="absolute -top-4 left-4 text-xl" > 运行中应用 </span>
 			{RunningAppInfo.length === 0 ? <span className="w-full h-full p-5 text-xl text-center text-gray-500">暂无</span> : RunningAppInfo.map((item, index) => {
 				return (
-					<AppRunning key={index} img={item[1]} />
+					<AppRunning key={index} appName={item[0]} img={item[1]} />
 				)
 			})}
 			{/* < ShowMore /> */}
