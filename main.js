@@ -107,7 +107,7 @@ ipcMain.on("UIInited", (event, arg) => {
 			let isPushed = false;
 			AppIcons.forEach((appIcon) => {
 				if (!isPushed && appIcon[0].toLowerCase() === app.toLowerCase()) {
-					tmpAppInfo.push(appIcon[1]);
+					tmpAppInfo.push(appIcon[1].icon);
 					isPushed = true;
 				}
 			})
@@ -152,10 +152,11 @@ ipcMain.on("MonitorStateChange", (event, arg) => {
 // })
 //**----------------------------AppIcons-----------------------------------------------------
 // ！同时不要忘记加了这个以后只有启动第一次才能调试………………………………
-ipcMain.on("GetAppIcons", (event, arg) => {
-	AppIcons = require("./AppIcon.json");
-	event.reply("GetAppIcons", Object.entries(AppIcons))
-	// ！艹啊啊啊啊啊啊啊啊啊啊啊
-	// ！不要以为debug显示的是“数组”就直接传过去啊啊
-	// ！是json的{}不是数组的[]！！！！！！
-})
+// ipcMain.on("GetAppIcons", (event, arg) => {
+// 	AppIcons = require("./AppIcon.json");
+// 	let ow = Object.entries(AppIcons);
+// 	event.reply("GetAppIcons", Object.entries(AppIcons))
+// 	// ！艹啊啊啊啊啊啊啊啊啊啊啊
+// 	// ！不要以为debug显示的是“数组”就直接传过去啊啊
+// 	// ！是json的{}不是数组的[]！！！！！！
+// })
