@@ -1,17 +1,18 @@
-// import React from 'react';
 // import { spawn } from 'child_process';
 // !额不支持ts…………
-//**----------------------------ConsolePcs-----------------------------------------------------
 const spawn = require("child_process").spawn;
 const { app, BrowserWindow, ipcMain } = require('electron');
-var MonitorPcs = spawn("./src/Monitor/HUC.exe");
+const { event } = require("jquery");
+const { monitorEventLoopDelay } = require("perf_hooks");
+var win;
+var MonitorPcs;
 //**----------------------------AppIcons-----------------------------------------------------
 var AppIcons = Object.entries(require("./AppIcon.json"));
 //**----------------------------AppRunning-----------------------------------------------------
 var runningApps = [];
 // ！az在electron里面打开没办法初始化文件………………
 const createWindow = () => {
-	const win = new BrowserWindow({
+	win = new BrowserWindow({
 		width: 1440,
 		height: 1024,
 
@@ -51,7 +52,22 @@ const createWindow = () => {
 		// **现方案：读取监视器进程输出
 	}
 	// DeliverContent();//!在这里调用也没用，react还没创建…………
+}
+function UpdateRunningApp(App, Delete = false) {
+	if (Delete) {
+		if (runningApps.includes(App)) runningApps = runningApps.filter((app) => app !== App);
+	}
+	else {
+		runningApps = [...runningApps, App];
+	}
+}
+app.on('ready', createWindow);
+//!艹注意这个不要放里面…………
+//**----------------------------ipcMain-----------------------------------------------------
+ipcMain.on("UIInited", (event, arg) => {
+	MonitorPcs = spawn("./src/Monitor/HUC.exe");
 	MonitorPcs.stdout.on("data", (data) => {
+		// !这个依然要在定义了以后才能执行………………
 		//**----------------------------Console-----------------------------------------------------
 		// var datas = d.toString().split("\n");
 		// datas.forEach((data) => {
@@ -100,17 +116,18 @@ const createWindow = () => {
 		})
 		win.webContents.send("UpdateRunningAppInfo", runningAppsInfo);
 	})
-	function UpdateRunningApp(App, Delete = false) {
-		if (Delete) {
-			if (runningApps.includes(App)) runningApps = runningApps.filter((app) => app !== App);
-		}
-		else {
-			runningApps = [...runningApps, App];
-		}
-	}
-}
-app.on('ready', createWindow);
-//!艹注意这个不要放里面…………
+	MonitorPcs.on("error", err => {
+		win.webContents.send("ContentUpdate", err.toString());
+		win.webContents.send("MonitorStateChange", false);
+		console.log(`Monitor Failed: ${err}`);
+	})
+	// ！艹………………在react里面设置的
+	MonitorPcs.on("exit", arg => {
+		win.webContents.send("ContentUpdate", arg.toString());
+		win.webContents.send("MonitorStateChange", false);
+		console.log(`Monitor Exit: ${arg}`);
+	})
+})
 ipcMain.on("MonitorStateChange", (event, arg) => {
 	console.log(`MonitorStateChange: ${arg}`);
 	if (arg) {
