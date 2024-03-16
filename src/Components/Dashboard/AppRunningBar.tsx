@@ -9,7 +9,6 @@ const ipcRenderer = window.require("electron").ipcRenderer;
 // var AppStateFile = JSON.parse(require("./AppState.json"));
 
 function AppRunning(props) {
-
 	return (
 		<div className="w-16 h-16 mx-1 p-2 relative rounded-2xl bg-blue-300 shadow-2xl transition-all hover:bg-blue-400 text-transparent hover:text-black" > <img className="w-full h-full" src={props.img} alt="More" /> <span className='w-12 absolute bottom-0 text-center'>{props.appName}</span></div>
 	);

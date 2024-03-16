@@ -1,10 +1,9 @@
 import { React, useState } from 'react';
 import PageDashBoard from './Page_DashBoard.js';
-import PageAppDetail from './Page_AppDetail.tsx';
+import PageAppDetail from './Page_AppRunTime.tsx';
 import SlideBar from './Components/Layout/SideBar.js';
 const ipcRenderer = window.require('electron').ipcRenderer;
 
-ipcRenderer.send("UIInited");
 // ！一定不要再设置在function里面了………………反复调用又22出错…………
 export default function App() {
   const [isMonitorRunning, setIsMonitorRunning] = useState(true);

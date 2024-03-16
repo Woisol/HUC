@@ -49,6 +49,6 @@ div.console {
 	overflow-anchor: none;
 }
 
-div.console::-webkit-scrollbar {
+div.hideScollBar::-webkit-scrollbar {
 	width: 0;
 }
