@@ -67,8 +67,8 @@ export default function PageAppRunTime() {
 					})}
 					{/* //~~傻………………明明可以在return的时候用js的……………… */}
 					{/* //!并不能在return里面用传统js…………必须有返回值………… */}
-					{new Array(4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 0, 1, 2).map((cur, index) => (
-						<small className='w-16 absolute border-b-2 text-gray-500 text-right align-text-bottom'
+					{new Array(4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 0, 1, 2, 3).map((cur, index) => (
+						<small className='w-8 left-7 absolute border-b-2 text-gray-500 text-right align-text-bottom'
 							style={{
 								bottom: `${index * 60 * pxPerMin}px`,
 								height: `${60 * pxPerMin}px`,
@@ -89,14 +89,15 @@ export default function PageAppRunTime() {
 				<SideBarOption Title="日视图" OnClickFunc={{}} />
 				<SideBarOption Title="周视图" OnClickFunc={{}} />
 			</div>
-			<div className="w-full h-full p-5 relative flex flex-col justify-center items-center" >
+			<div className="w-11/12 h-full p-5 relative flex flex-col justify-center items-center" >
 				<div className="w-10/12 h-44 mb-5 relative bg-white shadow-lg transition-all hover:shadow-xl rounded-2xl transition-all hover:bg-gray-100">
 					<span className='absolute -top-3 left-4'>近7天使用情况</span>
 					<ReactEcharts option={option} style={{ width: "110%", height: "150%", position: "absolute", left: "-15px", top: "-30px" }} />
 					{/* //!艹分不清楚………………这个是{}不是{{}}………… */}
 				</div>
 				<div className="hideScollBar w-full h-full p-3 flex bg-white shadow-xl transition-all hover:shadow-2xl rounded-2xl overflow-x-scroll " >
-					{/* <AppRunTimeShowcase key={1} data={{ "appName": "Test", "Class": "Test", "Color": "#87CEFA", "Icon": "", }} /> */}
+					{/* <AppRunTimeShowcase key={1} data={["Test", "Test", "#87CEFA", "", [[0, 60]]]} /> */}
+					{/* <AppRunTimeShowcase key={1} data={["Test", "Test", "#87CEFA", "", [[0, 1440]]]} /> */}
 					{RunTimeData.map((data, index) => {
 						return (
 							<AppRunTimeShowcase key={index} data={data} />
