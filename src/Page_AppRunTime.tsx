@@ -7,19 +7,6 @@ import { transform } from '@babel/core';
 const ipcRenderer = window.require("electron").ipcRenderer;
 // ipcRenderer.send("UpdateRunTime");
 var today = new Date();
-var option = {
-	xAxis: {
-		data: [`${today.getMonth() + 1}-${today.getDate() - 7}`, `${today.getMonth() + 1}-${today.getDate() - 6}`, `${today.getMonth() + 1}-${today.getDate() - 5}`, `${today.getMonth() + 1}-${today.getDate() - 4}`, `${today.getMonth() + 1}-${today.getDate() - 3}`, `${today.getMonth() + 1}-${today.getDate() - 2}`, `${today.getMonth() + 1}-${today.getDate() - 1}`, `${today.getMonth() + 1}-${today.getDate()}`]
-	},
-	yAxis: {},
-	series: [
-		{
-			name: '销量',
-			type: 'bar',
-			data: [5, 20, 36, 10, 10, 20]
-		}
-	]
-};
 //**----------------------------SideBar-----------------------------------------------------
 function SideBarSpace() {
 	return (
@@ -42,12 +29,15 @@ function SideBarOption({ OnClickFunc, Title }) {
 // !这个数据做不到跟随窗口变化即时改变…………考虑用state
 //**----------------------------Page-----------------------------------------------------
 export default function PageAppRunTime() {
-	var [NearSevenRunTime, UpdateNearSevenRunTime] = useState([]);
+	var [LastSeven, UpdateLastSeven] = useState([0, 0, 0, 0, 0, 0, 0, 0]);
 	var [RunTimeData, UpdateRunTimeData] = useState([]);
 	var [pxPerMin, UpdatePxPerMin] = useState(0);
 	today = new Date();
 	ipcRenderer.on("UpdateRunTime", (event, data) => {
 		UpdateRunTimeData(data);
+	})
+	ipcRenderer.on("UpdateLastSeven", (event, data) => {
+		UpdateLastSeven(data);
 	})
 	function TimeCard({ data }) {
 		// !艹…………又是渲染先后的问题…………这个计算必须放在Showcase外面…………
@@ -69,7 +59,7 @@ export default function PageAppRunTime() {
 						let tmpEndmin = item[1].getHours() * 60 + item[1].getMinutes() + item[1].getSeconds() / 60 - 240;
 
 						return (
-							<TimeCard key={index} data={[tmpStarMin, tmpEndmin, item]} />
+							<TimeCard key={index} data={[tmpStarMin > 0 ? tmpStarMin : tmpStarMin + 1440, tmpEndmin > 0 ? tmpEndmin : tmpEndmin + 1440, item]} />
 						)
 					})}
 					{/* //~~傻………………明明可以在return的时候用js的……………… */}
@@ -89,13 +79,39 @@ export default function PageAppRunTime() {
 	}
 	const todayDateString = today.getFullYear() + "-" + String(today.getMonth() + 1).padStart(2, '0') + "-" + String(today.getDate()).padStart(2, '0')
 	//！ From TY，这格式要求也太严格吧……………………估计是差了0就不得…………………
+	//**----------------------------LastSeven-----------------------------------------------------
+	ipcRenderer.on("UpdateLastSeven", (event, data) => {
+		UpdateLastSeven(data);
+	})
+	var option = {
+		xAxis: {
+			data: [`${today.getMonth() + 1}-${today.getDate() - 7}`, `${today.getMonth() + 1}-${today.getDate() - 6}`, `${today.getMonth() + 1}-${today.getDate() - 5}`, `${today.getMonth() + 1}-${today.getDate() - 4}`, `${today.getMonth() + 1}-${today.getDate() - 3}`, `${today.getMonth() + 1}-${today.getDate() - 2}`, `${today.getMonth() + 1}-${today.getDate() - 1}`, `${today.getMonth() + 1}-${today.getDate()}`]
+		},
+		yAxis: {},
+		series: [
+			{
+				name: '小时数',
+				type: 'bar',
+				"areaStyle": {
+					color: "#87CEFA",
+					opacity: 0.5
+				},
+				data: [...LastSeven]
+			}
+		],
+		tooltip: {
+			trigger: 'item',
+			formatter: '{a}:{c}h'
+		},
+	};
+
 	return (
 		<div id="Page_AppDetail" className="w-screen h-screen pl-20 pr-1 py-6 bg-gray-300 border-y-2 border-black flex" style={{ scrollSnapAlign: "start" }}>
 			<div className='w-40 h-full py-8 bg-gray-100 rounded-2xl'>
 				<input className='w-full h-10 border-b-2 border-black text-center bg-transparent hover:shadow-2xl transition-all hover:bg-gray-300' type={"Date"} defaultValue={todayDateString} max={todayDateString} onChange={(event) => {
 					ipcRenderer.send("UpdateRunTime", new Date(event.target.value))
 				}} />
-				<SideBarTemplate data={NearSevenRunTime} />
+				<SideBarTemplate />
 				<SideBarSpace />
 				<SideBarOption Title="日视图" OnClickFunc={{}} />
 				<SideBarOption Title="周视图" OnClickFunc={{}} />

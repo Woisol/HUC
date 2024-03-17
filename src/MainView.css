@@ -563,12 +563,20 @@ video {
   bottom: 0px;
 }
 
+.bottom-2 {
+  bottom: 0.5rem;
+}
+
 .left-10 {
   left: 2.5rem;
 }
 
 .left-4 {
   left: 1rem;
+}
+
+.left-7 {
+  left: 1.75rem;
 }
 
 .right-0 {
@@ -583,24 +591,16 @@ video {
   right: 1rem;
 }
 
+.right-5 {
+  right: 1.25rem;
+}
+
 .top-0 {
   top: 0px;
 }
 
 .top-2 {
   top: 0.5rem;
-}
-
-.left-7 {
-  left: 1.75rem;
-}
-
-.right-7 {
-  right: 1.75rem;
-}
-
-.right-5 {
-  right: 1.25rem;
 }
 
 .-z-10 {
@@ -695,6 +695,10 @@ video {
   width: 83.333333%;
 }
 
+.w-11\/12 {
+  width: 91.666667%;
+}
+
 .w-12 {
   width: 3rem;
 }
@@ -743,14 +747,6 @@ video {
 
 .w-screen {
   width: 100vw;
-}
-
-.w-11\/12 {
-  width: 91.666667%;
-}
-
-.max-w-full {
-  max-width: 100%;
 }
 
 .transform {
@@ -822,10 +818,6 @@ video {
 .border-black {
   --tw-border-opacity: 1;
   border-color: rgb(0 0 0 / var(--tw-border-opacity));
-}
-
-.border-opacity-10 {
-  --tw-border-opacity: 0.1;
 }
 
 .bg-blue-200 {
@@ -1102,11 +1094,6 @@ div.hideScollBar::-webkit-scrollbar {
   background-color: rgb(156 163 175 / var(--tw-bg-opacity));
 }
 
-.hover\:bg-white:hover {
-  --tw-bg-opacity: 1;
-  background-color: rgb(255 255 255 / var(--tw-bg-opacity));
-}
-
 .hover\:p-0:hover {
   padding: 0px;
 }
@@ -1140,4 +1127,9 @@ div.hideScollBar::-webkit-scrollbar {
   --tw-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
   --tw-shadow-colored: 0 20px 25px -5px var(--tw-shadow-color), 0 8px 10px -6px var(--tw-shadow-color);
   box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
+}
+
+.focus\:bg-gray-300:focus {
+  --tw-bg-opacity: 1;
+  background-color: rgb(209 213 219 / var(--tw-bg-opacity));
 }

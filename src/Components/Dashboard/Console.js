@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import close from "../../Asset/x-lg.svg"
-import $ from "jquery";
+import $, { event } from "jquery";
 // import $ from "jquery";
 // import { ipcRenderer } from 'electron';
 const { ipcRenderer } = window.require("electron");
@@ -22,6 +22,8 @@ const { ipcRenderer } = window.require("electron");
 
 // 	$("#ContextMenu").fadeIn();
 // })
+//**----------------------------MonitorInputLisener-----------------------------------------------------
+
 export default function Console(props) {
 	// const runtimeLogFileStream = require("fs").createReadStream("../../Monitor/runtimeLog.rlf");
 	//！ wok注意渲染进程没有权限！！！
@@ -84,6 +86,13 @@ export default function Console(props) {
 				{/* {$("#console").scrollTop = $("#console").height; } */}
 				{/* //！TY：无法在jsx模板内使用js，且最佳实践应该是用react的状态 */}
 			</div >
+			<input className={`w-full relative bottom-2 rounded-2xl transition-all hover:bg-gray-300 focus:bg-gray-300 ${isOpen ? "" : "hidden"}`} type="text" onKeyDown={handleInputEnter} />
 		</div>
 	);
+}
+function handleInputEnter(event) {
+	if (event.key === 'Enter' || event.keyCode === 13) {
+		ipcRenderer.send("MonitorPcsStdinWrite", event.target.value)
+		event.target.value = "";
+	}
 }
