@@ -4,6 +4,7 @@ const spawn = require("child_process").spawn;
 const { app, BrowserWindow, ipcMain, MenuItem } = require('electron');
 const $ = require("jquery");
 //##----------------------------Initialize-----------------------------------------------------
+const VERSION = "1.0"
 var win;
 var MonitorPcs;
 var appConfig = Object.entries(require("./config.json"));
@@ -42,6 +43,8 @@ const createWindow = () => {
 	win = new BrowserWindow({
 		width: 1440,
 		height: 1024,
+		title: `Healthily Use Computer ${VERSION}`,
+		icon: "./public/Logo.ico",
 
 		webPreferences: {
 			nodeIntegration: true,
@@ -338,7 +341,7 @@ function UpdateLastSeven() {
 	// 	connection.connect();
 	let today = new Date();
 	var result = [];
-	[7, 6, 5, 4, 3, 2, 1].map((value, index) => {
+	[6, 5, 4, 3, 2, 1, 0].map((value, index) => {
 		// !虽然按理来说应该是6~0…………但是不知道为什么就是慢了一天…………面向结果编程了
 		let totalMin = 0;
 		let i = 0;
@@ -355,7 +358,7 @@ function UpdateLastSeven() {
 				})
 				if (++i > mntApps.length - 1) {
 					result.push(totalMin / 60);
-					if (value === 1)
+					if (value === 0)
 						win.webContents.send("UpdateLastSeven", result);
 					// !md变量乱命名了为………………传错了都不知道………………
 				}
