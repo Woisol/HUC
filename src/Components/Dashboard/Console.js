@@ -63,9 +63,11 @@ export default function Console(props) {
 		// $("#console").append(`<p>${arg}</p>`)
 		// ！而且这样useEffect会失效…………
 
-
-		//！啊啊官网的教程！！！！！！！就是针对数组的！
-		UpdateContent([...content, ...newContents]);
+		if (Array.isArray(newContents))
+			//！啊啊官网的教程！！！！！！！就是针对数组的！
+			UpdateContent([...content, ...newContents]);
+		else
+			UpdateContent([...content, newContents]);
 		// ！艹完美解决！！！！！之前重复输入的问题果然是Update导致的！！！！
 	})
 	const [isOpen, setIsOpen] = useState(false);
