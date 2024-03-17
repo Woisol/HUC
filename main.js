@@ -3,6 +3,8 @@
 const spawn = require("child_process").spawn;
 const { app, BrowserWindow, ipcMain, Tray } = require('electron');
 const $ = require("jquery");
+const path = require("path");
+const url = require("url");
 //##----------------------------Initialize-----------------------------------------------------
 const VERSION = "1.0"
 var win, tray, isToQuit = false;
@@ -47,7 +49,6 @@ const createWindow = () => {
 		title: `Healthily Use Computer ${VERSION}`,
 		icon: "./public/Logo.ico",
 
-
 		webPreferences: {
 			nodeIntegration: true,
 			contextIsolation: false,
@@ -55,10 +56,19 @@ const createWindow = () => {
 			// !啊所以为什么不用preload了？是因为上面关了上下文隔离？确实…………而且再打开以后react无法使用windows.require了…………
 		},
 	});
-	// win.removeMenu();
-	// win.loadFile("./src/test/ScollTest.html")
-	win.loadURL('http://localhost:3000/');
-	win.webContents.openDevTools();
+	win.removeMenu();
+
+	// win.loadFile("./build/index.html")
+	// ！并不是直接这样加载…………
+	win.loadURL(url.format({
+		pathname: path.join(__dirname, './build/index.html'),
+		protocol: 'file:',
+		slashes: true
+	}))
+	// ！！！打包也不容易！注意先在package里面搞好homepage以后在build react！！不然依然找不到！
+	// win.loadURL('http://localhost:3000/');
+
+	// win.webContents.openDevTools();
 	// app.whenReady().then(createWindow());
 	// ！艹为什么一定是这个写法…………上面那个之前明明行的…………
 	// const runtimeLogFileStream = require("fs");
