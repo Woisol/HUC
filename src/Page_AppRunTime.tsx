@@ -34,7 +34,9 @@ export default function PageAppRunTime() {
 	var [pxPerMin, UpdatePxPerMin] = useState(0);
 	today = new Date();
 	ipcRenderer.on("UpdateRunTime", (event, data) => {
-		UpdateRunTimeData(data);
+		UpdateRunTimeData(data[0]);
+		$("#DateSelector").val(data[1].getFullYear() + "-" + String(data[1].getMonth() + 1).padStart(2, '0') + "-" + String(data[1].getDate()).padStart(2, '0'));
+		// !艹老是忘记这个语法…………
 	})
 	ipcRenderer.on("UpdateLastSeven", (event, data) => {
 		UpdateLastSeven(data);
@@ -77,12 +79,9 @@ export default function PageAppRunTime() {
 			</div>
 		)
 	}
-	const todayDateString = today.getFullYear() + "-" + String(today.getMonth() + 1).padStart(2, '0') + "-" + String(today.getDate()).padStart(2, '0')
+	const todayDateString = today.getFullYear() + "-" + String(today.getMonth() + 1).padStart(2, '0') + "-" + String(today.getDate()).padStart(2, '0');
 	//！ From TY，这格式要求也太严格吧……………………估计是差了0就不得…………………
 	//**----------------------------LastSeven-----------------------------------------------------
-	ipcRenderer.on("UpdateLastSeven", (event, data) => {
-		UpdateLastSeven(data);
-	})
 	var option = {
 		xAxis: {
 			data: [`${today.getMonth() + 1}-${today.getDate() - 7}`, `${today.getMonth() + 1}-${today.getDate() - 6}`, `${today.getMonth() + 1}-${today.getDate() - 5}`, `${today.getMonth() + 1}-${today.getDate() - 4}`, `${today.getMonth() + 1}-${today.getDate() - 3}`, `${today.getMonth() + 1}-${today.getDate() - 2}`, `${today.getMonth() + 1}-${today.getDate() - 1}`, `${today.getMonth() + 1}-${today.getDate()}`]
@@ -108,7 +107,7 @@ export default function PageAppRunTime() {
 	return (
 		<div id="Page_AppDetail" className="w-screen h-screen pl-20 pr-1 py-6 bg-gray-300 border-y-2 border-black flex" style={{ scrollSnapAlign: "start" }}>
 			<div className='w-40 h-full py-8 bg-gray-100 rounded-2xl'>
-				<input className='w-full h-10 border-b-2 border-black text-center bg-transparent hover:shadow-2xl transition-all hover:bg-gray-300' type={"Date"} defaultValue={todayDateString} max={todayDateString} onChange={(event) => {
+				<input id='DateSelector' className='w-full h-10 border-b-2 border-black text-center bg-transparent hover:shadow-2xl transition-all hover:bg-gray-300' type={"Date"} defaultValue={todayDateString} max={todayDateString} onChange={(event) => {
 					ipcRenderer.send("UpdateRunTime", new Date(event.target.value))
 				}} />
 				<SideBarTemplate />

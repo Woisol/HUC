@@ -318,7 +318,7 @@ function UpdateRunTime(date) {
 			// })
 			tmpRunTimeInfo.push(tmpTime);
 			runTimeInfo.push(tmpRunTimeInfo);
-			win.webContents.send("UpdateRunTime", runTimeInfo);
+			win.webContents.send("UpdateRunTime", [runTimeInfo, date]);
 		})
 		// connection.end();
 	});
