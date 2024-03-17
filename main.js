@@ -1,12 +1,12 @@
 // import { spawn } from 'child_process';
 // !额不支持ts…………
 const spawn = require("child_process").spawn;
-const { app, BrowserWindow, ipcMain, MenuItem } = require('electron');
+const { app, BrowserWindow, ipcMain, MenuItem, Tray, dialog } = require('electron');
 const $ = require("jquery");
 //##----------------------------Initialize-----------------------------------------------------
 const VERSION = "1.0"
-var win;
-var MonitorPcs;
+var win, tray, isToQuit = false;
+var MonitorPcs, MonitorState = true;
 var appConfig = Object.entries(require("./config.json"));
 //**----------------------------AppInfo-----------------------------------------------------
 var AppInfo = Object.entries(require("./AppInfo.json"));
@@ -46,6 +46,7 @@ const createWindow = () => {
 		title: `Healthily Use Computer ${VERSION}`,
 		icon: "./public/Logo.ico",
 
+
 		webPreferences: {
 			nodeIntegration: true,
 			contextIsolation: false,
@@ -66,88 +67,116 @@ const createWindow = () => {
 	// ！最后是改once解决的！！
 	// runtimeLogFileStream.watch("./output.rlf", DeliverContent)
 	// !真奇怪，这个watch必须要vsc获得了焦点才能即时反应…………其它应用都不行…………希望实际打包以后能实现吧…………
-	//**----------------------------ContextMenu-----------------------------------------------------
-	// win.webContents.on("context-menu", (event, params) => {
-	// 	// const { } = params;
-	// 	ContextMenu_Fresh.popup();
-	// })
-	// let contextMenuWin = new BrowserWindow({
-	// 	width: 50,
-	// 	height: 100,
-	// });
-	ContextMenu_Fresh = Menu.buildFromTemplate([
-		{
-			label: "刷新",
-			accelerator: "F5",
-			role: "reload"
-			// 	click: (menuItem, browserWindow, event) => {
-			// 		switch (menuItem)
-			// }
-		}])
 
-	ContextMenu_MainSwitch = Menu.buildFromTemplate([
+	//**----------------------------Tray-----------------------------------------------------
+	const ContextMenu_Tray = Menu.buildFromTemplate([
 		{
-			label: "重启",
-			click: (menuItem, browserWindow, event) => {
-				MonitorPcs.kill()
-				MonitorInit();
-				// !注意不能直接spawn完事………………之前的事件都要加回来！
-				// !不知道为什么reload后无法重启…………只有在reload前这个功能正常
-			}
-			// 	click: (menuItem, browserWindow, event) =ContextMenu_RunningApp> {
-			// 		switch (menuItem)
-			// }
+			label: "退出",
+			// role: "close"
+			click: () => { isToQuit = true; app.quit(); }
+			// !额两个都关不了………………
+			// !quit关不了…………是下面的win.on("close")导致的…………
 		}])
-	ContextMenu_Console = Menu.buildFromTemplate([
-		{
-			label: "清空",
-			click: (menuItem, browserWindow, event) => {
-				win.webContents.send("ConsoleClear")
-			}
-		}])
-	ContextMenu_RunTime = Menu.buildFromTemplate([
-		{
-			label: "刷新今日数据",
-			click: (menuItem, browserWindow, event) => {
-				UpdateRunTime(new Date());
-			}
-		}])
-	ContextMenu_LastSeven = Menu.buildFromTemplate([
-		{
-			label: "刷新",
-			click: (menuItem, browserWindow, event) => {
-				UpdateLastSeven()
-			}
-		}])
-	//**----------------------------ipcMain-----------------------------------------------------
-	// $("#MainSwitchImg").on("contextmenu", (event, params) => {
-	// 	const { } = params;
-	// 	ContextMenu_MainSwitch.popup();
-	// })
-	// !?jQuery requires a windows with a document?
-	// window.getElementById("MainSwitchImg").addEventListener("contextmenu", () => {
-	// 	ContextMenu_MainSwitch.popup();
-	// })
-	// ！注意主进程和渲染进程的DOM是隔离的！不能获取！
-	ipcMain.on("ContextMenu_MainSwitch", (event, arg) => {
-		event.preventDefault();
-		ContextMenu_MainSwitch.popup();
-	})
-	ipcMain.on("ContextMenu_Console", (event, arg) => {
-		event.preventDefault();
-		ContextMenu_Console.popup();
-	})
-	ipcMain.on("ContextMenu_RunTime", (event, arg) => {
-		event.preventDefault();
-		ContextMenu_RunTime.popup();
-	})
-	ipcMain.on("ContextMenu_LastSeven", (event, arg) => {
-		event.preventDefault();
-		ContextMenu_LastSeven.popup();
-	})
+	tray = new Tray("./public/Logo.ico");
+	tray.on("double-click", () => { win.show() })
+	tray.setContextMenu(ContextMenu_Tray)
+	tray.setToolTip(`Healthily Use Computer ${VERSION}`)
 
-	// !会和单独元素的右键彩蛋冲突…………
+	// if(dialog.showMessageBoxSync({
+	// 	title: "Healthily Use Computer",
+	// 	message: "是否退出？",
+	// 	buttons: ["是", "否"],
+	// 	defaultId: 1,
+	// 	cancelId: 1,
+	// 	noLink: true
+	// }) === 0)
+	win.on("close", (event) => {
+		if (isToQuit) return;
+		event.preventDefault();
+		win.hide();
+		// win.hide("5s");//!并没有用…………
+	})
 }
+//**----------------------------ContextMenu-----------------------------------------------------
+// !会和单独元素的右键彩蛋冲突…………
+// win.webContents.on("context-menu", (event, params) => {
+// 	// const { } = params;
+// 	ContextMenu_Fresh.popup();
+// })
+// let contextMenuWin = new BrowserWindow({
+// 	width: 50,
+// 	height: 100,
+// });
+ContextMenu_Fresh = Menu.buildFromTemplate([
+	{
+		label: "刷新",
+		accelerator: "F5",
+		role: "reload"
+		// 	click: (menuItem, browserWindow, event) => {
+		// 		switch (menuItem)
+		// }
+	}])
+
+ContextMenu_MainSwitch = Menu.buildFromTemplate([
+	{
+		label: "重启",
+		click: (menuItem, browserWindow, event) => {
+			MonitorPcs.kill()
+			MonitorInit();
+			// !注意不能直接spawn完事………………之前的事件都要加回来！
+			// !不知道为什么reload后无法重启…………只有在reload前这个功能正常
+		}
+		// 	click: (menuItem, browserWindow, event) =ContextMenu_RunningApp> {
+		// 		switch (menuItem)
+		// }
+	}])
+ContextMenu_Console = Menu.buildFromTemplate([
+	{
+		label: "清空",
+		click: (menuItem, browserWindow, event) => {
+			win.webContents.send("ConsoleClear")
+		}
+	}])
+ContextMenu_RunTime = Menu.buildFromTemplate([
+	{
+		label: "刷新今日数据",
+		click: (menuItem, browserWindow, event) => {
+			UpdateRunTime(new Date());
+		}
+	}])
+ContextMenu_LastSeven = Menu.buildFromTemplate([
+	{
+		label: "刷新",
+		click: (menuItem, browserWindow, event) => {
+			UpdateLastSeven()
+		}
+	}])
+//**----------------------------ipcMain-----------------------------------------------------
+// $("#MainSwitchImg").on("contextmenu", (event, params) => {
+// 	const { } = params;
+// 	ContextMenu_MainSwitch.popup();
+// })
+// !?jQuery requires a windows with a document?
+// window.getElementById("MainSwitchImg").addEventListener("contextmenu", () => {
+// 	ContextMenu_MainSwitch.popup();
+// })
+// ！注意主进程和渲染进程的DOM是隔离的！不能获取！
+ipcMain.on("ContextMenu_MainSwitch", (event, arg) => {
+	event.preventDefault();
+	ContextMenu_MainSwitch.popup();
+})
+ipcMain.on("ContextMenu_Console", (event, arg) => {
+	event.preventDefault();
+	ContextMenu_Console.popup();
+})
+ipcMain.on("ContextMenu_RunTime", (event, arg) => {
+	event.preventDefault();
+	ContextMenu_RunTime.popup();
+})
+ipcMain.on("ContextMenu_LastSeven", (event, arg) => {
+	event.preventDefault();
+	ContextMenu_LastSeven.popup();
+})
 function UpdateRunningApp(App, Delete = false) {
 	if (Delete) {
 		if (runningApps.includes(App)) runningApps = runningApps.filter((app) => app !== App);
@@ -200,9 +229,11 @@ function MonitorInit() {
 			else if (cmdProps[2] === "Monitor") {
 				if (cmdProps[3] === "Started\r") {
 					win.webContents.send("MonitorStateChange", true);
+					MonitorState = true;
 				}
 				else if (cmdProps[3] === "Stop\r") {
 					win.webContents.send("MonitorStateChange", false);
+					MonitorState = false;
 				}
 			}
 		})
