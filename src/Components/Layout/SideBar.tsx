@@ -1,3 +1,4 @@
+import * as React from 'react';
 import SlideBarIcon1 from "../../Asset/dashboard.svg";
 import SlideBarIcon2 from "../../Asset/AppDetail.svg";
 import SlideBarIcon3 from "../../Asset/setting_SlideBar.svg";

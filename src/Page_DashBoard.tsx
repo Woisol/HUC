@@ -1,8 +1,8 @@
 // td 用headlessUI重构
-import "./MainView.css"
-import BGGear from "./Components/Dashboard/BG_Gear.js";
-import MainSwitch from "./Components/Dashboard/MainSwitch.js";
-import Console from "./Components/Dashboard/Console.js";
+import React from 'react';
+import BGGear from "./Components/Dashboard/BG_Gear.tsx";
+import MainSwitch from "./Components/Dashboard/MainSwitch.tsx";
+import Console from "./Components/Dashboard/Console.tsx";
 import AppRunnningBar from "./Components/Dashboard/AppRunningBar.tsx";
 // ！记得react导入外部文件要通过这种方式！直接输路径localhost上面没有！
 export default function PageDashBoard(props) {

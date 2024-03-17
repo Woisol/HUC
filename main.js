@@ -1,7 +1,7 @@
 // import { spawn } from 'child_process';
 // !额不支持ts…………
 const spawn = require("child_process").spawn;
-const { app, BrowserWindow, ipcMain, MenuItem, Tray, dialog } = require('electron');
+const { app, BrowserWindow, ipcMain, Tray } = require('electron');
 const $ = require("jquery");
 //##----------------------------Initialize-----------------------------------------------------
 const VERSION = "1.0"
@@ -107,15 +107,15 @@ const createWindow = () => {
 // 	width: 50,
 // 	height: 100,
 // });
-ContextMenu_Fresh = Menu.buildFromTemplate([
-	{
-		label: "刷新",
-		accelerator: "F5",
-		role: "reload"
-		// 	click: (menuItem, browserWindow, event) => {
-		// 		switch (menuItem)
-		// }
-	}])
+// ContextMenu_Fresh = Menu.buildFromTemplate([
+// 	{
+// 		label: "刷新",
+// 		accelerator: "F5",
+// 		role: "reload"
+// 		// 	click: (menuItem, browserWindow, event) => {
+// 		// 		switch (menuItem)
+// 		// }
+// 	}])
 
 ContextMenu_MainSwitch = Menu.buildFromTemplate([
 	{
@@ -372,7 +372,7 @@ function UpdateLastSeven() {
 	// 	connection.connect();
 	let today = new Date();
 	var result = [];
-	[6, 5, 4, 3, 2, 1, 0].map((value, index) => {
+	[6, 5, 4, 3, 2, 1, 0].forEach((value) => {
 		// !虽然按理来说应该是6~0…………但是不知道为什么就是慢了一天…………面向结果编程了
 		let totalMin = 0;
 		let i = 0;

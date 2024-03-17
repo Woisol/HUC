@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import close from "../../Asset/x-lg.svg"
-import $, { event } from "jquery";
 // import $ from "jquery";
 // import { ipcRenderer } from 'electron';
 const { ipcRenderer } = window.require("electron");
@@ -32,7 +31,8 @@ export default function Console(props) {
 		// $("#console").scrollTop = $("#console").scrollHeight;
 		if (!isOpen) return;
 		const console = document.getElementById("console");
-		console.scrollTop = console.scrollHeight;
+		if (console !== null)
+			console.scrollTop = console.scrollHeight;
 		// 芜湖实现
 		// ！注意jQuery的语法和js的不完全一样…………注意区分…………
 	})

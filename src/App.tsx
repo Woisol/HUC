@@ -1,8 +1,10 @@
-import { React, useState } from 'react';
-import PageDashBoard from './Page_DashBoard.js';
+import React from 'react';
+import "./MainView.css";
+import PageDashBoard from './Page_DashBoard.tsx';
 import PageAppDetail from './Page_AppRunTime.tsx';
-import SlideBar from './Components/Layout/SideBar.js';
+import SlideBar from './Components/Layout/SideBar.tsx';
 const ipcRenderer = window.require('electron').ipcRenderer;
+const useState = React.useState;
 
 // ！一定不要再设置在function里面了………………反复调用又22出错…………
 export default function App() {
