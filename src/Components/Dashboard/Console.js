@@ -70,11 +70,14 @@ export default function Console(props) {
 			UpdateContent([...content, newContents]);
 		// ！艹完美解决！！！！！之前重复输入的问题果然是Update导致的！！！！
 	})
+	ipcRenderer.on("ConsoleClear", () => {
+		UpdateContent([]);
+	})
 	const [isOpen, setIsOpen] = useState(false);
 	return (
 		<div className="absolute right-0 top-0 z-10 rounded-2xl bg-gradient-to-t from-black to-gray-500"
 			style={isOpen ? { width: "300px", height: "600px", top: "50%", padding: "20px", transform: "translateY(-50%)", transition: "0.5s" } : { width: "20px", height: "120px", top: "50%", transform: "translateY(-50%)", transition: "0.5s" }}
-			onClick={() => setIsOpen(true)}>
+			onClick={() => setIsOpen(true)} onContextMenu={(event) => { ipcRenderer.send("ContextMenu_Console"); }}>
 			<div className={isOpen ? "w-8 h-8 absolute right-4 top-2 rounded-lg transition-all hover:bg-gray-400" : "hidden"} onClick={(event) => { event.stopPropagation(); setIsOpen(false) }}><img className="w-8 h-8 bg-transparent" src={close} alt="" /></div>
 			<div id="console" className="console hideScollBar w-full h-full overflow-scroll text-white text-nowrap"
 			>

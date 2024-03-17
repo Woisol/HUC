@@ -14,8 +14,7 @@ var runningApps = [];
 var mntApps = [];
 var RunTimeDB = require("mysql");
 //**----------------------------ContexMenu-----------------------------------------------------
-var ContextMenu_Fresh;
-var ContextMenu_MainSwitch;
+var ContextMenu_Fresh, ContextMenu_MainSwitch, ContextMenu_Console, ContextMenu_RunTime, ContextMenu_LastSeven
 const { Menu } = require("electron/main");
 var connection = RunTimeDB.createConnection({
 	host: "localhost",
@@ -65,6 +64,10 @@ const createWindow = () => {
 	// runtimeLogFileStream.watch("./output.rlf", DeliverContent)
 	// !真奇怪，这个watch必须要vsc获得了焦点才能即时反应…………其它应用都不行…………希望实际打包以后能实现吧…………
 	//**----------------------------ContextMenu-----------------------------------------------------
+	// win.webContents.on("context-menu", (event, params) => {
+	// 	// const { } = params;
+	// 	ContextMenu_Fresh.popup();
+	// })
 	// let contextMenuWin = new BrowserWindow({
 	// 	width: 50,
 	// 	height: 100,
@@ -78,6 +81,7 @@ const createWindow = () => {
 			// 		switch (menuItem)
 			// }
 		}])
+
 	ContextMenu_MainSwitch = Menu.buildFromTemplate([
 		{
 			label: "重启",
@@ -87,14 +91,58 @@ const createWindow = () => {
 				// !注意不能直接spawn完事………………之前的事件都要加回来！
 				// !不知道为什么reload后无法重启…………只有在reload前这个功能正常
 			}
-			// 	click: (menuItem, browserWindow, event) => {
+			// 	click: (menuItem, browserWindow, event) =ContextMenu_RunningApp> {
 			// 		switch (menuItem)
 			// }
 		}])
-	win.webContents.on("context-menu", (event, params) => {
-		// const { } = params;
-		ContextMenu_Fresh.popup();
+	ContextMenu_Console = Menu.buildFromTemplate([
+		{
+			label: "清空",
+			click: (menuItem, browserWindow, event) => {
+				win.webContents.send("ConsoleClear")
+			}
+		}])
+	ContextMenu_RunTime = Menu.buildFromTemplate([
+		{
+			label: "刷新今日数据",
+			click: (menuItem, browserWindow, event) => {
+				UpdateRunTime(new Date());
+			}
+		}])
+	ContextMenu_LastSeven = Menu.buildFromTemplate([
+		{
+			label: "刷新",
+			click: (menuItem, browserWindow, event) => {
+				UpdateLastSeven()
+			}
+		}])
+	//**----------------------------ipcMain-----------------------------------------------------
+	// $("#MainSwitchImg").on("contextmenu", (event, params) => {
+	// 	const { } = params;
+	// 	ContextMenu_MainSwitch.popup();
+	// })
+	// !?jQuery requires a windows with a document?
+	// window.getElementById("MainSwitchImg").addEventListener("contextmenu", () => {
+	// 	ContextMenu_MainSwitch.popup();
+	// })
+	// ！注意主进程和渲染进程的DOM是隔离的！不能获取！
+	ipcMain.on("ContextMenu_MainSwitch", (event, arg) => {
+		event.preventDefault();
+		ContextMenu_MainSwitch.popup();
 	})
+	ipcMain.on("ContextMenu_Console", (event, arg) => {
+		event.preventDefault();
+		ContextMenu_Console.popup();
+	})
+	ipcMain.on("ContextMenu_RunTime", (event, arg) => {
+		event.preventDefault();
+		ContextMenu_RunTime.popup();
+	})
+	ipcMain.on("ContextMenu_LastSeven", (event, arg) => {
+		event.preventDefault();
+		ContextMenu_LastSeven.popup();
+	})
+
 	// !会和单独元素的右键彩蛋冲突…………
 }
 function UpdateRunningApp(App, Delete = false) {
@@ -115,20 +163,6 @@ ipcMain.on("UpdateRunTime", (event, arg) => {
 //**----------------------------UIInit-----------------------------------------------------
 ipcMain.on("UIInited", (event, arg) => {
 	MonitorInit();
-	//**----------------------------MonitorReboot-----------------------------------------------------
-	// $("#MainSwitchImg").on("contextmenu", (event, params) => {
-	// 	const { } = params;
-	// 	ContextMenu_MainSwitch.popup();
-	// })
-	// !?jQuery requires a windows with a document?
-	// window.getElementById("MainSwitchImg").addEventListener("contextmenu", () => {
-	// 	ContextMenu_MainSwitch.popup();
-	// })
-	// ！注意主进程和渲染进程的DOM是隔离的！不能获取！
-	ipcMain.on("ContextMenu_MainSwitch", (event, arg) => {
-		event.preventDefault();
-		ContextMenu_MainSwitch.popup();
-	})
 	//**---------------------------------------------------------------------------------
 	UpdateRunTime(new Date())
 	UpdateLastSeven();
@@ -194,7 +228,8 @@ function MonitorInit() {
 	})
 	// ！艹………………在react里面设置的
 	MonitorPcs.on("exit", arg => {
-		win.webContents.send("ContentUpdate", `Monitor Exit: ${arg}, try to reboot in 1s...`);
+		MonitorPcs.stdin.write("Monitor off\n")
+		win.webContents.send("ContentUpdate", `Monitor Exit: ${arg}`);
 		win.webContents.send("MonitorStateChange", false);
 		console.log(`Monitor Exit: ${arg}`);
 		// setTimeout(() => { if ((MonitorPcs = spawn("./src/Monitor/HUC.exe")) !== null) win.webContents.send("ContentUpdate", "Monitor Reboot Successfully!"); }, 1000)

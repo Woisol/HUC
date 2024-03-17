@@ -117,12 +117,12 @@ export default function PageAppRunTime() {
 				<SideBarOption Title="周视图" OnClickFunc={{}} />
 			</div>
 			<div className="w-11/12 h-full p-5 relative flex flex-col justify-center items-center" >
-				<div className="w-10/12 h-44 mb-5 relative bg-white shadow-lg transition-all hover:shadow-xl rounded-2xl transition-all hover:bg-gray-100">
+				<div className="w-10/12 h-44 mb-5 relative bg-white shadow-lg transition-all hover:shadow-xl rounded-2xl transition-all hover:bg-gray-100" onContextMenu={(event) => { ipcRenderer.send("ContextMenu_LastSeven",); }}>
 					<span className='absolute -top-3 left-4'>近7天使用情况</span>
 					<ReactEcharts option={option} style={{ width: "110%", height: "150%", position: "absolute", left: "-15px", top: "-30px" }} />
 					{/* //!艹分不清楚………………这个是{}不是{{}}………… */}
 				</div>
-				<div className="hideScollBar w-full h-full p-3 flex bg-white shadow-xl transition-all hover:shadow-2xl rounded-2xl overflow-x-scroll " >
+				<div className="hideScollBar w-full h-full p-3 flex bg-white shadow-xl transition-all hover:shadow-2xl rounded-2xl overflow-x-scroll " onContextMenu={(event) => { ipcRenderer.send("ContextMenu_RunTime"); }}>
 					{/* <AppRunTimeShowcase key={1} data={["Test", "Test", "#87CEFA", "", [[0, 60]]]} /> */}
 					{/* <AppRunTimeShowcase key={1} data={["Test", "Test", "#87CEFA", "", [[0, 1440]]]} /> */}
 					{RunTimeData.map((data, index) => {
