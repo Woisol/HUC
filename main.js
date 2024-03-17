@@ -7,7 +7,7 @@ const $ = require("jquery");
 const VERSION = "1.0"
 var win, tray, isToQuit = false;
 var MonitorPcs, MonitorState = true;
-var appConfig = Object.entries(require("./config.json"));
+var appConfig = require("./config.json");
 //**----------------------------AppInfo-----------------------------------------------------
 var AppInfo = Object.entries(require("./AppInfo.json"));
 //**----------------------------AppRunning-----------------------------------------------------
@@ -19,13 +19,14 @@ var ContextMenu_Fresh, ContextMenu_MainSwitch, ContextMenu_Console, ContextMenu_
 const { Menu } = require("electron/main");
 var connection = RunTimeDB.createConnection({
 	host: "localhost",
-	user: "root",
-	password: "60017089",
-	database: appConfig[2][1],
-	port: 3306
+	user: appConfig.SQLUser,
+	password: appConfig.SQLPassword,
+	database: appConfig.DATABASE_NAME,
+	port: appConfig.SQLPort
 });
+// ！啊啊？？？为什么这里不用{}？
 connection.connect();
-connection.query(`SELECT TABLE_NAME FROM information_schema.tables WHERE TABLE_SCHEMA = ?;`, [appConfig[2][1]], function (err, rows, fields) {
+connection.query(`SELECT TABLE_NAME FROM information_schema.tables WHERE TABLE_SCHEMA = ?;`, [appConfig.DATABASE_NAME], function (err, rows, fields) {
 	// ！异步的！！不需要Asyn
 	// dtd注意可能有注入攻击…………
 	if (err !== null) {
