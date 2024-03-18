@@ -6,22 +6,12 @@
   "main": "./src/main.js",
   "homepage": ".",
   "scripts": {
-    "start": "electron-forge start",
+    "estart": "electron-forge start",
     "package": "electron-forge package",
     "make": "electron-forge make",
     "publish": "electron-forge publish",
     "lint": "eslint src --color",
-    "build": "react-scripts build",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject",
-    "estart": "electron .",
-    "rstart": "react-scripts start",
-    "tstart": "npx tailwindcss -i ./src/input.css -o ./src/MainView.css --watch",
-    "astart": "react-scripts start & npx tailwindcss -i ./src/input.css -o ./src/MainView.css --watch & electron .",
-    "epackage": "electron-forge package",
-    "emake": "electron-forge make",
-    "tmppackage": "electron-packager .",
-    "eppackage": "electron-packager ~/HUC_Remaster HUC_Remaster --all --out ~/ --electron-version 29.1.4"
+    "tstart": "npx tailwindcss -i ./src/input.css -o ./src/MainView.css --watch"
   },
   "keywords": [],
   "author": "Woisol-G",
@@ -44,7 +34,7 @@
         "packageManager": "yarn"
       },
       "electronWinstallerConfig": {
-        "name": "huc_remaster"
+        "name": "electron_buildtest"
       },
       "electronInstallerDebian": {},
       "electronInstallerRedhat": {},
@@ -54,22 +44,26 @@
       },
       "windowsStoreConfig": {
         "packageName": "",
-        "name": "huc_remaster"
+        "name": "electron_buildtest"
+      },
+      "packagerConfig": {
+        "appVersion": "1.0.0",
+        "name": "HUC",
+        "appCopyright": "Woisol(Woisol-G@Outlook.com)",
+        "icon": "./src/public/Logo.ico",
+        "win32metadata": {
+          "ProductName": "HUC Windows",
+          "CompanyName": "Woisol",
+          "FileDescription": "Healthily Use Computer V1.0.0"
+        }
       }
     }
   },
   "dependencies": {
-    "child_process": "^1.0.2",
-    "electron": "^29.1.4",
     "electron-compile": "^6.4.4",
-    "electron-squirrel-startup": "^1.0.0",
-    "jquery": "^3.7.1",
-    "mysql": "2.18.1",
-    "path": "0.12.7",
-    "url": "0.11.3"
+    "electron-squirrel-startup": "^1.0.0"
   },
   "devDependencies": {
-    "@types/mysql": "^2.15.26",
     "babel-plugin-transform-async-to-generator": "^6.24.1",
     "babel-preset-env": "^1.7.0",
     "babel-preset-react": "^6.24.1",
@@ -79,7 +73,6 @@
     "eslint-config-airbnb": "^15",
     "eslint-plugin-import": "^2",
     "eslint-plugin-jsx-a11y": "^5",
-    "eslint-plugin-react": "^7",
-    "tailwindcss": "3.4.1"
+    "eslint-plugin-react": "^7"
   }
 }

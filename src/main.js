@@ -49,7 +49,7 @@ const createWindow = () => {
 		width: 1440,
 		height: 1024,
 		title: `Healthily Use Computer ${VERSION}`,
-		icon: path.join(__dirname, '../public/Logo.ico'),
+		icon: path.join(__dirname, './public/Logo.ico'),
 
 		webPreferences: {
 			nodeIntegration: true,
@@ -63,7 +63,7 @@ const createWindow = () => {
 	// win.loadFile("./build/index.html")
 	// ！并不是直接这样加载…………
 	win.loadURL(url.format({
-		pathname: path.join(__dirname, '../build/index.html'),
+		pathname: path.join(__dirname, './build/index.html'),
 		protocol: 'file:',
 		slashes: true
 	}))
@@ -115,7 +115,7 @@ const createWindow = () => {
 			// !额两个都关不了………………
 			// !quit关不了…………是下面的win.on("close")导致的…………
 		}])
-	tray = new Tray(path.join(__dirname, '../public/Logo.ico'));
+	tray = new Tray(path.join(__dirname, './public/Logo.ico'));
 	tray.on("double-click", () => { win.show() })
 	tray.setContextMenu(ContextMenu_Tray)
 	tray.setToolTip(`Healthily Use Computer ${VERSION}`)
@@ -240,7 +240,7 @@ ipcMain.on("UIInited", (event, arg) => {
 })
 //**----------------------------Monitor-----------------------------------------------------
 function MonitorInit() {
-	MonitorPcs = spawn(path.join(__dirname, './Monitor/HUC.exe'));
+	MonitorPcs = spawn(path.join(__dirname, './src/Monitor/HUC.exe'));
 	MonitorPcs.stdout.on("data", (data) => {
 		// !这个依然要在定义了以后才能执行………………
 		//**----------------------------Console-----------------------------------------------------
