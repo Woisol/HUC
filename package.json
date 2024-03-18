@@ -1,59 +1,85 @@
 {
-  "name": "huc",
-  "version": "0.1.0",
-  "private": true,
-  "main": "main.js",
+  "name": "huc_remaster",
+  "productName": "huc_remaster",
+  "version": "1.0.0",
+  "description": "My Electron application description",
+  "main": "./src/main.js",
   "homepage": ".",
-  "dependencies": {
-    "@testing-library/jest-dom": "^5.17.0",
-    "@testing-library/react": "^13.4.0",
-    "@testing-library/user-event": "^13.5.0",
-    "child_process": "^1.0.2",
-    "echarts-for-react": "^3.0.2",
-    "electron": "^29.1.1",
-    "electron-forge": "^5.2.4",
-    "fs": "^0.0.1-security",
-    "jquery": "^3.7.1",
-    "line-reader": "^0.4.0",
-    "mysql": "^2.18.1",
-    "path": "^0.12.7",
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0",
-    "react-scripts": "5.0.1",
-    "tailwindcss": "^3.4.1",
-    "url": "^0.11.3",
-    "web-vitals": "^2.1.4"
-  },
   "scripts": {
-    "start": "react-scripts start",
+    "start": "electron-forge start",
+    "package": "electron-forge package",
+    "make": "electron-forge make",
+    "publish": "electron-forge publish",
+    "lint": "eslint src --color",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "estart": "electron .",
+    "rstart": "react-scripts start",
     "tstart": "npx tailwindcss -i ./src/input.css -o ./src/MainView.css --watch",
-    "astart": "react-scripts start & npx tailwindcss -i ./src/input.css -o ./src/MainView.css --watch & electron ."
+    "astart": "react-scripts start & npx tailwindcss -i ./src/input.css -o ./src/MainView.css --watch & electron .",
+    "epackage": "electron-forge package",
+    "emake": "electron-forge make",
+    "tmppackage": "electron-packager .",
+    "eppackage": "electron-packager ~/HUC_Remaster HUC_Remaster --all --out ~/ --electron-version 29.1.4"
   },
-  "eslintConfig": {
-    "extends": [
-      "react-app",
-      "react-app/jest"
-    ]
+  "keywords": [],
+  "author": "Woisol-G",
+  "license": "MIT",
+  "config": {
+    "forge": {
+      "make_targets": {
+        "win32": [
+          "squirrel"
+        ],
+        "darwin": [
+          "zip"
+        ],
+        "linux": [
+          "deb",
+          "rpm"
+        ]
+      },
+      "electronPackagerConfig": {
+        "packageManager": "yarn"
+      },
+      "electronWinstallerConfig": {
+        "name": "huc_remaster"
+      },
+      "electronInstallerDebian": {},
+      "electronInstallerRedhat": {},
+      "github_repository": {
+        "owner": "",
+        "name": ""
+      },
+      "windowsStoreConfig": {
+        "packageName": "",
+        "name": "huc_remaster"
+      }
+    }
   },
-  "browserslist": {
-    "production": [
-      ">0.2%",
-      "not dead",
-      "not op_mini all"
-    ],
-    "development": [
-      "last 1 chrome version",
-      "last 1 firefox version",
-      "last 1 safari version"
-    ]
+  "dependencies": {
+    "child_process": "^1.0.2",
+    "electron": "^29.1.4",
+    "electron-compile": "^6.4.4",
+    "electron-squirrel-startup": "^1.0.0",
+    "jquery": "^3.7.1",
+    "mysql": "2.18.1",
+    "path": "0.12.7",
+    "url": "0.11.3"
   },
   "devDependencies": {
-    "@types/jquery": "^3.5.29",
-    "@types/line-reader": "^0.0.37",
-    "@types/mysql": "^2.15.26"
+    "@types/mysql": "^2.15.26",
+    "babel-plugin-transform-async-to-generator": "^6.24.1",
+    "babel-preset-env": "^1.7.0",
+    "babel-preset-react": "^6.24.1",
+    "electron-forge": "^5.2.4",
+    "electron-prebuilt-compile": "8.2.0",
+    "eslint": "^3",
+    "eslint-config-airbnb": "^15",
+    "eslint-plugin-import": "^2",
+    "eslint-plugin-jsx-a11y": "^5",
+    "eslint-plugin-react": "^7",
+    "tailwindcss": "3.4.1"
   }
 }
