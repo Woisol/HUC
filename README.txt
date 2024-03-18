@@ -1,0 +1,4 @@
+项目构建为使用create-react-app创建react项目后导入electron再进行的开发
+由于electron的打包问题现在已经废弃，截止至git中为react打包的commit处
+moudles，build已删除，此项目仅留作纪念，后续更改参见HUC_Remaster
+新的react-electron项目构建方式为分别用各自的forge搭建独立项目

@@ -1,78 +1,94 @@
 {
-  "name": "huc_remaster",
-  "productName": "huc_remaster",
-  "version": "1.0.0",
-  "description": "My Electron application description",
-  "main": "./src/main.js",
+  "name": "huc",
+  "version": "0.1.0",
+  "private": true,
+  "main": "main.js",
+  "author": "Woisol",
+  "description": "Healthily Use Computer",
   "homepage": ".",
   "scripts": {
-    "estart": "electron-forge start",
-    "package": "electron-forge package",
-    "make": "electron-forge make",
-    "publish": "electron-forge publish",
-    "lint": "eslint src --color",
-    "tstart": "npx tailwindcss -i ./src/input.css -o ./src/MainView.css --watch"
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject",
+    "estart": "electron .",
+    "tstart": "npx tailwindcss -i ./src/input.css -o ./src/MainView.css --watch",
+    "astart": "react-scripts start & npx tailwindcss -i ./src/input.css -o ./src/MainView.css --watch & electron .",
+    "ebuild": "electron-builder"
   },
-  "keywords": [],
-  "author": "Woisol-G",
-  "license": "MIT",
-  "config": {
-    "forge": {
-      "make_targets": {
-        "win32": [
-          "squirrel"
-        ],
-        "darwin": [
-          "zip"
-        ],
-        "linux": [
-          "deb",
-          "rpm"
-        ]
-      },
-      "electronPackagerConfig": {
-        "packageManager": "yarn"
-      },
-      "electronWinstallerConfig": {
-        "name": "electron_buildtest"
-      },
-      "electronInstallerDebian": {},
-      "electronInstallerRedhat": {},
-      "github_repository": {
-        "owner": "",
-        "name": ""
-      },
-      "windowsStoreConfig": {
-        "packageName": "",
-        "name": "electron_buildtest"
-      },
-      "packagerConfig": {
-        "appVersion": "1.0.0",
-        "name": "HUC",
-        "appCopyright": "Woisol(Woisol-G@Outlook.com)",
-        "icon": "./src/public/Logo.ico",
-        "win32metadata": {
-          "ProductName": "HUC Windows",
-          "CompanyName": "Woisol",
-          "FileDescription": "Healthily Use Computer V1.0.0"
-        }
-      }
-    }
+  "build": {
+    "productName": "HUC",
+    "appId": "com.woisol.huc",
+    "copyright": "Copyright © 2024 ${author}",
+    "directories": {
+      "output": "out"
+    },
+    "win": {
+      "icon": "./public/Logo.ico",
+      "artifactName": "${productName} ${version}.${ext}"
+    },
+    "files": [
+      "build/**/*",
+      "public/**/*",
+      "./*"
+    ],
+    "extraFiles": [
+      "extra/**/*"
+    ],
+    "nsis": {
+      "oneClick": false,
+      "allowElevation": true,
+      "allowToChangeInstallationDirectory": true,
+      "installerIcon": "./public/Logo.ico",
+      "uninstallerIcon": "./public/Logo.ico",
+      "installerHeaderIcon": "./public/Logo.ico",
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": false,
+      "shortcutName": "HUC"
+    },
+    "extends": null
+  },
+  "eslintConfig": {
+    "extends": [
+      "react-app",
+      "react-app/jest"
+    ]
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
   },
   "dependencies": {
-    "electron-compile": "^6.4.4",
-    "electron-squirrel-startup": "^1.0.0"
+    "@testing-library/jest-dom": "^5.17.0",
+    "@testing-library/react": "^13.4.0",
+    "@testing-library/user-event": "^13.5.0",
+    "child_process": "^1.0.2",
+    "echarts": "^5.5.0",
+    "echarts-for-react": "^3.0.2",
+    "fs": "^0.0.1-security",
+    "jquery": "^3.7.1",
+    "line-reader": "^0.4.0",
+    "mysql": "^2.18.1",
+    "path": "^0.12.7",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-scripts": "5.0.1",
+    "tailwindcss": "^3.4.1",
+    "web-vitals": "^2.1.4"
   },
   "devDependencies": {
-    "babel-plugin-transform-async-to-generator": "^6.24.1",
-    "babel-preset-env": "^1.7.0",
-    "babel-preset-react": "^6.24.1",
-    "electron-forge": "^5.2.4",
-    "electron-prebuilt-compile": "8.2.0",
-    "eslint": "^3",
-    "eslint-config-airbnb": "^15",
-    "eslint-plugin-import": "^2",
-    "eslint-plugin-jsx-a11y": "^5",
-    "eslint-plugin-react": "^7"
+    "@types/jquery": "^3.5.29",
+    "@types/line-reader": "^0.0.37",
+    "@types/mysql": "^2.15.26",
+    "electron": "^29.1.4",
+    "electron-builder": "^24.13.3"
   }
 }

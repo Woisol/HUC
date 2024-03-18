@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<style>
+	/* ##From  https: //blog.csdn.net/pdd11997110103/article/details/121120176*/
+	* {
+		margin: 0;
+		padding: 0;
+	}
+
+	/* body { */
+	/* width: 100vw; */
+	/* height: 100vh; */
+	/* overflow: auto; */
+	/* scroll-snap-type: y mandatory; */
+	/* } */
+
+	/* body::-webkit-scrollbar { */
+	/* width: 0; */
+	/* woq……………… */
+	/* } */
+	div.main::-webkit-scrollbar {
+		width: 0;
+		/* ！woq……………… 但是同时注意不知道放在哪*/
+	}
+
+	div.main {
+		width: 100vw;
+		height: 100vh;
+		overflow: auto;
+		scroll-snap-type: y mandatory;
+		/* ！似乎一定要一个另外的div来容纳不能直接拿body搞………… */
+	}
+
+	div.Page {
+		width: 100vh;
+		height: 100vh;
+		font-size: 5em;
+
+		display: flex;
+		justify-content: center;
+		align-items: center;
+
+		scroll-snap-align: start;
+	}
+
+	div:nth-child(1) {
+		background-color: pink;
+	}
+
+	div:nth-child(2) {
+		background-color: yellow;
+	}
+
+	div:nth-child(3) {
+		background-color: green;
+	}
+</style>
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Document</title>
+	<link rel="stylesheet" href="ScollTest.css">
+</head>
+
+<body>
+	<div class="main">
+		<div class="Page">Page1</div>
+		<div class="Page">Page2</div>
+		<div class="Page">Page3</div>
+	</div>
+</body>
+
+</html>

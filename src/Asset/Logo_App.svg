@@ -1,0 +1,42 @@
+<svg width="400.000000" height="400.000000" viewBox="0 0 400 400" fill="none" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+	<desc>
+			Created with Pixso.
+	</desc>
+	<defs>
+		<filter id="filter_70_184_dd" x="22.794922" y="37.000000" width="354.410156" height="296.750000" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+			<feFlood flood-opacity="0" result="BackgroundImageFix"/>
+			<feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha"/>
+			<feOffset dx="0" dy="4"/>
+			<feGaussianBlur stdDeviation="1.33333"/>
+			<feComposite in2="hardAlpha" operator="out" k2="-1" k3="1"/>
+			<feColorMatrix type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.25 0"/>
+			<feBlend mode="normal" in2="BackgroundImageFix" result="effect_dropShadow_1"/>
+			<feBlend mode="normal" in="SourceGraphic" in2="effect_dropShadow_1" result="shape"/>
+		</filter>
+		<filter id="filter_70_188_dd" x="216.000000" y="270.000000" width="188.000000" height="88.000000" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+			<feFlood flood-opacity="0" result="BackgroundImageFix"/>
+			<feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha"/>
+			<feOffset dx="0" dy="4"/>
+			<feGaussianBlur stdDeviation="1.33333"/>
+			<feComposite in2="hardAlpha" operator="out" k2="-1" k3="1"/>
+			<feColorMatrix type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.25 0"/>
+			<feBlend mode="normal" in2="BackgroundImageFix" result="effect_dropShadow_1"/>
+			<feBlend mode="normal" in="SourceGraphic" in2="effect_dropShadow_1" result="shape"/>
+		</filter>
+		<clipPath id="clip70_186">
+			<rect id="画板 18" width="400.000000" height="400.000000" fill="white" fill-opacity="0"/>
+		</clipPath>
+	</defs>
+	<rect id="画板 18" width="400.000000" height="400.000000" fill="#FFFFFF" fill-opacity="0"/>
+	<g clip-path="url(#clip70_186)">
+		<g filter="url(#filter_70_184_dd)">
+			<path id="差集" d="M26.7949 325.75L200 37L373.205 325.75L26.7949 325.75ZM200 180C161.34 180 130 197.909 130 220C130 242.091 161.34 260 200 260C238.66 260 270 242.091 270 220C270 197.909 238.66 180 200 180Z" clip-rule="evenodd" fill="#444444" fill-opacity="1.000000" fill-rule="evenodd"/>
+		</g>
+		<ellipse id="椭圆 2" cx="200.000000" cy="219.428574" rx="20.000000" ry="11.428572" fill="#444444" fill-opacity="1.000000"/>
+		<g filter="url(#filter_70_188_dd)">
+			<rect id="矩形 27" x="220.000000" y="270.000000" rx="20.000000" width="180.000000" height="80.000000" fill="#DDDDDD" fill-opacity="1.000000"/>
+		</g>
+		<rect id="矩形 27" x="220.500000" y="270.500000" rx="20.000000" width="179.000000" height="79.000000" stroke="#000000" stroke-opacity="1.000000" stroke-width="1.000000"/>
+		<path id="App" d="M257.099 328L251.083 328L267.021 281.031L273.615 281.031L289.552 328L283.287 328L278.802 313.656L261.646 313.656L257.099 328ZM270.099 285.891C268.63 291.391 267.083 296.453 265.427 301.766L263.115 308.922L277.333 308.922L275.083 301.766C273.365 296.453 271.88 291.328 270.349 285.891L270.099 285.891ZM301.463 342.656L295.635 342.656L295.635 293.25L300.432 293.25L300.947 297.219L301.135 297.219C304.275 294.656 308.182 292.359 312.213 292.359C321.166 292.359 326.025 299.391 326.025 310.078C326.025 321.984 318.932 328.828 310.932 328.828C307.791 328.828 304.463 327.359 301.322 324.797L301.463 330.875L301.463 342.656ZM341.143 342.656L335.315 342.656L335.315 293.25L340.112 293.25L340.627 297.219L340.815 297.219C343.955 294.656 347.862 292.359 351.893 292.359C360.846 292.359 365.705 299.391 365.705 310.078C365.705 321.984 358.612 328.828 350.612 328.828C347.471 328.828 344.143 327.359 341.002 324.797L341.143 330.875L341.143 342.656ZM301.463 320.312C304.588 323.016 307.666 323.969 309.963 323.969C315.728 323.969 319.947 318.781 319.947 310.141C319.947 302.469 317.385 297.281 310.807 297.281C307.853 297.281 304.853 298.938 301.463 302.078L301.463 320.312ZM341.143 320.312C344.268 323.016 347.346 323.969 349.643 323.969C355.408 323.969 359.627 318.781 359.627 310.141C359.627 302.469 357.065 297.281 350.487 297.281C347.533 297.281 344.533 298.938 341.143 302.078L341.143 320.312Z" fill="#000000" fill-opacity="1.000000" fill-rule="evenodd"/>
+	</g>
+</svg>

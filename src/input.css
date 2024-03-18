@@ -1,0 +1,54 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* styles.css */
+@keyframes rotate {
+	from {
+		transform: rotate(0deg);
+	}
+
+	to {
+		transform: rotate(360deg);
+		/* 按照需要旋转的角度设置 */
+	}
+}
+
+@keyframes rotate-reverse {
+	from {
+		transform: rotate(0deg);
+	}
+
+	to {
+		transform: rotate(-360deg);
+		/* 按照需要旋转的角度设置 */
+	}
+}
+
+.rotate {
+	animation: rotate infinite 20s linear;
+	/* TY这里漏了个20s导致没有效果………… */
+	/* 设置为无限次、线性运动 */
+}
+
+.rotate-reverse {
+	animation: rotate-reverse infinite 20s linear;
+	/* TY这里漏了个20s导致没有效果………… */
+	/* 设置为无限次、线性运动 */
+}
+
+div.Page {
+	scroll-behavior: smooth;
+}
+
+div.Page::-webkit-scrollbar {
+	width: 0;
+}
+
+div.console {
+	overflow-anchor: none;
+}
+
+div.hideScollBar::-webkit-scrollbar {
+	width: 0;
+}
