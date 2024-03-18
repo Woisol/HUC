@@ -33,7 +33,9 @@
       "./*"
     ],
     "extraFiles": [
-      "extra/**/*"
+      "Monitor/*",
+      "AppInfo.json",
+      "config.json"
     ],
     "nsis": {
       "oneClick": false,

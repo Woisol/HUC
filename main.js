@@ -11,9 +11,9 @@ const url = require("url");
 const VERSION = "1.0"
 var win, tray, isToQuit = false;
 var MonitorPcs, MonitorState = true;
-var appConfig = require("./config.json");
+var appConfig = require(path.join(process.cwd(), "config.json"));
 //**----------------------------AppInfo-----------------------------------------------------
-var AppInfo = Object.entries(require("./AppInfo.json"));
+var AppInfo = Object.entries(require(path.join(process.cwd(), "AppInfo.json")));
 //**----------------------------AppRunning-----------------------------------------------------
 var runningApps = [];
 var mntApps = [];
@@ -69,14 +69,15 @@ const createWindow = () => {
 	}))
 	// ！关于打包
 	// 03-17搞了半天了啊啊啊啊啊啊啊啊！！！！！
-	// !打包也不容易！注意先在package里面搞好homepage以后在build react！！不然依然找不到！
+	// !打包也不容易！React注意先在package里面搞好homepage以后在build react！！不然依然找不到！
+
 	// !似乎不能直接electron-forge make之类，必须用npm run script
 	// !You must depend on "electron-prebuilt-compile" in your devDependencies
 	// !出现过Cannot convert undefined or null to object；Command failed: npm prune --production；Failed to locate module "@types/testing-library__jest-dom" from "；或者make时提到各种moudle缺失，都能在用forge init以后解决………………
 	// !艹用electron-forge好像是初始化然后把moudle都搞坏了差点又跑不了，最后想起来必须用cnpm来装，装了就行了
 	// !用https://www.electronjs.org/zh/blog/forge-v6-release官方electorn-forge无法导入electron-forge，参考https://blog.csdn.net/qq_49700358/article/details/126531158直接手动修改package然后cnpm i才装上
 	// !多种方式尝试导入electron-forge失败………………最后居然是新建一个forge项目再复制原代码过来才能make………………
-	// !太难了…………最终解决方案是新建react项目然后直接在项目根目录forge init，然后把之前的package对照一下复制过来包括dependence一类然后cnpm i
+	// ！太难了…………最终解决方案是新建react项目然后直接在项目根目录forge init，然后把之前的package对照一下复制过来包括dependence一类然后cnpm i
 	// ！指令：npx electron-forge init
 	// !但是本页虽然能跑现在依然大量报错不知道为什么………………
 	// !报错原来是eslint的问题…………cnpm i不小心也装进来了…………
@@ -93,6 +94,7 @@ const createWindow = () => {
 	// !上课折腾…………改变main.js位置后其实有一堆路径不对了打包几次才全部发现
 	// !同时注意如果不是import的文件最好用path.join…………不然可能会出现开发环境和生产环境的路径不同………………
 	// !注意如果遇到直接estart可以启动用vsc调试却报错找不到什么 - version的考虑重启vsc
+
 	// !尝试使用electron-builder打包，意外地发现居然能打！！而且还挺快艹…………
 	// !Application entry file “build/electron.js“是配置下少了"extends": null
 	// !同样需要添加配置，其中directories为输出文件夹，extraResources那里应该是需要用到的外部文件比如网页，网上有用files的写法但是一写就报错找不到src/main.js
@@ -100,16 +102,23 @@ const createWindow = () => {
 	// !nsis为安装器配置，oneClick是打开后直接安装，具体见https://www.jianshu.com/p/4699b825d285
 	// !但是安装完后白屏，再次打开devtool才知道又被限制访问本地文件了…………
 	// !尝试把main.js移出来没用
-	// !艹网上看到一篇https://blog.csdn.net/weixin_42826294/article/details/113595030提到和react的build冲突，改个名然后就能开了啊啊啊啊啊啊啊啊啊！！！！！！！！！！！
+	// !尝试在loadFile和loadURL反复切换最后没变化依然用loadURL
+	// !https://blog.csdn.net/weixin_42826294/article/details/113595030以及https://blog.csdn.net/xidianyueyong/article/details/98182687提到和react的build冲突，改个名然后就能开了啊啊啊啊啊啊啊啊啊！！！！！！！！！！！
 	// !不过此时依然无法启动监视进程……，尝试https://wenku.csdn.net/answer/7quh6cnm17关掉webSecurity无效
 	// !后来注意到files，extrafiles和extrasources，其实files加上main.js就能跑了…………
 	// !关于extrafiles和extrasources，字面意思，files为静态文件，直接复制到根目录，source为资源文件要通过api获取
 	// ！最终解决！！！外部的exe文件必须通过extraFiles同时在main.js里面用path.join(process.cwd(), '...')来获取！多次验证了！
 	// !似乎json文件可以不用这种方式而可以直接require到
 	// !搞了一天半了啊啊啊啊啊啊啊啊啊！！！！！！！！
+	// !az尝试将json放到extraFiles以便暴露在软件根目录以后就必须要用process.cwd()了……也是毕竟不在asar里面了
+	// !然后打包莫名慢了好多………………………………
+	// !额不知道为什么打包后点击软件无反应…………
+	// !额后来不放在根目录也慢了…………应该不是位置的问题
+	// !同时意外测试到了，extraFiles那里开头不能有/！！！一有就废！不过你复制过来也行
+	// !同时用builder以后意外也修好了用forge打包时浏览器样式不同的问题（forge那个样式真的丑），同时forge打包也出现了部分样式和开发环境不同，例如侧栏图标无法对齐，控制台文字无法超出隐藏
 	// win.loadURL('http://localhost:3000/');
 
-	win.webContents.openDevTools();
+	// win.webContents.openDevTools();
 	// app.whenReady().then(createWindow());
 	// ！艹为什么一定是这个写法…………上面那个之前明明行的…………
 	// const runtimeLogFileStream = require("fs");
@@ -254,7 +263,7 @@ ipcMain.on("UIInited", (event, arg) => {
 })
 //**----------------------------Monitor-----------------------------------------------------
 function MonitorInit() {
-	MonitorPcs = spawn(path.join(process.cwd(), '/extra/Monitor/HUC.exe'));
+	MonitorPcs = spawn(path.join(process.cwd(), '/Monitor/HUC_Backend.exe'));
 	// ！就唯独这个必须要用process.cwd()才能读到…………上面的json可以直接require…………
 	MonitorPcs.stdout.on("data", (data) => {
 		// !这个依然要在定义了以后才能执行………………
@@ -319,7 +328,7 @@ function MonitorInit() {
 		win.webContents.send("ContentUpdate", `Monitor Exit: ${arg}`);
 		win.webContents.send("MonitorStateChange", false);
 		console.log(`Monitor Exit: ${arg}`);
-		// setTimeout(() => { if ((MonitorPcs = spawn("./src/Monitor/HUC.exe")) !== null) win.webContents.send("ContentUpdate", "Monitor Reboot Successfully!"); }, 1000)
+		// setTimeout(() => { if ((MonitorPcs = spawn("./src/Monitor/HUC_Backend.exe")) !== null) win.webContents.send("ContentUpdate", "Monitor Reboot Successfully!"); }, 1000)
 	})
 }
 ipcMain.on("MonitorStateChange", (event, arg) => {

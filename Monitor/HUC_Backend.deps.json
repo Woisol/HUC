@@ -6,12 +6,12 @@
   "compilationOptions": {},
   "targets": {
     ".NETCoreApp,Version=v8.0": {
-      "HUC/1.0.0": {
+      "HUC_Backend/1.0.0": {
         "dependencies": {
           "MySqlConnector": "2.3.5"
         },
         "runtime": {
-          "HUC.dll": {}
+          "HUC_Backend.dll": {}
         }
       },
       "Microsoft.Extensions.Logging.Abstractions/7.0.1": {
@@ -36,7 +36,7 @@
     }
   },
   "libraries": {
-    "HUC/1.0.0": {
+    "HUC_Backend/1.0.0": {
       "type": "project",
       "serviceable": false,
       "sha512": ""
