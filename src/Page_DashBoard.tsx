@@ -12,12 +12,12 @@ export default function PageDashBoard(props) {
 	// console.log(isMonitorRunning);
 	// let isMonitorRunnin = true, isOverseersRunning = true;
 	return (
-		<div id="Page_DashBoard" className="w-full h-screen bg-blue-300 bg-opacity-40 border-y-2 border-black" style={{ scrollSnapAlign: "start" }}>
+		<div id="Page_DashBoard" className="w-full h-screen transition-all bg-blue-300 border-black bg-opacity-40 border-y-2 snap-start" >
 			<BGGear isMonitorRunning={props.isMonitorRunning} />
-			<div className="w-full h-3/4 p-20 absolute bottom-0 bg-gray-300 rounded-t-2xl border-t-2 border-black ">
+			<div className="absolute bottom-0 w-full py-20 bg-gray-300 border-t-2 border-black h-3/4 rounded-t-2xl ">
 				<MainSwitch isMonitorRunning={props.isMonitorRunning} />
 				<Console />
-				<div className="w-full h-full flex flex-col items-center">
+				<div className="flex flex-col items-center w-full h-full">
 					<AppRunnningBar />
 				</div>
 			</div>

@@ -21,7 +21,7 @@ export default function BGGear({ isMonitorRunning }) {
 
 	// ！！！！！Via TY，类组件必须这样才能读取props！下面三个都不行
 	return (
-		<div className="w-full h-fit fixed bg-blue-300 -z-10">
+		<div className="fixed w-full bg-blue-300 h-fit -z-10">
 			{/* ！莫名奇妙无法设置背景…………只能在外面用opacity替代了 */}
 			{/* // ！两种方式都不对…………<img className="absolute" style={{ width: `${props.size}px`, height: `${props.size}px`, top: `${props.top}px`, right: `${props.right}px`, transition: "0.1s", transformt: `rotate(${this.state.rotate}}deg)` }} src={setting} alt="" /> */}
 			{/* <img className="absolute" style={{ width: `${this.state.size}px`, height: `${this.state.size}px`, top: `${this.state.top}px`, right: `${this.state.right}px`, transition: "0.1s", transformt: `rotate(${this.state.rotate}}deg)` }} src={setting} alt="" /> */}
@@ -32,9 +32,10 @@ export default function BGGear({ isMonitorRunning }) {
 				<img className="absolute" style={{ width: "250px", height: "250px", top: "106px", right: "470px" }} src={setting} alt="" /> */}
 			{/* ！记得{} */}
 
-			<img className={`absolute ${isMonitorRunning ? 'rotate-reverse' : ''}`} style={{ width: "200px", height: "200px", top: "30px", right: "319px", transition: "0.1s" }} src={setting} alt="" />
-			<img className={`absolute ${isMonitorRunning ? 'rotate' : ''}`} style={{ width: "250px", height: "250px", top: "102px", right: "123px", transition: "0.1s" }} src={setting} alt="" />
-			<img className={`absolute ${isMonitorRunning ? 'rotate' : ''}`} style={{ width: "250px", height: "250px", top: "106px", right: "470px", transition: "0.1s" }} src={setting} alt="" />
+			{/* //！TY：使用display才能减少资源占用………… */}
+			<img className={`absolute hidden sm:block sm:w-[200px] sm:h-[200px] top-[30px] right-[319px] duration-100 ${isMonitorRunning ? 'rotate-reverse' : ''}`} src={setting} alt="" />
+			<img className={`absolute hidden sm:block sm:w-[250px] sm:h-[250px] top-[102px] right-[123px] duration-100 ${isMonitorRunning ? 'rotate' : ''}`} src={setting} alt="" />
+			<img className={`absolute hidden sm:block sm:w-[250px] sm:h-[250px] top-[106px] right-[470px] duration-100 ${isMonitorRunning ? 'rotate' : ''}`} src={setting} alt="" />
 		</div>
 
 	)

@@ -48,6 +48,7 @@ const createWindow = () => {
 	win = new BrowserWindow({
 		width: 1440,
 		height: 1024,
+		minWidth: 300,
 		title: `Healthily Use Computer ${VERSION}`,
 		icon: path.join(__dirname, './public/Logo.ico'),
 
@@ -58,15 +59,21 @@ const createWindow = () => {
 			// !啊所以为什么不用preload了？是因为上面关了上下文隔离？确实…………而且再打开以后react无法使用windows.require了…………
 		},
 	});
-	win.removeMenu();
+	if (app.isPackaged) {
+		win.removeMenu();
 
-	// win.loadFile(path.join(__dirname, './build/index.html'));
-	// ！并不是直接这样加载…………
-	win.loadURL(url.format({
-		pathname: path.join(__dirname, './build/index.html'),
-		protocol: 'file:',
-		slashes: true
-	}))
+		// win.loadFile(path.join(__dirname, './build/index.html'));
+		// ！并不是直接这样加载…………
+		win.loadURL(url.format({
+			pathname: path.join(__dirname, './build/index.html'),
+			protocol: 'file:',
+			slashes: true
+		}))
+	}
+	else {
+		win.loadURL('http://localhost:3000/');
+		win.webContents.openDevTools();
+	}
 	// ！关于打包
 	// 03-17搞了半天了啊啊啊啊啊啊啊啊！！！！！
 	// !打包也不容易！React注意先在package里面搞好homepage以后在build react！！不然依然找不到！
@@ -116,9 +123,7 @@ const createWindow = () => {
 	// !额后来不放在根目录也慢了…………应该不是位置的问题
 	// !同时意外测试到了，extraFiles那里开头不能有/！！！一有就废！不过你复制过来也行
 	// !同时用builder以后意外也修好了用forge打包时浏览器样式不同的问题（forge那个样式真的丑），同时forge打包也出现了部分样式和开发环境不同，例如侧栏图标无法对齐，控制台文字无法超出隐藏
-	// win.loadURL('http://localhost:3000/');
 
-	// win.webContents.openDevTools();
 	// app.whenReady().then(createWindow());
 	// ！艹为什么一定是这个写法…………上面那个之前明明行的…………
 	// const runtimeLogFileStream = require("fs");

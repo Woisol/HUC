@@ -38,3 +38,12 @@
 2024-03-18 21:06:32: [INFO] AppStart cloudmusic
 2024-03-18 21:06:32: [INFO] AppStart code
 2024-03-18 21:06:32: [INFO] AppStart msedge
+2024-03-24 19:05:20: [STAT] Monitor Started
+2024-03-24 19:05:20: [INFO] AppStart altdrag
+2024-03-24 19:05:20: [INFO] AppStart code
+2024-03-24 19:10:10: [STAT] Monitor Started
+2024-03-24 19:10:10: [INFO] AppReboot altdrag
+2024-03-24 19:10:10: [INFO] AppReboot code
+2024-03-24 19:22:10: [STAT] Monitor Started
+2024-03-24 19:22:10: [INFO] AppReboot altdrag
+2024-03-24 19:22:10: [INFO] AppReboot code

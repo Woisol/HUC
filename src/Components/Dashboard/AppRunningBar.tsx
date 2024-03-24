@@ -10,13 +10,13 @@ const ipcRenderer = window.require("electron").ipcRenderer;
 
 function AppRunning(props) {
 	return (
-		<div className="w-16 h-16 mx-1 p-2 relative rounded-2xl bg-blue-300 shadow-2xl transition-all hover:bg-blue-400 text-transparent hover:text-black" > <img className="w-full h-full" src={props.img} alt="More" /> <span className='w-12 absolute bottom-0 text-center'>{props.appName}</span></div>
+		<div className="relative w-16 h-16 p-2 mx-1 text-transparent transition-all bg-blue-300 shadow-2xl rounded-2xl hover:bg-blue-400 hover:text-black" > <img className="w-full h-full" src={props.img} alt="More" /> <span className='absolute bottom-0 w-12 text-center'>{props.appName}</span></div>
 	);
 	// ！艹艹艹啊啊啊啊啊又是props的问题！！！！！！！！！！！！！
 }
 // function ShowMore() {
 // 	return (
-// 		<div className="w-16 h-16 mx-1 p-2 rounded-2xl bg-blue-300 shadow-2xl transition-all hover:bg-blue-400" > <img className="w-full h-full" src={More} alt="More" /> </div>
+// 		<div className="w-16 h-16 p-2 mx-1 transition-all bg-blue-300 shadow-2xl rounded-2xl hover:bg-blue-400" > <img className="w-full h-full" src={More} alt="More" /> </div>
 // 	)
 // }
 export default function AppRunnningBar() {
@@ -39,15 +39,15 @@ export default function AppRunnningBar() {
 	// })
 	// ！require会默认解析为json对象
 	return (
-		<div className="w-full h-20 p-2 relative rounded-2xl bg-blue-200 flex" >
-			<span className="absolute -top-4 left-4 text-xl" > 运行中应用 </span>
+		<div className="w-full max-w-[640px] h-20 p-2 relative transition-all RoundAndShadow bg-blue-200 flex" >
+			<span className="absolute sm:text-xl -top-4 left-4" > 运行中应用 </span>
 			{RunningAppInfo.length === 0 ? <span className="w-full h-full p-5 text-xl text-center text-gray-500">暂无</span> : RunningAppInfo.map((item, index) => {
 				return (
 					<AppRunning key={index} appName={item[0]} img={item[1]} />
 				)
 			})}
 			{/* < ShowMore /> */}
-			<span className="px-2 absolute -top-4 right-4 bg-white rounded-2xl shadow-2xl text-sm transition-all hover:bg-gray-100" > 已监视应用 </span>
+			<span className="absolute px-2 text-sm transition-all bg-white shadow-2xl -top-4 right-4 rounded-2xl hover:bg-gray-100" > 已监视应用 </span>
 		</div>
 	)
 }

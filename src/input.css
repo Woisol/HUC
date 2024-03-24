@@ -37,18 +37,16 @@
 	/* 设置为无限次、线性运动 */
 }
 
-div.Page {
-	scroll-behavior: smooth;
-}
-
-div.Page::-webkit-scrollbar {
-	width: 0;
-}
-
 div.console {
 	overflow-anchor: none;
 }
 
-div.hideScollBar::-webkit-scrollbar {
+.hideScollBar::-webkit-scrollbar {
 	width: 0;
+}
+
+@tailwind base;
+
+.RoundAndShadow {
+	@apply rounded-2xl shadow-2xl
 }

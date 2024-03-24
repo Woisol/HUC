@@ -16,7 +16,7 @@ export default function App() {
   return (
     <>
       <SlideBar />
-      <div className='Page w-screen h-screen absolute overflow-auto overflow-x-hidden -z-50' style={{ scrollSnapType: 'y mandatory' }}>
+      <div className='absolute w-screen h-screen overflow-auto overflow-x-hidden scroll-smooth snap-y snap-mandatory -z-50 hideScollBar'>
         {/* ！wok！！！！才知道这个overflow-auto是必须的！！！！！！！ */}
         {/* ！同时这里加absolute可以防止子元素相对root定位而超过滚动条……………… */}
         {/* ！！！！必须用absolute！！用relative可能导致鼠标在子元素上时无法滚动 */}
