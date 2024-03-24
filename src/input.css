@@ -50,3 +50,11 @@ div.console {
 .RoundAndShadow {
 	@apply rounded-2xl shadow-2xl
 }
+
+* {
+	-webkit-user-select: none;
+	/* !还定义标准属性“user-select”以实现兼容性 */
+	user-select: none;
+	/* !直接使用报错说部分safari2不支持 */
+	-webkit-user-drag: none;
+}

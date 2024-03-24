@@ -4,13 +4,13 @@
 import React from 'react';
 
 import { useState } from "react"
-import More from "../../Asset/three-dots.svg"
+// import More from "../../Asset/three-dots.svg"
 const ipcRenderer = window.require("electron").ipcRenderer;
 // var AppStateFile = JSON.parse(require("./AppState.json"));
 
 function AppRunning(props) {
 	return (
-		<div className="relative w-16 h-16 p-2 mx-1 text-transparent transition-all bg-blue-300 shadow-2xl rounded-2xl hover:bg-blue-400 hover:text-black" > <img className="w-full h-full" src={props.img} alt="More" /> <span className='absolute bottom-0 w-12 text-center'>{props.appName}</span></div>
+		<div className="relative w-12 h-12 p-2 mx-1 transition-all bg-blue-300 shadow-2xl sm:w-16 sm:h-16 rounded-2xl hover:bg-blue-400 group" > <img className="w-full h-full" src={props.img} alt="More" /> <span className='absolute bottom-0 hidden p-1 text-xs text-center -translate-x-1/2 bg-white rounded-md opacity-75 left-1/2 w-fit group-hover:block'>{props.appName}</span></div>
 	);
 	// ！艹艹艹啊啊啊啊啊又是props的问题！！！！！！！！！！！！！
 }
@@ -39,7 +39,7 @@ export default function AppRunnningBar() {
 	// })
 	// ！require会默认解析为json对象
 	return (
-		<div className="w-full max-w-[640px] h-20 p-2 relative transition-all RoundAndShadow bg-blue-200 flex" >
+		<div className="w-full max-w-[770px] h-fit px-1 py-2 sm:px-2 relative transition-all RoundAndShadow bg-blue-200 flex items-center" >
 			<span className="absolute sm:text-xl -top-4 left-4" > 运行中应用 </span>
 			{RunningAppInfo.length === 0 ? <span className="w-full h-full p-5 text-xl text-center text-gray-500">暂无</span> : RunningAppInfo.map((item, index) => {
 				return (

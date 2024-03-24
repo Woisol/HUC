@@ -48,7 +48,7 @@ const createWindow = () => {
 	win = new BrowserWindow({
 		width: 1440,
 		height: 1024,
-		minWidth: 300,
+		minWidth: 400,
 		title: `Healthily Use Computer ${VERSION}`,
 		icon: path.join(__dirname, './public/Logo.ico'),
 
@@ -144,7 +144,7 @@ const createWindow = () => {
 			// !quit关不了…………是下面的win.on("close")导致的…………
 		}])
 	tray = new Tray(path.join(__dirname, './public/Logo.ico'));
-	tray.on("double-click", () => { win.show() })
+	tray.on("click", () => { win.show() })
 	tray.setContextMenu(ContextMenu_Tray)
 	tray.setToolTip(`Healthily Use Computer ${VERSION}`)
 
