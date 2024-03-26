@@ -20,9 +20,10 @@ function SlideBarOption(props, index) {
 	// ！是的可以这样多搞几个参数的，解决没有key的问题
 	return (
 		<Tab>
+			{/* underline-offset-4//!不知道是干什么的 */}
 			{({ selected }) =>
-				<a key={index} href={"#" + props.PageID} className={`flex items-center w-full overflow-hidden transition-all rounded-2xl hover:text-xl ${selected ? 'bg-blue-300 border-l-4 rounded-l-none  border-blue-500' : 'hover:bg-blue-300'} `}>
-					<img className="m-1 w-14 h-14" src={props.icon} alt={props.title} />
+				<a key={index} href={"#" + props.PageID} className={`flex items-center w-full overflow-hidden transition-all rounded-2xl hover:text-xl ${selected ? 'bg-blue-300 border-l-4 rounded-l-none border-blue-500 underline opacity-100' : 'hover:bg-blue-300 opacity-75'} `}>
+					<img className={`m-1 w-14 h-14 ${selected ? 'scale-100' : 'scale-75'}`} src={props.icon} alt={props.title} />
 					{props.title}
 				</a>
 			}
