@@ -95,7 +95,7 @@ export default function Console() {
 				{/* //！始终无法解决动画结束后突然模糊的问题…………放弃模糊方案 */}
 			</Transition>
 			{/* // ！注意padding过大会导致宽度无法变小………… */}
-			<div className={`absolute  top-1/2 -translate-y-1/2 duration-500 right-0 z-20 RoundAndShadow bg-gradient-to-t from-black to-gray-500 ${isOpen ? 'w-full h-full sm:w-[300px] sm:h-[600px] p-10 sm:p-5' : 'w-[20px] h-[120px]'}`}
+			<div className={`absolute  top-1/2 -translate-y-1/2 duration-500 right-0 z-20 RoundAndShadow bg-gradient-to-t from-black to-gray-500 dark:to-gray-800 ${isOpen ? 'w-full h-full sm:w-[300px] sm:h-[600px] p-10 sm:p-5' : 'w-[20px] h-[120px]'}`}
 				onClick={() => setIsOpen(true)} onContextMenu={(event) => { ipcRenderer.send("ContextMenu_Console"); }} >
 				{/* onKeyDownCapture={() => { inputRef.current.focus() }} //!不太行…………*/}
 				<div className={isOpen ? "w-8 h-8 absolute right-4 top-2 rounded-lg transition-all hover:bg-gray-400" : "hidden"} onClick={(event) => { event.stopPropagation(); setIsOpen(false) }}><img className="w-8 h-8 bg-transparent" src={close} alt="" /></div>
@@ -111,7 +111,7 @@ export default function Console() {
 					{/* {$("#console").scrollTop = $("#console").height; } */}
 					{/* //！TY：无法在jsx模板内使用js，且最佳实践应该是用react的状态 */}
 				</div >
-				<input ref={inputRef} title="Title" placeholder="Send Commands..." className={`bottom-5 w-full p-2 relative sm:p-1 sm:bottom-6 rounded-2xl transition-all hover:bg-gray-300 focus:bg-gray-300 disabled:bg-gray-700 disabled:cursor-not-allowed ${isOpen ? "" : "hidden"}`} type="text" onKeyDown={handleInputEnter} />
+				<input ref={inputRef} title="Title" placeholder="Send Commands..." className={`bottom-5 w-full p-2 relative sm:p-1 sm:bottom-6 rounded-2xl transition-all hover:bg-gray-300 focus:bg-gray-300 disabled:bg-gray-700 disabled:cursor-not-allowed dark:bg-gray-700 dark:hover:bg-gray-800 dark:focus:bg-gray-800 ${isOpen ? "" : "hidden"}`} type="text" onKeyDown={handleInputEnter} />
 			</div >
 		</>
 	);

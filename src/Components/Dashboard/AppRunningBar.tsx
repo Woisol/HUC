@@ -10,7 +10,7 @@ const ipcRenderer = window.require("electron").ipcRenderer;
 
 function AppRunning(props) {
 	return (
-		<div className="relative w-12 h-12 p-2 mx-1 transition-all bg-blue-300 shadow-2xl sm:w-16 sm:h-16 rounded-2xl hover:bg-blue-400 group" > <img className="w-full h-full" src={props.img} alt="More" /> <span className='absolute bottom-0 hidden p-1 text-xs text-center -translate-x-1/2 bg-white rounded-md opacity-75 left-1/2 w-fit group-hover:block'>{props.appName}</span></div>
+		<div className="relative w-12 h-12 p-2 mx-1 transition-all bg-blue-300 shadow-2xl dark:bg-blue-700 sm:w-16 sm:h-16 rounded-2xl hover:bg-blue-400 group" > <img className="w-full h-full" src={props.img} alt="More" /> <span className='absolute bottom-0 hidden p-1 text-xs text-center -translate-x-1/2 bg-white rounded-md opacity-75 left-1/2 w-fit group-hover:block'>{props.appName}</span></div>
 	);
 	// ！艹艹艹啊啊啊啊啊又是props的问题！！！！！！！！！！！！！
 }
@@ -39,7 +39,7 @@ export default function AppRunnningBar() {
 	// })
 	// ！require会默认解析为json对象
 	return (
-		<div className="w-full max-w-[770px] h-fit px-1 py-2 sm:px-2 relative transition-all RoundAndShadow bg-blue-200 flex items-center" >
+		<div className="w-full max-w-[770px] h-fit px-1 py-2 sm:px-2 relative transition-all RoundAndShadow bg-blue-200 dark:bg-blue-800 flex items-center" >
 			<span className="absolute sm:text-xl -top-4 left-4" > 运行中应用 </span>
 			{RunningAppInfo.length === 0 ? <span className="w-full h-full p-5 text-xl text-center text-gray-500">暂无</span> : RunningAppInfo.map((item, index) => {
 				return (
@@ -47,7 +47,7 @@ export default function AppRunnningBar() {
 				)
 			})}
 			{/* < ShowMore /> */}
-			<span className="absolute px-2 text-sm transition-all bg-white shadow-2xl -top-4 right-4 rounded-2xl hover:bg-gray-100" > 已监视应用 </span>
+			<span className="absolute px-2 text-sm transition-all bg-white shadow-2xl -top-4 right-4 rounded-2xl hover:bg-gray-100 dark:bg-gray-500" > 已监视应用 </span>
 		</div>
 	)
 }

@@ -33,9 +33,9 @@ export default function BGGear({ isMonitorRunning }) {
 			{/* ！记得{} */}
 
 			{/* //！TY：使用display才能减少资源占用………… */}
-			<img className={`absolute hidden md:block md:w-[200px] md:h-[200px] top-[30px] right-[319px] duration-100 ${isMonitorRunning ? 'rotate-reverse' : ''}`} src={setting} alt="" />
-			<img className={`absolute hidden md:block md:w-[250px] md:h-[250px] top-[102px] right-[123px] duration-100 ${isMonitorRunning ? 'rotate' : ''}`} src={setting} alt="" />
-			<img className={`absolute hidden md:block md:w-[250px] md:h-[250px] top-[106px] right-[470px] duration-100 ${isMonitorRunning ? 'rotate' : ''}`} src={setting} alt="" />
+			<img className={`absolute hidden md:block md:w-[200px] md:h-[200px] top-[30px] right-[319px] duration-100 dark:hidden ${isMonitorRunning ? 'rotate-reverse' : ''}`} src={setting} alt="" />
+			<img className={`absolute hidden md:block md:w-[250px] md:h-[250px] top-[102px] right-[123px] duration-100 dark:hidden ${isMonitorRunning ? 'rotate' : ''}`} src={setting} alt="" />
+			<img className={`absolute hidden md:block md:w-[250px] md:h-[250px] top-[106px] right-[470px] duration-100 dark:hidden ${isMonitorRunning ? 'rotate' : ''}`} src={setting} alt="" />
 		</div>
 
 	)

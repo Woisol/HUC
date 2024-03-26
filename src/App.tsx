@@ -26,18 +26,20 @@ export default function App() {
   // })
 
   return (
-    <Tab.Group selectedIndex={selectedIndex}>
-      {/* //！！用了as div才能使用view！ */}
-      <SlideBar />
-      <Tab.Panels ref={ScollRef} as='div' id='View' onScroll={handleScoll} className='absolute w-screen h-screen overflow-auto overflow-x-hidden scroll-smooth snap-y snap-mandatory -z-50 hideScollBar'>
-        {/* ！wok！！！！才知道这个overflow-auto是必须的！！！！！！！ */}
-        {/* ！同时这里加absolute可以防止子元素相对root定位而超过滚动条……………… */}
-        {/* ！！！！必须用absolute！！用relative可能导致鼠标在子元素上时无法滚动 */}
-        <PageDashBoard isMonitorRunning={isMonitorRunning} toggleState={toggleState} />
-        <PageAppDetail />
-        <PageSetting />
-      </Tab.Panels>
-    </Tab.Group>
+    <div className="dark dark:text-gray-200">
+      <Tab.Group selectedIndex={selectedIndex}>
+        {/* //！！用了as div才能使用view！ */}
+        <SlideBar />
+        <Tab.Panels ref={ScollRef} as='div' id='View' onScroll={handleScoll} className='absolute w-screen h-screen overflow-auto overflow-x-hidden scroll-smooth snap-y snap-mandatory -z-50 hideScollBar'>
+          {/* ！wok！！！！才知道这个overflow-auto是必须的！！！！！！！ */}
+          {/* ！同时这里加absolute可以防止子元素相对root定位而超过滚动条……………… */}
+          {/* ！！！！必须用absolute！！用relative可能导致鼠标在子元素上时无法滚动 */}
+          <PageDashBoard isMonitorRunning={isMonitorRunning} toggleState={toggleState} />
+          <PageAppDetail />
+          <PageSetting />
+        </Tab.Panels>
+      </Tab.Group>
+    </div>
   );
   function toggleState() {
     setIsMonitorRunning(!isMonitorRunning);

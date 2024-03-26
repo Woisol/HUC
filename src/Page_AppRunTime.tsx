@@ -20,7 +20,7 @@ function SideBarTemplate(props) {
 }
 function SideBarOption({ OnClickFunc, Title }) {
 	return (
-		<div className='w-full h-10 p-2 text-center transition-all border-b-2 border-black shadow-2xl hover:text-xl hover:p-1 hover:bg-gray-300' onClick={OnClickFunc}>{Title}</div>
+		<div className='w-full h-10 p-2 text-center transition-all border-b-2 border-black shadow-2xl hover:text-xl hover:p-1 hover:bg-gray-300 dark:hover:bg-gray-600' onClick={OnClickFunc}>{Title}</div>
 	);
 }
 //**----------------------------AppRunTimeShowcase-----------------------------------------------------
@@ -64,9 +64,11 @@ export default function PageAppRunTime() {
 	};
 
 	return (
-		<div id="Page_AppDetail" className="flex w-screen h-screen px-1 bg-gray-300 border-black md:pl-20 md:py-6 border-y-2 snap-start">
-			<div className='hidden w-40 h-full py-8 bg-gray-100 md:block rounded-2xl'>
-				<input id='DateSelector' className='w-full h-10 text-center transition-all bg-transparent border-b-2 border-black hover:shadow-2xl hover:bg-gray-300' type={"Date"} defaultValue={todayDateString} max={todayDateString} onChange={(event) => {
+		<div id="Page_AppDetail" className="relative flex w-screen h-screen px-1 bg-gray-300 border-black dark:bg-gray-800 md:pl-20 md:py-6 border-y-2 snap-start">
+			<div className="absolute top-0 left-0 z-20 hidden w-full h-full pointer-events-none bg-black/30 dark:block"></div>
+			{/* //！！！刚刚看不久的！！pointer-events-none！！就实现穿透了！！！ */}
+			<div className='hidden w-40 h-full py-8 bg-gray-100 md:block rounded-2xl dark:bg-gray-700'>
+				<input id='DateSelector' className='w-full h-10 text-center transition-all bg-transparent border-b-2 border-black hover:shadow-2xl hover:bg-gray-300 dark:hover:bg-gray-600' type={"Date"} defaultValue={todayDateString} max={todayDateString} onChange={(event) => {
 					ipcRenderer.send("UpdateRunTime", new Date(event.target.value))
 				}} />
 				<SideBarTemplate />
@@ -75,13 +77,13 @@ export default function PageAppRunTime() {
 				<SideBarOption Title="周视图" OnClickFunc={{}} />
 			</div>
 			<div className="relative flex flex-col items-center justify-center w-full h-full p-5" >
-				<div className="relative w-5/6 mb-5 transition-all bg-white shadow-lg h-44 rounded-2xl hover:shadow-xl hover:bg-gray-100" onContextMenu={(event) => { ipcRenderer.send("ContextMenu_LastSeven",); }}>
+				<div className="relative w-5/6 mb-5 transition-all bg-white shadow-lg dark:bg-gray-700 h-44 rounded-2xl hover:shadow-xl hover:bg-gray-100" onContextMenu={(event) => { ipcRenderer.send("ContextMenu_LastSeven",); }}>
 					<span className='absolute -top-3 left-4'>近7天使用情况</span>
 					<ReactEcharts option={option} style={{ width: "110%", height: "150%", position: "absolute", left: "-15px", top: "-30px" }} />
 					{/* //!艹分不清楚………………这个是{}不是{{}}………… */}
 				</div>
 				{/* //td此处为什么full会超出屏幕？？？ */}
-				<div className="flex w-5/6 h-full p-3 overflow-x-scroll transition-all bg-white shadow-xl hover:shadow-2xl rounded-2xl" onContextMenu={(event) => { ipcRenderer.send("ContextMenu_RunTime"); }}>
+				<div className="flex w-5/6 h-full p-3 overflow-x-scroll transition-all bg-white shadow-xl dark:bg-gray-700 hover:shadow-2xl rounded-2xl" onContextMenu={(event) => { ipcRenderer.send("ContextMenu_RunTime"); }}>
 					{/* <AppRunTimeShowcase key={1} data={["Test", "Test", "#87CEFA", "", [[0, 60]]]} /> */}
 					{/* <AppRunTimeShowcase key={1} data={["Test", "Test", "#87CEFA", "", [[0, 1440]]]} /> */}
 					{RunTimeData.map((data, index) => {
