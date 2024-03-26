@@ -481,10 +481,6 @@
   padding: 1.25rem;
 }
 
-.p-4{
-  padding: 1rem;
-}
-
 .px-1{
   padding-left: 0.25rem;
   padding-right: 0.25rem;
@@ -1310,6 +1306,15 @@ video {
 .focus\:bg-gray-300:focus{
   --tw-bg-opacity: 1;
   background-color: rgb(209 213 219 / var(--tw-bg-opacity));
+}
+
+.disabled\:cursor-not-allowed:disabled{
+  cursor: not-allowed;
+}
+
+.disabled\:bg-gray-700:disabled{
+  --tw-bg-opacity: 1;
+  background-color: rgb(55 65 81 / var(--tw-bg-opacity));
 }
 
 .group:hover .group-hover\:block{

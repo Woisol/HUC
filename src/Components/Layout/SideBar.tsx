@@ -31,8 +31,7 @@ function SlideBarOption(props, index) {
 		</Tab>
 	)
 }
-function SlideBar(props) {
-
+export default function SlideBar() {
 	return (
 		// <div className="fixed left-0 flex flex-col justify-center w-0 w-16 h-0 py-2 transition-all -translate-y-1/2 bg-blue-200 shadow-2xl sm:h-fit rounded-2xl items-cente hover:w-48 hover:px-3 top-1/2">
 		// <>
@@ -42,4 +41,3 @@ function SlideBar(props) {
 		// </>
 	);
 }
-export default SlideBar;

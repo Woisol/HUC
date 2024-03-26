@@ -288,6 +288,7 @@ function MonitorInit() {
 	// ！就唯独这个必须要用process.cwd()才能读到…………上面的json可以直接require…………
 	MonitorPcs.stdout.on("data", (data) => {
 		// !这个依然要在定义了以后才能执行………………
+		win.webContents.send("ConsoleReOpen");
 		//**----------------------------Console-----------------------------------------------------
 		// var datas = d.toString().split("\n");
 		// datas.forEach((data) => {
