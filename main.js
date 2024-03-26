@@ -138,6 +138,10 @@ const createWindow = () => {
 	//**----------------------------Tray-----------------------------------------------------
 	const ContextMenu_Tray = Menu.buildFromTemplate([
 		{
+			label: "重启",
+			click: () => { isToQuit = true; app.relaunch(); }
+		},
+		{
 			label: "退出",
 			// role: "close"
 			click: () => { isToQuit = true; app.quit(); }
@@ -145,7 +149,13 @@ const createWindow = () => {
 			// !quit关不了…………是下面的win.on("close")导致的…………
 		}])
 	tray = new Tray(path.join(__dirname, './public/Logo.ico'));
-	tray.on("click", () => { win.show() })
+	tray.on("click", () => {
+		// if (win.isMinimized()) return;
+		// !？？？明明去掉!就可以判断了？？？
+		UpdateRunTime(adjudgeDateBy4(new Date()))
+		UpdateLastSeven();
+		win.show();
+	})
 	tray.setContextMenu(ContextMenu_Tray)
 	tray.setToolTip(`Healthily Use Computer ${VERSION}`)
 
@@ -208,7 +218,7 @@ ContextMenu_RunTime = Menu.buildFromTemplate([
 	{
 		label: "刷新今日数据",
 		click: (menuItem, browserWindow, event) => {
-			UpdateRunTime(new Date());
+			UpdateRunTime(adjudgeDateBy4(new Date()));
 		}
 	}])
 ContextMenu_LastSeven = Menu.buildFromTemplate([
@@ -254,6 +264,11 @@ function UpdateRunningApp(App, Delete = false) {
 }
 app.on('ready', createWindow);
 //##----------------------------Event-----------------------------------------------------
+// app.on('activate', () => {
+// 	UpdateRunTime(adjudgeDateBy4(new Date()))
+// 	UpdateLastSeven();
+// })
+// !无效……仅在macOS平台上生效
 ipcMain.on("UpdateRunTime", (event, arg) => {
 	UpdateRunTime(arg);
 })
@@ -263,7 +278,7 @@ ipcMain.on("UpdateRunTime", (event, arg) => {
 ipcMain.on("UIInited", (event, arg) => {
 	MonitorInit();
 	//**---------------------------------------------------------------------------------
-	UpdateRunTime(new Date())
+	UpdateRunTime(adjudgeDateBy4(new Date()))
 	UpdateLastSeven();
 
 })
@@ -391,6 +406,7 @@ function UpdateRunTime(date) {
 
 	// ！艹！！！！终于定位问题了………………………………一直以为执行了两次Update函数，还非常好奇为什么query函数执行完后面为什么断点没用了
 	// ！其实本质就是回调………………太慢了导致顺序都反了………………搞一堆log都没用………………………………
+
 	let runTimeInfo = [];
 	mntApps.forEach(mntApp => {
 		let isPushed = false;
@@ -444,7 +460,7 @@ ipcMain.on("UpdateLastSeven", (event, arg) => {
 function UpdateLastSeven() {
 	// if (connection.state == "disconnected")
 	// 	connection.connect();
-	let today = new Date();
+	let today = adjudgeDateBy4(new Date());
 	var result = [];
 	[6, 5, 4, 3, 2, 1, 0].forEach((value) => {
 		// !虽然按理来说应该是6~0…………但是不知道为什么就是慢了一天…………面向结果编程了
@@ -471,4 +487,11 @@ function UpdateLastSeven() {
 		})
 		// !艹这个异步好烦啊………………
 	})
+}
+function adjudgeDateBy4(date) {
+	var d = new Date(date);
+	if (d.getHours() <= 4) {
+		d.setDate(d.getDate() - 1)
+	}
+	return d;
 }

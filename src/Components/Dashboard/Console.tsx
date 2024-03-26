@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import close from "../../Asset/x-lg.svg"
 import { Transition } from "@headlessui/react";
 // import $ from "jquery";
@@ -27,7 +27,9 @@ const { ipcRenderer } = window.require("electron");
 export default function Console(props) {
 	// const runtimeLogFileStream = require("fs").createReadStream("../../Monitor/runtimeLog.rlf");
 	//！ wok注意渲染进程没有权限！！！
-	let [content, UpdateContent] = useState(["Monitor Started"]);
+	const inputRef = useRef(null);
+	const [content, UpdateContent] = useState(["Monitor Started"]);
+	const [isOpen, setIsOpen] = useState(false);
 	useEffect(() => {
 		// $("#console").scrollTop = $("#console").scrollHeight;
 		if (!isOpen) return;
@@ -36,6 +38,10 @@ export default function Console(props) {
 			console.scrollTop = console.scrollHeight;
 		// 芜湖实现
 		// ！注意jQuery的语法和js的不完全一样…………注意区分…………
+
+		inputRef.current.focus()
+		// !额哈哈也完美实现了艹…………在上面用isOpen判断是在渲染出来前执行的所以无效
+
 	})
 	// ipcRenderer.send("GetRuntimeLog");//！似乎每次更新属性都会重新运行一遍函数，导致反复刷新了…………
 	ipcRenderer.on("ContentUpdate", function (event, newContents) {
@@ -74,7 +80,6 @@ export default function Console(props) {
 	ipcRenderer.on("ConsoleClear", () => {
 		UpdateContent([]);
 	})
-	const [isOpen, setIsOpen] = useState(false);
 	return (
 		<>
 			<Transition
@@ -90,7 +95,8 @@ export default function Console(props) {
 			</Transition>
 			{/* // ！注意padding过大会导致宽度无法变小………… */}
 			<div className={`absolute  top-1/2 -translate-y-1/2 duration-500 right-0 z-20 RoundAndShadow bg-gradient-to-t from-black to-gray-500 ${isOpen ? 'w-full h-full sm:w-[300px] sm:h-[600px] p-10 sm:p-5' : 'w-[20px] h-[120px]'}`}
-				onClick={() => setIsOpen(true)} onContextMenu={(event) => { ipcRenderer.send("ContextMenu_Console"); }}>
+				onClick={() => setIsOpen(true)} onContextMenu={(event) => { ipcRenderer.send("ContextMenu_Console"); }} >
+				{/* onKeyDownCapture={() => { inputRef.current.focus() }} //!不太行…………*/}
 				<div className={isOpen ? "w-8 h-8 absolute right-4 top-2 rounded-lg transition-all hover:bg-gray-400" : "hidden"} onClick={(event) => { event.stopPropagation(); setIsOpen(false) }}><img className="w-8 h-8 bg-transparent" src={close} alt="" /></div>
 				<div id="console" className="w-full h-full overflow-scroll text-white console hideScollBar text-nowrap"
 				>
@@ -104,7 +110,7 @@ export default function Console(props) {
 					{/* {$("#console").scrollTop = $("#console").height; } */}
 					{/* //！TY：无法在jsx模板内使用js，且最佳实践应该是用react的状态 */}
 				</div >
-				<input autoFocus title="Title" placeholder="Send Commands..." className={`bottom-5 w-full p-2 relative sm:p-1 sm:bottom-6 rounded-2xl transition-all hover:bg-gray-300 focus:bg-gray-300 ${isOpen ? "" : "hidden"}`} type="text" onKeyDown={handleInputEnter} />
+				<input ref={inputRef} title="Title" placeholder="Send Commands..." className={`bottom-5 w-full p-2 relative sm:p-1 sm:bottom-6 rounded-2xl transition-all hover:bg-gray-300 focus:bg-gray-300 ${isOpen ? "" : "hidden"}`} type="text" onKeyDown={handleInputEnter} />
 			</div >
 		</>
 	);
