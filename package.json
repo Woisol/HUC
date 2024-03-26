@@ -89,9 +89,11 @@
   },
   "devDependencies": {
     "@types/jquery": "^3.5.29",
+    "@types/less": "^3.0.6",
     "@types/line-reader": "^0.0.37",
     "@types/mysql": "^2.15.26",
     "electron": "^29.1.4",
-    "electron-builder": "^24.13.3"
+    "electron-builder": "^24.13.3",
+    "less": "^4.2.0"
   }
 }

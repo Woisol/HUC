@@ -1,0 +1,83 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* styles.css */
+@keyframes rotate {
+	from {
+		transform: rotate(0deg);
+	}
+
+	to {
+		transform: rotate(360deg);
+		/* 按照需要旋转的角度设置 */
+	}
+}
+
+@keyframes rotate-reverse {
+	from {
+		transform: rotate(0deg);
+	}
+
+	to {
+		transform: rotate(-360deg);
+		/* 按照需要旋转的角度设置 */
+	}
+}
+
+.rotate {
+	animation: rotate infinite 20s linear;
+	/* TY这里漏了个20s导致没有效果………… */
+	/* 设置为无限次、线性运动 */
+}
+
+.rotate-reverse {
+	animation: rotate-reverse infinite 20s linear;
+	/* TY这里漏了个20s导致没有效果………… */
+	/* 设置为无限次、线性运动 */
+}
+
+div.console {
+	overflow-anchor: none;
+}
+
+.hideScollBar::-webkit-scrollbar {
+	width: 0;
+}
+
+* {
+	-webkit-user-select: none;
+	/* !还定义标准属性“user-select”以实现兼容性 */
+	user-select: none;
+	/* !直接使用报错说部分safari2不支持 */
+	-webkit-user-drag: none;
+}
+
+// .SideScollBar {
+// 	direction: rtl;
+
+// 	&>* {
+// 		direction: ltr;
+// 	}
+
+// 	&::-webkit-scrollbar {
+// 		width: 10px;
+// 		// height: 0.1px;
+// 		// position: relative;
+// 		// margin: 50px 50px;
+// 	}
+
+// 	// &::-webkit-scrollbar-track {
+// 	// height: 40px;
+// 	// }
+
+// 	&::-webkit-scrollbar-thumb {
+// 		@apply w-10 bg-blue-500 rounded-full border-2 border-black;
+// 	}
+// }
+
+@tailwind base;
+
+.RoundAndShadow {
+	@apply rounded-2xl shadow-2xl;
+}

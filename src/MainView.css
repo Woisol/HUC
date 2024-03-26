@@ -16,12 +16,12 @@
   top: -0.75rem;
 }
 
-.-top-4{
-  top: -1rem;
+.-top-32{
+  top: -8rem;
 }
 
-.-top-44{
-  top: -11rem;
+.-top-4{
+  top: -1rem;
 }
 
 .-top-64{
@@ -100,10 +100,6 @@
   top: 30px;
 }
 
-.-top-32{
-  top: -8rem;
-}
-
 .-z-10{
   z-index: -10;
 }
@@ -174,12 +170,12 @@
   height: 75%;
 }
 
-.h-44{
-  height: 11rem;
+.h-36{
+  height: 9rem;
 }
 
-.h-48{
-  height: 12rem;
+.h-44{
+  height: 11rem;
 }
 
 .h-8{
@@ -204,20 +200,12 @@
   height: 100vh;
 }
 
-.h-36{
-  height: 9rem;
-}
-
 .w-0{
   width: 0px;
 }
 
 .w-10{
   width: 2.5rem;
-}
-
-.w-10\/12{
-  width: 83.333333%;
 }
 
 .w-12{
@@ -236,12 +224,16 @@
   width: 0.75rem;
 }
 
+.w-36{
+  width: 9rem;
+}
+
 .w-40{
   width: 10rem;
 }
 
-.w-48{
-  width: 12rem;
+.w-5\/6{
+  width: 83.333333%;
 }
 
 .w-8{
@@ -266,24 +258,8 @@
   width: 100vw;
 }
 
-.w-36{
-  width: 9rem;
-}
-
-.w-11\/12{
-  width: 91.666667%;
-}
-
-.w-5\/6{
-  width: 83.333333%;
-}
-
 .max-w-\[770px\]{
   max-width: 770px;
-}
-
-.max-w-full{
-  max-width: 100%;
 }
 
 .-translate-x-1\/2{
@@ -455,6 +431,14 @@
   --tw-gradient-to: #6b7280 var(--tw-gradient-to-position);
 }
 
+.p-0{
+  padding: 0px;
+}
+
+.p-1{
+  padding: 0.25rem;
+}
+
 .p-10{
   padding: 2.5rem;
 }
@@ -469,14 +453,6 @@
 
 .p-5{
   padding: 1.25rem;
-}
-
-.p-1{
-  padding: 0.25rem;
-}
-
-.p-0{
-  padding: 0px;
 }
 
 .px-1{
@@ -559,14 +535,6 @@
   opacity: 0;
 }
 
-.opacity-30{
-  opacity: 0.3;
-}
-
-.opacity-50{
-  opacity: 0.5;
-}
-
 .opacity-75{
   opacity: 0.75;
 }
@@ -597,12 +565,6 @@
 
 .backdrop-blur-none{
   --tw-backdrop-blur: blur(0);
-  -webkit-backdrop-filter: var(--tw-backdrop-blur) var(--tw-backdrop-brightness) var(--tw-backdrop-contrast) var(--tw-backdrop-grayscale) var(--tw-backdrop-hue-rotate) var(--tw-backdrop-invert) var(--tw-backdrop-opacity) var(--tw-backdrop-saturate) var(--tw-backdrop-sepia);
-          backdrop-filter: var(--tw-backdrop-blur) var(--tw-backdrop-brightness) var(--tw-backdrop-contrast) var(--tw-backdrop-grayscale) var(--tw-backdrop-hue-rotate) var(--tw-backdrop-invert) var(--tw-backdrop-opacity) var(--tw-backdrop-saturate) var(--tw-backdrop-sepia);
-}
-
-.backdrop-blur-sm{
-  --tw-backdrop-blur: blur(4px);
   -webkit-backdrop-filter: var(--tw-backdrop-blur) var(--tw-backdrop-brightness) var(--tw-backdrop-contrast) var(--tw-backdrop-grayscale) var(--tw-backdrop-hue-rotate) var(--tw-backdrop-invert) var(--tw-backdrop-opacity) var(--tw-backdrop-saturate) var(--tw-backdrop-sepia);
           backdrop-filter: var(--tw-backdrop-blur) var(--tw-backdrop-brightness) var(--tw-backdrop-contrast) var(--tw-backdrop-grayscale) var(--tw-backdrop-hue-rotate) var(--tw-backdrop-invert) var(--tw-backdrop-opacity) var(--tw-backdrop-saturate) var(--tw-backdrop-sepia);
 }
@@ -679,6 +641,14 @@ div.console {
 
 .hideScollBar::-webkit-scrollbar {
   width: 0;
+}
+
+* {
+  -webkit-user-select: none;
+  /* !还定义标准属性“user-select”以实现兼容性 */
+  user-select: none;
+  /* !直接使用报错说部分safari2不支持 */
+  -webkit-user-drag: none;
 }
 
 /* ! tailwindcss v3.4.1 | MIT License | https://tailwindcss.com */
@@ -1223,18 +1193,6 @@ video {
   box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
 }
 
-* {
-  -webkit-user-select: none;
-  /* !还定义标准属性“user-select”以实现兼容性 */
-  user-select: none;
-  /* !直接使用报错说部分safari2不支持 */
-  -webkit-user-drag: none;
-}
-
-.hover\:block:hover{
-  display: block;
-}
-
 .hover\:w-20:hover{
   width: 5rem;
 }
@@ -1349,6 +1307,10 @@ video {
     height: 4rem;
   }
 
+  .sm\:h-48{
+    height: 12rem;
+  }
+
   .sm\:h-\[200px\]{
     height: 200px;
   }
@@ -1367,16 +1329,16 @@ video {
     height: fit-content;
   }
 
-  .sm\:h-48{
-    height: 12rem;
-  }
-
   .sm\:w-16{
     width: 4rem;
   }
 
   .sm\:w-20{
     width: 5rem;
+  }
+
+  .sm\:w-48{
+    width: 12rem;
   }
 
   .sm\:w-5{
@@ -1393,10 +1355,6 @@ video {
 
   .sm\:w-\[300px\]{
     width: 300px;
-  }
-
-  .sm\:w-48{
-    width: 12rem;
   }
 
   .sm\:-translate-y-1\/2{
@@ -1421,12 +1379,12 @@ video {
     padding: 0.25rem;
   }
 
-  .sm\:p-5{
-    padding: 1.25rem;
-  }
-
   .sm\:p-2{
     padding: 0.5rem;
+  }
+
+  .sm\:p-5{
+    padding: 1.25rem;
   }
 
   .sm\:px-2{
@@ -1439,11 +1397,6 @@ video {
     line-height: 1.75rem;
   }
 
-  .sm\:text-base{
-    font-size: 1rem;
-    line-height: 1.5rem;
-  }
-
   .sm\:hover\:w-48:hover{
     width: 12rem;
   }
@@ -1452,10 +1405,6 @@ video {
 @media (min-width: 768px){
   .md\:left-7{
     left: 1.75rem;
-  }
-
-  .md\:float-start{
-    float: inline-start;
   }
 
   .md\:block{
