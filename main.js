@@ -7,6 +7,7 @@ const { app, BrowserWindow, ipcMain, Tray } = require('electron');
 const $ = require("jquery");
 const path = require("path");
 const url = require("url");
+const iconv = require("iconv-lite");
 //##----------------------------Initialize-----------------------------------------------------
 const VERSION = "1.0"
 var win, tray, isToQuit = false;
@@ -46,7 +47,7 @@ connection.query(`SELECT TABLE_NAME FROM information_schema.tables WHERE TABLE_S
 })
 const createWindow = () => {
 	win = new BrowserWindow({
-		width: 1440,
+		width: 600,
 		height: 1024,
 		minWidth: 400,
 		title: `Healthily Use Computer ${VERSION}`,
@@ -268,7 +269,7 @@ ipcMain.on("UIInited", (event, arg) => {
 })
 //**----------------------------Monitor-----------------------------------------------------
 function MonitorInit() {
-	MonitorPcs = spawn(path.join(process.cwd(), '/Monitor/HUC_Backend.exe'));
+	MonitorPcs = spawn(path.join(process.cwd(), '/Monitor/HUC_Backend.exe'), []);
 	// ！就唯独这个必须要用process.cwd()才能读到…………上面的json可以直接require…………
 	MonitorPcs.stdout.on("data", (data) => {
 		// !这个依然要在定义了以后才能执行………………
@@ -276,8 +277,8 @@ function MonitorInit() {
 		// var datas = d.toString().split("\n");
 		// datas.forEach((data) => {
 		// 	if (data === "") return;//！原来就是用的return！
-		// console.log(`stdout: ${data}`);
-		var dataLines = data.toString().split("\n").filter((item) => item !== "");
+		// console.log(`stdout: ${iconv.decode(data, 'cp936')}`);
+		var dataLines = iconv.decode(data, 'cp936').split("\n").filter((item) => item !== "");
 		win.webContents.send("ContentUpdate", dataLines);
 		// });
 		// !似乎在这边处理会导致传输过快反应不及时漏掉信息…………去那边处理了…………
@@ -351,7 +352,9 @@ ipcMain.on("MonitorStateChange", (event, arg) => {
 	}
 })
 ipcMain.on("MonitorPcsStdinWrite", (event, arg) => {
-	MonitorPcs.stdin.write(`${arg}\n`);
+	// MonitorPcs.stdin.write(`${iconv.encode(`${arg}\n`, 'cp936')}`);
+	// ！！！！！！原方法！！！我说怎么明明就是cp936编码传过去就是乱，用了``nodejs自己转回去了啊啊啊啊啊！！！！！！！！！！！！！！！！
+	MonitorPcs.stdin.write(iconv.encode(`${arg}\n`, 'cp936'));
 })
 // MonitorPcs.on("message", (msg, sendHendle) => {
 // 	console.log(`MonitorPcs: ${msg}`);

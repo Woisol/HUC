@@ -104,13 +104,13 @@ export default function Console(props) {
 					{/* {$("#console").scrollTop = $("#console").height; } */}
 					{/* //！TY：无法在jsx模板内使用js，且最佳实践应该是用react的状态 */}
 				</div >
-				<input title="Title" placeholder="Send Commands..." className={`bottom-5 w-full p-2 relative sm:p-1 sm:bottom-6 rounded-2xl transition-all hover:bg-gray-300 focus:bg-gray-300 ${isOpen ? "" : "hidden"}`} type="text" onKeyDown={handleInputEnter} />
+				<input autoFocus title="Title" placeholder="Send Commands..." className={`bottom-5 w-full p-2 relative sm:p-1 sm:bottom-6 rounded-2xl transition-all hover:bg-gray-300 focus:bg-gray-300 ${isOpen ? "" : "hidden"}`} type="text" onKeyDown={handleInputEnter} />
 			</div >
 		</>
 	);
 }
 function handleInputEnter(event) {
-	if (event.key === 'Enter' || event.keyCode === 13) {
+	if (event.target.value !== '' && (event.key === 'Enter' || event.keyCode === 13)) {
 		ipcRenderer.send("MonitorPcsStdinWrite", event.target.value)
 		event.target.value = "";
 	}

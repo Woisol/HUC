@@ -2,6 +2,7 @@ import React, { useRef } from 'react';
 import "./MainView.css";
 import PageDashBoard from './Page_DashBoard.tsx';
 import PageAppDetail from './Page_AppRunTime.tsx';
+import PageSetting from './Page_Setting.tsx';
 import SlideBar from './Components/Layout/SideBar.tsx';
 import { Tab } from '@headlessui/react';
 const ipcRenderer = window.require('electron').ipcRenderer;
@@ -28,12 +29,13 @@ export default function App() {
     <Tab.Group selectedIndex={selectedIndex}>
       {/* //！！用了as div才能使用view！ */}
       <SlideBar />
-      <Tab.Panels ref={ScollRef} as='div' id='View' onScroll={(e) => handleScoll(e)} className='absolute w-screen h-screen overflow-auto overflow-x-hidden scroll-smooth snap-y snap-mandatory -z-50 hideScollBar'>
+      <Tab.Panels ref={ScollRef} as='div' id='View' onScroll={handleScoll} className='absolute w-screen h-screen overflow-auto overflow-x-hidden scroll-smooth snap-y snap-mandatory -z-50 hideScollBar'>
         {/* ！wok！！！！才知道这个overflow-auto是必须的！！！！！！！ */}
         {/* ！同时这里加absolute可以防止子元素相对root定位而超过滚动条……………… */}
         {/* ！！！！必须用absolute！！用relative可能导致鼠标在子元素上时无法滚动 */}
         <PageDashBoard isMonitorRunning={isMonitorRunning} toggleState={toggleState} />
         <PageAppDetail />
+        <PageSetting />
       </Tab.Panels>
     </Tab.Group>
   );
@@ -47,10 +49,12 @@ export default function App() {
     }
   }
   // console.log(isMonitorRunning);
-  function handleScoll({ e }) {
+  function handleScoll() {
     // td性能优化
-    //e.target document.documentElement.scrollTop || document.body.scrollTop;
+    // e.target document.documentElement.scrollTop || document.body.scrollTop;
     // ！！！终于实现！！注意scollTop必须获取正确对象才能得到！！用上面那几个都不行！！！！！！！
-    setSelectedIndex((ScollRef.current.scrollTop + window.innerHeight / 2) / window.innerHeight)
+    if (ScollRef.current === null) return;
+    setSelectedIndex(Math.floor((ScollRef.current.scrollTop + window.innerHeight / 2) / window.innerHeight))
+    // ！加入第三页后突然出现在第三页却显示第一页的bug，原来是/并不是整除……………………………………
   }
 }
