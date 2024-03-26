@@ -1,29 +1,41 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import "./MainView.css";
 import PageDashBoard from './Page_DashBoard.tsx';
 import PageAppDetail from './Page_AppRunTime.tsx';
 import SlideBar from './Components/Layout/SideBar.tsx';
+import { Tab } from '@headlessui/react';
 const ipcRenderer = window.require('electron').ipcRenderer;
 const useState = React.useState;
 
 // ！一定不要再设置在function里面了………………反复调用又22出错…………
 export default function App() {
   const [isMonitorRunning, setIsMonitorRunning] = useState(true);
+  //**----------------------------ScollBarPosition-----------------------------------------------------
+  const [selectedIndex, setSelectedIndex] = useState(0);
+  const ScollRef = useRef(null);
+  // window.addEventListener("scroll", () => {
+  //   setSelectedIndex(document.documentElement.scrollTop / window.innerHeight);
+  // })
+
   ipcRenderer.on('MonitorStateChange', (event, arg) => {
     setIsMonitorRunning(arg);
   });
+  // document.getElementById("View").addEventListener('scroll', (event) => {
+
+  // })
 
   return (
-    <>
+    <Tab.Group selectedIndex={selectedIndex}>
+      {/* //！！用了as div才能使用view！ */}
       <SlideBar />
-      <div className='absolute w-screen h-screen overflow-auto overflow-x-hidden scroll-smooth snap-y snap-mandatory -z-50 hideScollBar'>
+      <Tab.Panels ref={ScollRef} as='div' id='View' onScroll={(e) => handleScoll(e)} className='absolute w-screen h-screen overflow-auto overflow-x-hidden scroll-smooth snap-y snap-mandatory -z-50 hideScollBar'>
         {/* ！wok！！！！才知道这个overflow-auto是必须的！！！！！！！ */}
         {/* ！同时这里加absolute可以防止子元素相对root定位而超过滚动条……………… */}
         {/* ！！！！必须用absolute！！用relative可能导致鼠标在子元素上时无法滚动 */}
         <PageDashBoard isMonitorRunning={isMonitorRunning} toggleState={toggleState} />
         <PageAppDetail />
-      </div>
-    </>
+      </Tab.Panels>
+    </Tab.Group>
   );
   function toggleState() {
     setIsMonitorRunning(!isMonitorRunning);
@@ -35,4 +47,10 @@ export default function App() {
     }
   }
   // console.log(isMonitorRunning);
+  function handleScoll({ e }) {
+    // td性能优化
+    //e.target document.documentElement.scrollTop || document.body.scrollTop;
+    // ！！！终于实现！！注意scollTop必须获取正确对象才能得到！！用上面那几个都不行！！！！！！！
+    setSelectedIndex((ScollRef.current.scrollTop + window.innerHeight / 2) / window.innerHeight)
+  }
 }

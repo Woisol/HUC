@@ -346,6 +346,11 @@
   border-top-right-radius: 1rem;
 }
 
+.rounded-l-none{
+  border-top-left-radius: 0px;
+  border-bottom-left-radius: 0px;
+}
+
 .border-y-2{
   border-top-width: 2px;
   border-bottom-width: 2px;
@@ -359,9 +364,26 @@
   border-top-width: 2px;
 }
 
+.border-l-2{
+  border-left-width: 2px;
+}
+
+.border-l-4{
+  border-left-width: 4px;
+}
+
+.border-l-8{
+  border-left-width: 8px;
+}
+
 .border-black{
   --tw-border-opacity: 1;
   border-color: rgb(0 0 0 / var(--tw-border-opacity));
+}
+
+.border-blue-500{
+  --tw-border-opacity: 1;
+  border-color: rgb(59 130 246 / var(--tw-border-opacity));
 }
 
 .bg-blue-200{
@@ -411,6 +433,11 @@
 .bg-white{
   --tw-bg-opacity: 1;
   background-color: rgb(255 255 255 / var(--tw-bg-opacity));
+}
+
+.bg-blue-400{
+  --tw-bg-opacity: 1;
+  background-color: rgb(96 165 250 / var(--tw-bg-opacity));
 }
 
 .bg-opacity-40{
@@ -483,6 +510,14 @@
 .py-8{
   padding-top: 2rem;
   padding-bottom: 2rem;
+}
+
+.pl-0{
+  padding-left: 0px;
+}
+
+.pl-2{
+  padding-left: 0.5rem;
 }
 
 .text-center{
@@ -1193,12 +1228,28 @@ video {
   box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
 }
 
+.hover\:ml-2:hover{
+  margin-left: 0.5rem;
+}
+
 .hover\:w-20:hover{
   width: 5rem;
 }
 
 .hover\:w-48:hover{
   width: 12rem;
+}
+
+.hover\:w-16:hover{
+  width: 4rem;
+}
+
+.hover\:w-\[75px\]:hover{
+  width: 75px;
+}
+
+.hover\:w-\[72px\]:hover{
+  width: 72px;
 }
 
 .hover\:border-2:hover{
@@ -1230,6 +1281,11 @@ video {
   background-color: rgb(156 163 175 / var(--tw-bg-opacity));
 }
 
+.hover\:bg-blue-200:hover{
+  --tw-bg-opacity: 1;
+  background-color: rgb(191 219 254 / var(--tw-bg-opacity));
+}
+
 .hover\:p-0:hover{
   padding: 0px;
 }
@@ -1238,9 +1294,17 @@ video {
   padding: 0.25rem;
 }
 
+.hover\:p-2:hover{
+  padding: 0.5rem;
+}
+
 .hover\:px-3:hover{
   padding-left: 0.75rem;
   padding-right: 0.75rem;
+}
+
+.hover\:pl-2:hover{
+  padding-left: 0.5rem;
 }
 
 .hover\:text-xl:hover{
@@ -1270,8 +1334,25 @@ video {
   background-color: rgb(209 213 219 / var(--tw-bg-opacity));
 }
 
+.focus\:bg-blue-400:focus{
+  --tw-bg-opacity: 1;
+  background-color: rgb(96 165 250 / var(--tw-bg-opacity));
+}
+
+.group:hover .group-hover\:ml-2{
+  margin-left: 0.5rem;
+}
+
 .group:hover .group-hover\:block{
   display: block;
+}
+
+.group:hover .group-hover\:p-2{
+  padding: 0.5rem;
+}
+
+.group:hover .group-hover\:pl-2{
+  padding-left: 0.5rem;
 }
 
 @media (min-width: 640px){
