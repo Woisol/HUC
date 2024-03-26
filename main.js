@@ -298,10 +298,14 @@ function MonitorInit() {
 				if (cmdProps[3] === "Started\r") {
 					win.webContents.send("MonitorStateChange", true);
 					MonitorState = true;
+
+					tray.setImage(path.join(__dirname, './public/Tray_Open.ico'))
 				}
 				else if (cmdProps[3] === "Stop\r") {
 					win.webContents.send("MonitorStateChange", false);
 					MonitorState = false;
+
+					tray.setImage(path.join(__dirname, './public/Tray_Close.ico'))
 				}
 			}
 		})
