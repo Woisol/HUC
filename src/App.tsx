@@ -14,6 +14,8 @@ export default function App() {
   //**----------------------------ScollBarPosition-----------------------------------------------------
   const [selectedIndex, setSelectedIndex] = useState(0);
   const ScollRef = useRef(null);
+  //**----------------------------DarkMode-----------------------------------------------------
+  const [isDarkMode, setIsDarkMode] = useState(false);
   // window.addEventListener("scroll", () => {
   //   setSelectedIndex(document.documentElement.scrollTop / window.innerHeight);
   // })
@@ -24,9 +26,12 @@ export default function App() {
   // document.getElementById("View").addEventListener('scroll', (event) => {
 
   // })
+  // ipcRenderer.on('DarkModeChange', arg => {
+  //   if(arg)
+  // })
 
   return (
-    <div className="dark dark:text-gray-200">
+    <div className={`dark:text-gray-200 ${isDarkMode ? 'dark' : ''}`}>
       <Tab.Group selectedIndex={selectedIndex}>
         {/* //！！用了as div才能使用view！ */}
         <SlideBar />
@@ -34,7 +39,7 @@ export default function App() {
           {/* ！wok！！！！才知道这个overflow-auto是必须的！！！！！！！ */}
           {/* ！同时这里加absolute可以防止子元素相对root定位而超过滚动条……………… */}
           {/* ！！！！必须用absolute！！用relative可能导致鼠标在子元素上时无法滚动 */}
-          <PageDashBoard isMonitorRunning={isMonitorRunning} toggleState={toggleState} />
+          <PageDashBoard isMonitorRunning={isMonitorRunning} toggleState={toggleState} isDarkMode={isDarkMode} setIsDarkMode={setIsDarkMode} />
           <PageAppDetail />
           <PageSetting />
         </Tab.Panels>

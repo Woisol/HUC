@@ -21,7 +21,8 @@ export default function BGGear({ isMonitorRunning }) {
 
 	// ！！！！！Via TY，类组件必须这样才能读取props！下面三个都不行
 	return (
-		<div className="fixed w-full bg-blue-300 h-fit -z-10">
+		<div className="fixed w-full bg-blue-300 h-fit">
+			{/* //！这个-z-10完全没有必要设置设置了反而导致div必须设置opacity才能显示出来………… */}
 			{/* ！莫名奇妙无法设置背景…………只能在外面用opacity替代了 */}
 			{/* // ！两种方式都不对…………<img className="absolute" style={{ width: `${props.size}px`, height: `${props.size}px`, top: `${props.top}px`, right: `${props.right}px`, transition: "0.1s", transformt: `rotate(${this.state.rotate}}deg)` }} src={setting} alt="" /> */}
 			{/* <img className="absolute" style={{ width: `${this.state.size}px`, height: `${this.state.size}px`, top: `${this.state.top}px`, right: `${this.state.right}px`, transition: "0.1s", transformt: `rotate(${this.state.rotate}}deg)` }} src={setting} alt="" /> */}
@@ -33,9 +34,9 @@ export default function BGGear({ isMonitorRunning }) {
 			{/* ！记得{} */}
 
 			{/* //！TY：使用display才能减少资源占用………… */}
-			<img className={`absolute hidden md:block md:w-[200px] md:h-[200px] top-[30px] right-[319px] duration-100 dark:hidden ${isMonitorRunning ? 'rotate-reverse' : ''}`} src={setting} alt="" />
-			<img className={`absolute hidden md:block md:w-[250px] md:h-[250px] top-[102px] right-[123px] duration-100 dark:hidden ${isMonitorRunning ? 'rotate' : ''}`} src={setting} alt="" />
-			<img className={`absolute hidden md:block md:w-[250px] md:h-[250px] top-[106px] right-[470px] duration-100 dark:hidden ${isMonitorRunning ? 'rotate' : ''}`} src={setting} alt="" />
+			<img className={`absolute hidden md:block md:w-[200px] md:h-[200px] top-[30px] right-[319px] duration-100 ${isMonitorRunning ? 'rotate-reverse' : ''}`} src={setting} alt="" />
+			<img className={`absolute hidden md:block md:w-[250px] md:h-[250px] top-[102px] right-[123px] duration-100 ${isMonitorRunning ? 'rotate' : ''}`} src={setting} alt="" />
+			<img className={`absolute hidden md:block md:w-[250px] md:h-[250px] top-[106px] right-[470px] duration-100 ${isMonitorRunning ? 'rotate' : ''}`} src={setting} alt="" />
 		</div>
 
 	)
