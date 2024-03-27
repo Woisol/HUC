@@ -97,10 +97,6 @@ div.console {
 // 	filter: hue-rotate(90deg);
 // }
 
-. {
-	transition-property: color, transform
-}
-
 @tailwind base;
 
 .RoundAndShadow {

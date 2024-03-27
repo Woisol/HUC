@@ -13,7 +13,7 @@ export default function DarkModeSwitcher({ isDarkMode, setIsDarkMode }) {
 			as='div'
 			// ！发现问题了…………看控制台注意到编译出来的，当前版本的tailwindcss对button有默认样式背景透明…………https://www.cnblogs.com/alpiny/p/18096722
 			checked={isDarkMode}
-			onChange={handleSwitch}
+			onChange={setIsDarkMode}
 			className={`absolute w-20 h-9 top-5 right-5 rounded-full transition-colors duration-500 focus:ring-[2px] focus:ring-white dark:focus:ring-black ${isDarkMode ? 'bg-gray-700' : 'bg-blue-300'}`}>
 			{/* //！border和ring的一个大区别是ring不会挤占内部元素位置！ */}
 			<span className="sr-only">Dark Mode</span>
@@ -30,7 +30,4 @@ export default function DarkModeSwitcher({ isDarkMode, setIsDarkMode }) {
 			)}
 		</Switch>
 	)
-	function handleSwitch(isDarkMode: boolean) {
-		setIsDarkMode(isDarkMode);
-	}
 }

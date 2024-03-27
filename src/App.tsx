@@ -26,10 +26,11 @@ export default function App() {
   // document.getElementById("View").addEventListener('scroll', (event) => {
 
   // })
-  // ipcRenderer.on('DarkModeChange', arg => {
-  //   if(arg)
-  // })
-
+  ipcRenderer.on('DarkModeChange_fromSystem', (event, arg) => {
+    // ！注意一定要写完event和arg不然错误…………………………
+    setIsDarkMode(arg);
+    // !初次启动可能无法设置…………
+  })
   return (
     <div className={`dark:text-gray-200 ${isDarkMode ? 'dark' : ''}`}>
       <Tab.Group selectedIndex={selectedIndex}>
@@ -39,7 +40,7 @@ export default function App() {
           {/* ！wok！！！！才知道这个overflow-auto是必须的！！！！！！！ */}
           {/* ！同时这里加absolute可以防止子元素相对root定位而超过滚动条……………… */}
           {/* ！！！！必须用absolute！！用relative可能导致鼠标在子元素上时无法滚动 */}
-          <PageDashBoard isMonitorRunning={isMonitorRunning} toggleState={toggleState} isDarkMode={isDarkMode} setIsDarkMode={setIsDarkMode} />
+          <PageDashBoard isMonitorRunning={isMonitorRunning} toggleState={toggleState} isDarkMode={isDarkMode} setIsDarkMode={handleDarkModeChange} />
           <PageAppDetail />
           <PageSetting />
         </Tab.Panels>
@@ -63,5 +64,9 @@ export default function App() {
     if (ScollRef.current === null) return;
     setSelectedIndex(Math.floor((ScollRef.current.scrollTop + window.innerHeight / 2) / window.innerHeight))
     // ！加入第三页后突然出现在第三页却显示第一页的bug，原来是/并不是整除……………………………………
+  }
+  function handleDarkModeChange(arg: boolean) {
+    setIsDarkMode(arg);
+    ipcRenderer.send('DarkModeChange', arg);
   }
 }

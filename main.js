@@ -3,7 +3,7 @@
 // !Cannot use import outside of moudle…………
 // !额不支持ts…………
 const spawn = require("child_process").spawn;
-const { app, BrowserWindow, ipcMain, Tray } = require('electron');
+const { app, BrowserWindow, ipcMain, Tray, nativeTheme } = require('electron');
 const $ = require("jquery");
 const path = require("path");
 const url = require("url");
@@ -393,6 +393,17 @@ ipcMain.on("MonitorPcsStdinWrite", (event, arg) => {
 // 	// ！不要以为debug显示的是“数组”就直接传过去啊啊
 // 	// ！是json的{}不是数组的[]！！！！！！
 // })
+ipcMain.on("DarkModeChange", (event, arg) => {
+	if (arg)
+		nativeTheme.themeSource = 'dark'
+	else
+		nativeTheme.themeSource = 'light'
+})
+// td加入跟随系统的设置
+if (true)
+	nativeTheme.on('updated', () => {
+		win.webContents.send('DarkModeChange_fromSystem', nativeTheme.shouldUseDarkColors)
+	})
 //**----------------------------RunTimeShow-----------------------------------------------------
 function UpdateRunTime(date) {
 	// console.log("Enter Func UpdateRunTime");
