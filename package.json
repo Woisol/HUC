@@ -9,7 +9,7 @@
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
-    "test": "react-scripts test",
+    "test": "jest",
     "eject": "react-scripts eject",
     "estart": "electron .",
     "tstart": "npx tailwindcss -i ./src/input.css -o ./src/MainView.css --watch",
@@ -86,6 +86,7 @@
     "react-dom": "^18.2.0",
     "react-scripts": "5.0.1",
     "tailwindcss": "^3.4.1",
+    "ts-node": "^10.9.2",
     "web-vitals": "^2.1.4"
   },
   "devDependencies": {
@@ -95,6 +96,7 @@
     "@types/mysql": "^2.15.26",
     "electron": "^29.1.4",
     "electron-builder": "^24.13.3",
+    "jest": "^29.7.0",
     "less": "^4.2.0"
   }
 }

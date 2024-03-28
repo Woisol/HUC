@@ -472,7 +472,8 @@ function UpdateRunTime(date) {
 		connection.query(`SELECT * FROM ${mntApp} WHERE StartTime${toQueryString(date, 1)};`, function (error, res) {
 			if (error !== null) {
 				console.log(`Failed to Read DB: ${error}`)
-				return;
+				throw error;
+				// return;
 			}
 			let tmpTime = [];
 			res.forEach(row => {
@@ -516,7 +517,8 @@ function UpdateLastSeven() {
 				// !算了如果要用复杂的query语句也是要用mntApps.forEach的…………先不搞了
 				if (error !== null) {
 					console.log(`Failed to Read DB: ${error}`)
-					return;
+					throw error;
+					// return;
 				}
 				res.forEach(row => {
 					totalMin += row.LastTime;
@@ -538,4 +540,11 @@ function adjudgeDateBy4(date) {
 		d.setDate(d.getDate() - 1)
 	}
 	return d;
+}
+
+//**----------------------------test-----------------------------------------------------
+module.exports = {
+	appConfig,
+	toQueryString,
+	adjudgeDateBy4
 }
