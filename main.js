@@ -15,13 +15,13 @@ var win, tray, isToQuit = false;
 var MonitorPcs, MonitorState = true;
 var appConfig = require(path.join(process.cwd(), "config.json"));
 //**----------------------------AppInfo-----------------------------------------------------
-var AppInfo = Object.entries(require(path.join(process.cwd(), "AppInfo.json")));
+var AppInfo = require(path.join(process.cwd(), "AppInfo.json"));
 //**----------------------------AppRunning-----------------------------------------------------
 var runningApps = [];
 var mntApps = [];
 var RunTimeDB = require("mysql");
 //**----------------------------ContexMenu-----------------------------------------------------
-var ContextMenu_Fresh, ContextMenu_MainSwitch, ContextMenu_Console, ContextMenu_RunTime, ContextMenu_LastSeven
+var ContextMenu_Fresh, ContextMenu_MainSwitch, ContextMenu_Console, ContextMenu_RunTime, ContextMenu_LastSeven, ContextMenu_EditAppInfo
 const { Menu } = require("electron");
 const { createContext } = require("react");
 var connection = RunTimeDB.createConnection({
@@ -243,6 +243,13 @@ ContextMenu_LastSeven = Menu.buildFromTemplate([
 			UpdateLastSeven()
 		}
 	}])
+ContextMenu_EditAppInfo = Menu.buildFromTemplate([
+	{
+		label: "编辑",
+		click: (menuItem, browserWindow, event) => {
+			win.webContents.send("set_edit");
+		}
+	}])
 //**----------------------------ipcMain-----------------------------------------------------
 // $("#MainSwitchImg").on("contextmenu", (event, params) => {
 // 	const { } = params;
@@ -268,6 +275,10 @@ ipcMain.on("ContextMenu_RunTime", (event, arg) => {
 ipcMain.on("ContextMenu_LastSeven", (event, arg) => {
 	event.preventDefault();
 	ContextMenu_LastSeven.popup();
+})
+ipcMain.on("ContextMenu_EditAppInfo", (event, arg) => {
+	event.preventDefault();
+	ContextMenu_EditAppInfo.popup()
 })
 function UpdateRunningApp(App, Delete = false) {
 	if (Delete) {
@@ -347,7 +358,7 @@ function MonitorInit() {
 			var tmpAppInfo = [];
 			tmpAppInfo.push(app);
 			let isPushed = false;
-			AppInfo.forEach((appInfo) => {
+			Object.entries(AppInfo).forEach((appInfo) => {
 				if (!isPushed && appInfo[0].toLowerCase() === app.toLowerCase()) {
 					tmpAppInfo.push(appInfo[1].Icon);
 					isPushed = true;
@@ -409,6 +420,7 @@ ipcMain.on("MonitorPcsStdinWrite", (event, arg) => {
 // 	// ！不要以为debug显示的是“数组”就直接传过去啊啊
 // 	// ！是json的{}不是数组的[]！！！！！！
 // })
+//**----------------------------DarkMode-----------------------------------------------------
 var isDarkMode = false
 ipcMain.on("DarkModeChange", (event, arg) => {
 	if (arg) {
@@ -436,6 +448,11 @@ function setFollowSystemDarkMode(follow) {
 		else nativeTheme.themeSource = 'light';
 	}
 }
+//**----------------------------AppInfo-----------------------------------------------------
+ipcMain.on('update_app_info', (event, arg) => {
+	fs.writeFile(path.join(process.cwd(), "AppInfo.json"), JSON.stringify(arg, null, 4))
+	UpdateRunTime(new Date());
+})
 //**----------------------------RunTimeShow-----------------------------------------------------
 function UpdateRunTime(date) {
 	// console.log("Enter Func UpdateRunTime");
@@ -456,7 +473,7 @@ function UpdateRunTime(date) {
 		let isPushed = false;
 		let tmpRunTimeInfo = [];
 		tmpRunTimeInfo.push(mntApp);
-		AppInfo.forEach((appInfo) => {
+		Object.entries(AppInfo).forEach((appInfo) => {
 			if (!isPushed && appInfo[0].toLowerCase() === mntApp.toLowerCase()) {
 				tmpRunTimeInfo.push(appInfo[1].Class);
 				tmpRunTimeInfo.push(appInfo[1].Color);
@@ -548,3 +565,4 @@ module.exports = {
 	toQueryString,
 	adjudgeDateBy4
 }
+// ！是电量太低了吗突然electron就无法加载页面，还以为是main.js的问题但是回退都不行，最后重启vsc就行了

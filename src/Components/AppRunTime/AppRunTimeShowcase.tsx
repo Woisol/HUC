@@ -11,7 +11,7 @@ function TimeCard({ data, pxPerMin }) {
 	);
 }
 
-export default function AppRunTimeShowcase({ data }) {
+export default function AppRunTimeShowcase({ index, data, setOpen, setEvent }) {
 	var [pxPerMin, UpdatePxPerMin] = useState(0);
 	setInterval(() => UpdatePxPerMin($('.AppRunTimeShowcase').height() / 1440), 1000);
 	//！艹…………jQuery的方法…………直接用height就自动返回第一个元素的不用[0]
@@ -38,9 +38,11 @@ export default function AppRunTimeShowcase({ data }) {
 
 			</div>
 			{/* //！芜湖实现用group搞父类悬浮！ */}
-			<div className="relative w-10 h-10 p-0 mx-1 transition-all bg-blue-300 sm:p-2 sm:w-16 sm:h-16 md:w-20 md:h-20 rounded-2xl hover:shadow-2xl hover:bg-blue-400 group" >
-				<img className="w-full h-full rounded-2xl" src={data === undefined ? null : data[3]} alt="AppName" />
-				<span className='absolute bottom-0 hidden p-1 text-xs text-center text-black -translate-x-1/2 bg-white rounded-md opacity-75 left-1/2 w-fit group-hover:block'>{data === undefined ? null : data[0]}</span>
+			<div className="relative w-10 h-10 p-0 mx-1 transition-all bg-blue-300 sm:p-2 sm:w-16 sm:h-16 md:w-20 md:h-20 rounded-2xl hover:shadow-2xl hover:bg-blue-400 group"
+			>
+				{/* //！混了…………onclick没有arg………… */}
+				<img className="w-full h-full rounded-2xl" src={data === undefined ? null : data[3]} alt={data[0]} onClick={(e) => { e.stopPropagation(); setEvent(e); setOpen(true); }} id={index} />
+				<span className='absolute bottom-0 hidden p-1 text-xs text-center text-black -translate-x-1/2 bg-white rounded-md opacity-75 pointer-events-none left-1/2 w-fit group-hover:block'>{data === undefined ? null : data[0]}</span>
 			</div>
 		</div>
 	)
