@@ -22,8 +22,8 @@ function SlideBarOption({ icon, title, PageID, index }) {
 		<Tab>
 			{/* underline-offset-4//!不知道是干什么的 */}
 			{({ selected }) =>
-				<a key={index} href={"#" + PageID} className={`flex items-center w-full overflow-hidden transition-all rounded-2xl hover:text-xl hover:bg-blue-300 dark:hover:bg-blue-800
-				${selected ? ' border-l-4 rounded-l-none border-blue-500 bg-blue-300 dark:border-white dark:bg-blue-950 underline opacity-100' : 'opacity-75 '} `}>
+				<a key={index} href={"#" + PageID} className={`flex items-center w-full overflow-hidden text-black transition-all rounded-2xl hover:text-xl hover:bg-blue-300 dark:hover:bg-gray-400
+				${selected ? 'border-l-8 group-hover:border-l-4 dark:group-hover:border-black sm:border-l-4 rounded-l-none border-blue-500 bg-blue-300 dark:border-gray-300 dark:sm:border-black dark:bg-gray-400 underline opacity-100' : 'opacity-75 '} `}>
 					<img className={`m-1 w-14 h-14 ImgTurnWhite ${selected ? 'scale-100' : 'scale-75'}`} src={icon} alt={title} />
 					{/* <svg className={`m-1 w-14 h-14 ImgTurnWhite ${selected ? 'scale-100' : 'scale-75'}`} xmlns={icon}>
 					</svg> */}
@@ -38,7 +38,7 @@ export default function SlideBar() {
 	return (
 		// <div className="fixed left-0 flex flex-col justify-center w-0 w-16 h-0 py-2 transition-all -translate-y-1/2 bg-blue-200 shadow-2xl sm:h-fit rounded-2xl items-cente hover:w-48 hover:px-3 top-1/2">
 		// <>
-		<Tab.List className="fixed left-0 flex flex-col hover:pl-2 justify-center w-0 py-1 transition-all -translate-y-1/2 bg-blue-200 dark:bg-blue-900 rounded-md shadow-2xl h-fit sm:w-16 sm:h-fit sm:rounded-2xl items-cente hover:w-[72px] sm:hover:w-48 top-1/2 group:">
+		<Tab.List className="fixed left-0 flex flex-col hover:pl-2 justify-center w-0 py-1 transition-all -translate-y-1/2 bg-blue-200 dark:bg-gray-300 rounded-md shadow-2xl h-fit sm:w-16 sm:h-fit sm:rounded-2xl items-cente hover:w-[72px] sm:hover:w-48 top-1/2 group">
 			{SlideBarOpProps.map((item, index) => { return SlideBarOption(item, index) })}
 			{/* //!不懂怎么解决报错了/汗 */}
 		</Tab.List>
