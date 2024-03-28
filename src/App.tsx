@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import React, { createContext, useRef } from 'react';
 import "./MainView.css";
 import PageDashBoard from './Page_DashBoard.tsx';
 import PageAppDetail from './Page_AppRunTime.tsx';
@@ -14,11 +14,12 @@ export default function App() {
   //**----------------------------ScollBarPosition-----------------------------------------------------
   const [selectedIndex, setSelectedIndex] = useState(0);
   const ScollRef = useRef(null);
-  //**----------------------------DarkMode-----------------------------------------------------
-  const [isDarkMode, setIsDarkMode] = useState(false);
   // window.addEventListener("scroll", () => {
   //   setSelectedIndex(document.documentElement.scrollTop / window.innerHeight);
   // })
+  //**----------------------------DarkMode-----------------------------------------------------
+  const [isDarkMode, setIsDarkMode] = useState(false);
+  //~~----------------------------Setting-----------------------------------------------------
 
   ipcRenderer.on('MonitorStateChange', (event, arg) => {
     setIsMonitorRunning(arg);

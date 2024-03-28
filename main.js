@@ -8,6 +8,7 @@ const $ = require("jquery");
 const path = require("path");
 const url = require("url");
 const iconv = require("iconv-lite");
+const fs = require('fs');
 //##----------------------------Initialize-----------------------------------------------------
 const VERSION = "1.0"
 var win, tray, isToQuit = false;
@@ -22,6 +23,7 @@ var RunTimeDB = require("mysql");
 //**----------------------------ContexMenu-----------------------------------------------------
 var ContextMenu_Fresh, ContextMenu_MainSwitch, ContextMenu_Console, ContextMenu_RunTime, ContextMenu_LastSeven
 const { Menu } = require("electron");
+const { createContext } = require("react");
 var connection = RunTimeDB.createConnection({
 	host: "localhost",
 	user: appConfig.SQLUser,
@@ -173,6 +175,19 @@ const createWindow = () => {
 		win.hide();
 		// win.hide("5s");//!并没有用…………
 	})
+	app.setLoginItemSettings({ openAtLogin: appConfig.StartBoot })
+	ipcMain.on("setting_startboot_change", (event, arg) => {
+		appConfig.StartBoot = arg;
+		fs.writeFileSync(path.join(process.cwd(), "config.json"), JSON.stringify(appConfig, null, 4))
+		app.setLoginItemSettings({ openAtLogin: arg });
+		event.reply("setting_startboot_change", arg)
+	})
+	ipcMain.on('setting_follow_system_dark_mode_change', (event, arg) => {
+		appConfig.FollowSystemDarkMode = arg;
+		fs.writeFileSync(path.join(process.cwd(), "config.json"), JSON.stringify(appConfig, null, 4))
+		setFollowSystemDarkMode(appConfig.FollowSystemDarkMode)
+		event.reply("setting_follow_system_dark_mode_change", arg)
+	})
 }
 //**----------------------------ContextMenu-----------------------------------------------------
 // !会和单独元素的右键彩蛋冲突…………
@@ -281,6 +296,7 @@ ipcMain.on("UIInited", (event, arg) => {
 	UpdateRunTime(adjudgeDateBy4(new Date()))
 	UpdateLastSeven();
 
+	win.webContents.send("get_app_config", appConfig);
 })
 //**----------------------------Monitor-----------------------------------------------------
 function MonitorInit() {
@@ -393,17 +409,33 @@ ipcMain.on("MonitorPcsStdinWrite", (event, arg) => {
 // 	// ！不要以为debug显示的是“数组”就直接传过去啊啊
 // 	// ！是json的{}不是数组的[]！！！！！！
 // })
+var isDarkMode = false
 ipcMain.on("DarkModeChange", (event, arg) => {
-	if (arg)
+	if (arg) {
 		nativeTheme.themeSource = 'dark'
-	else
+		isDarkMode = true;
+	}
+	else {
 		nativeTheme.themeSource = 'light'
+		isDarkMode = false;
+	}
 })
 // td加入跟随系统的设置
-if (true)
-	nativeTheme.on('updated', () => {
-		win.webContents.send('DarkModeChange_fromSystem', nativeTheme.shouldUseDarkColors)
-	})
+function setFollowSystemDarkMode(follow) {
+	if (follow) {
+		nativeTheme.on('updated', () => {
+			isDarkMode = nativeTheme.shouldUseDarkColors
+			win.webContents.send('DarkModeChange_fromSystem', isDarkMode)
+		})
+		nativeTheme.themeSource = 'system';
+		// ！注意不要漏了这个…………不然无法updated！
+	}
+	else {
+		nativeTheme.removeAllListeners('updated');
+		if (isDarkMode) nativeTheme.themeSource = 'dark';
+		else nativeTheme.themeSource = 'light';
+	}
+}
 //**----------------------------RunTimeShow-----------------------------------------------------
 function UpdateRunTime(date) {
 	// console.log("Enter Func UpdateRunTime");
