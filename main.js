@@ -311,6 +311,11 @@ ipcMain.on("UIInited", (event, arg) => {
 
 	win.webContents.send("get_app_config", appConfig);
 })
+ipcMain.on('update_config', (event, arg) => {
+	if (Object.keys(arg).length === 0) return;
+	fs.writeFileSync(path.join(process.cwd(), 'config.json'), JSON.stringify(arg, null, 4))
+	// event.reply('update_config:Successfully')
+})
 //**----------------------------Monitor-----------------------------------------------------
 function MonitorInit() {
 	MonitorPcs = spawn(path.join(process.cwd(), '/Monitor/HUC_Backend.exe'), []);

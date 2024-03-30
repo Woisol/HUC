@@ -1,5 +1,5 @@
 import * as React from 'react';
-export default function SettingInput({ title, value, handleChange, type }) {
+export default function SettingInput({ title, value, handleChange, type = 'text' }) {
 	return (
 		<div className={'flex relative'}>
 			<span className="">{title}</span>
