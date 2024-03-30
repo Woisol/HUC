@@ -144,15 +144,18 @@ export default function PageAppRunTime() {
 	)
 	// function setEvent(e) {event = e; }
 	//！也无法通过自定的函数传递值…………
-	function sendContextRequest() { ipcRenderer.send('ContextMenu_EditAppInfo') }
+	function sendContextRequest() { runTimeHistory = []; ipcRenderer.send('ContextMenu_EditAppInfo'); }
 	function handleConfirmClick() {
 		ipcRenderer.send('update_app_info', RunTimeData)
 		setIsEdit(false);
 	}
 	function handleCancelClick() {
-		setRunTimeData(runTimeHistory);
+		var copy = RunTimeData.slice();
+		if (runTimeHistory.length > 0)
+			copy[id] = runTimeHistory;
+
+		setRunTimeData(copy);
 		setIsEdit(false);
-		runTimeHistory = [];
 	}
 	function handleInputChange(value, valueIndex) {
 		// const newValue = ;
@@ -176,7 +179,7 @@ export default function PageAppRunTime() {
 
 
 		var copy = RunTimeData.slice();
-		if (runTimeHistory.length === 0) runTimeHistory.push(copy[id].slice());
+		if (runTimeHistory.length === 0) runTimeHistory = copy[id].slice();
 
 		copy[id][valueIndex] = value;
 		// ！md你要说这个方法还清晰多了…………………………

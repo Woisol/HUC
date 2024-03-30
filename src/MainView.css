@@ -124,6 +124,10 @@
   top: 30px;
 }
 
+.left-2{
+  left: 0.5rem;
+}
+
 .-z-50{
   z-index: -50;
 }
@@ -179,6 +183,10 @@
 
 .mt-4{
   margin-top: 1rem;
+}
+
+.mt-1{
+  margin-top: 0.25rem;
 }
 
 .flex{
