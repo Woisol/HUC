@@ -35,11 +35,12 @@ export default function PageAppRunTime() {
 	const [LastSeven, setLastSeven] = useState([0, 0, 0, 0, 0, 0, 0, 0]);
 	const [SingleRunTimeData, setSingleRunTimeData] = useState([]);
 	const [open, setOpen] = useState(false);
-	const [event, setEvent] = useState(null);
+	// const [event, setEvent] = useState(null);
+	const [id, setId] = useState(0);
 	const [isEdit, setIsEdit] = useState(false);
 	const [appInfoWeek, setAppInfoWeek] = useState(0);
 	// const [history, setHistory] = useState([...RunTimeData.slice()]);
-	var id = event === null ? 0 : event.target.id;
+	// var id = event === null ? 0 : event.target.id;
 	// var event, arg;
 	today = new Date();
 
@@ -153,9 +154,9 @@ export default function PageAppRunTime() {
 						)
 					})}
 				</div>
-				{event !== null && RunTimeData.length > id && <Dialog open={open} setOpen={(value) => { setOpen(value); setIsEdit(value); setAppInfoWeek(0) }}>
+				{RunTimeData.length > id && <Dialog open={open} setOpen={(value) => { setOpen(value); setIsEdit(value); setAppInfoWeek(0) }}>
 					<div className="absolute flex w-4/5 -translate-x-1/2 -translate-y-1/2 bg-white dark:bg-gray-800 dark:text-white h-4/5 RoundAndShadow top-1/2 left-1/2">
-						<div className="relative flex flex-col items-center justify-center w-40 h-full p-2 border-r-2 border-gray-300 RoundAndShadow" style={{ backgroundColor: RunTimeData[id][2] }} >
+						<div className="relative flex flex-col items-center justify-center w-40 h-full p-2 border-r-2 border-gray-300 RoundAndShadow transition-all duration-500" style={{ backgroundColor: RunTimeData[id][2] }} >
 							<img className={`w-2/3 p-2 my-1 bg-white border-gray-500 transition-all duration-500 RoundAndShadow ${isEdit ? 'opacity-75' : ''}`} src={RunTimeData[id][3]} alt={RunTimeData[id][0]} />
 							<input className='rounded-md w-full text-xl text-center bg-white  dark:bg-gray-600 text-wrap' disabled={isEdit ? false : true} onContextMenu={() => { if (!isEdit) sendContextRequest() }} value={RunTimeData[id][0]} onChange={(e) => { handleInputChange(e.target.value, 0) }} />
 							{/* //td太长会超………… */}
@@ -195,7 +196,10 @@ export default function PageAppRunTime() {
 								</div>
 							</div>
 						</div>
+						<button disabled={id < 1 ? true : false} className={`absolute -left-8 top-1/2 size-16 -translate-y-1/2 rounded-full shadow-2xl text-5xl transition-all bg-gray-300 opacity-50 ${id < 1 ? 'cursor-not-allowed' : 'hover:bg-gray-500 '}`} onClick={() => { setId(id - 1); ipcRenderer.send('update_single_app_info', [RunTimeData[id - 1][0], appInfoWeek]); }}>&lt;</button>
+						<button disabled={id > RunTimeData.length - 2 ? true : false} className={`absolute -right-8 top-1/2 size-16 -translate-y-1/2 rounded-full shadow-2xl text-5xl transition-all bg-gray-300 opacity-50 ${id > RunTimeData.length - 2 ? 'cursor-not-allowed' : 'hover:bg-gray-500 '}`} onClick={() => { setId(id + 1); ipcRenderer.send('update_single_app_info', [RunTimeData[id + 1][0], appInfoWeek]); }}>&gt;</button>
 					</div>
+					{/* //！woq要显示<的转义是这样的……………额为什么是l和g………… */}
 				</Dialog >}
 			</div>
 			{/* //！崩溃的关键就在这里…………！！！main那边传过来的时候会导致数据不全但这里又没有判断………… */}
@@ -251,10 +255,11 @@ export default function PageAppRunTime() {
 	// ！不对React官方也用的是{ }，不过注意官方那个确实是一个对象而不是数组…………
 	// {...RunTimeData,
 	// [event.target.id]: [{ ...RunTimeData[event.target.id], [RunTimeData[event.target.id][valueIndex]]: e.target.value }]}
-	function handleAppClick(e: MouseEvent) {
-		e.stopPropagation(); setEvent(e); setOpen(true);
+	function handleAppClick(id: number) {
+		setId(Number(id)); setOpen(true);
+		// ！真神奇…………传过来的id居然是string…………
 		// !此时id还没有做更新…………必须在这里手动更新一次
-		ipcRenderer.send('update_single_app_info', [RunTimeData[e.target.id][0], appInfoWeek]);
+		ipcRenderer.send('update_single_app_info', [RunTimeData[id][0], appInfoWeek]);
 	}
 	function handleRadioChange(value) {
 		setAppInfoWeek(value);

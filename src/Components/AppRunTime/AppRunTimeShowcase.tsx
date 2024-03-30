@@ -1,5 +1,5 @@
 import * as React from 'react';
-import $ from 'jquery';
+import $, { event } from 'jquery';
 const useState = React.useState;
 function TimeCard({ data, pxPerMin }) {
 	// !艹…………又是渲染先后的问题…………这个计算必须放在Showcase外面…………
@@ -42,7 +42,7 @@ export default function AppRunTimeShowcase({ index, data, handleClick }) {
 			<div className="relative w-10 h-10 p-0 mx-1 transition-all bg-blue-300 sm:p-2 sm:w-16 sm:h-16 md:w-20 md:h-20 rounded-2xl hover:shadow-2xl hover:bg-blue-400 group"
 			>
 				{/* //！混了…………onclick没有arg………… */}
-				<div className="w-full h-full group-hover:opacity-25 transition-all duration-500"><img className="w-full h-full rounded-2xl items-center" src={data === undefined ? null : data[3]} alt={data[0]} onClick={handleClick} id={index} /></div>
+				<div className="w-full h-full group-hover:opacity-25 transition-all duration-500"><img className="w-full h-full rounded-2xl items-center" src={data === undefined ? null : data[3]} alt={data[0]} onClick={(event) => { event.stopPropagation(); handleClick(event.target.id) }} id={index} /></div>
 				<div className='absolute hidden group-hover:block left-1/2 -translate-x-1/2 text-nowrap w-fit top-1/2 -translate-y-1/2 text-sm sm:text-lg md:text-2xl text-center rounded-md opacity-75 pointer-events-none'>{data === undefined ? null : data[0]}</div>
 				<span className='absolute p-1 text-xs text-center text-black -translate-x-1/2 bg-white rounded-md opacity-75 pointer-events-none left-1/2 w-fit'>{totalTime.toFixed(2)}h</span>
 			</div>
