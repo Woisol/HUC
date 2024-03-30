@@ -3,7 +3,7 @@
 // !Cannot use import outside of moudle…………
 // !额不支持ts…………
 const spawn = require("child_process").spawn;
-const { app, BrowserWindow, ipcMain, Tray, nativeTheme } = require('electron');
+const { app, BrowserWindow, ipcMain, Tray, nativeTheme, ipcRenderer } = require('electron');
 const $ = require("jquery");
 const path = require("path");
 const url = require("url");
@@ -21,6 +21,7 @@ var runningApps = [];
 var mntApps = [];
 // !这玩意注意是mysql不是sql（和sql2搞混了）
 var RunTimeDB = require("mysql");
+var today = adjudgeDateBy4(new Date());
 //**----------------------------ContexMenu-----------------------------------------------------
 var ContextMenu_Fresh, ContextMenu_MainSwitch, ContextMenu_Console, ContextMenu_RunTime, ContextMenu_LastSeven, ContextMenu_EditAppInfo
 const { Menu } = require("electron");
@@ -551,7 +552,7 @@ function UpdateRunTime(date) {
 			}
 			// });
 		})
-	).then((runTimeInfo) => { win.webContents.send("UpdateRunTime", [runTimeInfo, date]); console.log(runTimeInfo); })
+	).then((runTimeInfo) => { win.webContents.send("UpdateRunTime", [runTimeInfo, date]); })
 	// connection.end();
 
 	// });
@@ -559,8 +560,7 @@ function UpdateRunTime(date) {
 }
 function toQueryString(startDate, days) {
 	let former = startDate;
-	let latter = new Date();
-	latter.setDate(former.getDate() + days);
+	let latter = new Date(former.getTime() + 24 * 60 * 60 * 1000 * days);
 	return ` BETWEEN '${former.getFullYear()}-${former.getMonth() + 1}-${former.getDate()} 04:00:00' AND '${latter.getFullYear()}-${latter.getMonth() + 1}-${latter.getDate()} 04:00:00'`
 }
 //**----------------------------LastSeven-----------------------------------------------------
@@ -570,14 +570,16 @@ ipcMain.on("UpdateLastSeven", (event, arg) => {
 function UpdateLastSeven() {
 	// if (connection.state == "disconnected")
 	// 	connection.connect();
-	let today = adjudgeDateBy4(new Date());
 	var result = [];
+	// !艹两个嵌套不搞Promise了………………
+	// !艹当时就已经用变量处理的很好了哈哈哈艹
+	// var curStep = 0;
 	[6, 5, 4, 3, 2, 1, 0].forEach((value) => {
 		// !虽然按理来说应该是6~0…………但是不知道为什么就是慢了一天…………面向结果编程了
 		let totalMin = 0;
 		let i = 0;
 		mntApps.forEach(mntApp => {
-			console.log(`SELECT * FROM ${mntApp} WHERE StartTime${toQueryString(new Date(today.getTime() - value * 24 * 60 * 60 * 1000), 1)};`)
+			// console.log(`SELECT * FROM ${mntApp} WHERE StartTime${toQueryString(new Date(today.getTime() - value * 24 * 60 * 60 * 1000), 1)};`)
 			connection.query(`SELECT * FROM ${mntApp} WHERE StartTime${toQueryString(new Date(today.getTime() - value * 24 * 60 * 60 * 1000), 1)};`, function (error, res) {
 				// !算了如果要用复杂的query语句也是要用mntApps.forEach的…………先不搞了
 				if (error !== null) {
@@ -599,6 +601,27 @@ function UpdateLastSeven() {
 		// !艹这个异步好烦啊………………
 	})
 }
+//**----------------------------UpdateSingleAppInfo-----------------------------------------------------
+ipcMain.on('update_single_app_info', (event, arg) => {
+	Promise.all(
+		[6, 5, 4, 3, 2, 1, 0].map(async (value, index) => {
+			return await new Promise((resolve, reject) => {
+				// console.log(`SELECT * FROM ${arg[0]} WHERE StartTime${toQueryString(new Date(today.getTime() - (arg[1] * 7 + value) * 24 * 60 * 60 * 1000), 1)};\n`)
+				connection.query(`SELECT * FROM ${arg[0]} WHERE StartTime${toQueryString(new Date(today.getTime() - (arg[1] * 7 + value) * 24 * 60 * 60 * 1000), 1)};`, (err, res) => {
+					let tmpTime = 0;
+					if (err !== null) {
+						console.log(`Failed to Read DB: ${err}`)
+						throw err;
+						// return;
+					}
+					res.forEach(row => {
+						tmpTime += row.LastTime;
+					})
+					resolve(tmpTime / 60);
+				})
+			})
+		})).then((res) => win.webContents.send('update_single_app_info', res))
+})
 function adjudgeDateBy4(date) {
 	var d = new Date(date);
 	if (d.getHours() <= 4) {

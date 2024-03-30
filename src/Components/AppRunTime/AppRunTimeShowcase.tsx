@@ -11,17 +11,18 @@ function TimeCard({ data, pxPerMin }) {
 	);
 }
 
-export default function AppRunTimeShowcase({ index, data, setOpen, setEvent }) {
+export default function AppRunTimeShowcase({ index, data, handleClick }) {
 	var [pxPerMin, UpdatePxPerMin] = useState(0);
 	setInterval(() => UpdatePxPerMin($('.AppRunTimeShowcase').height() / 1440), 1000);
 	//！艹…………jQuery的方法…………直接用height就自动返回第一个元素的不用[0]
+	let totalTime = 0;
 	return (
 		<div className='flex flex-col items-center w-16 h-full p-2 mx-2 transition-all shadow-xl sm:w-20 md:w-28 rounded-2xl hover:shadow-2xl' style={{ backgroundColor: `${data[2]}` }}>
 			<div className="relative w-3 h-full transition-all bg-gray-300 rounded-lg shadow-lg dark:bg-gray-600 AppRunTimeShowcase sm:w-5 md:w-7 right-2 hover:shadow-2xl">
 				{data[4].map((item, index) => {
 					let tmpStarMin = item[0].getHours() * 60 + item[0].getMinutes() + item[0].getSeconds() / 60 - 240;
 					let tmpEndmin = item[1].getHours() * 60 + item[1].getMinutes() + item[1].getSeconds() / 60 - 240;
-
+					totalTime += (tmpEndmin - tmpStarMin) / 60;
 					return (
 						<TimeCard key={index} data={[tmpStarMin > 0 ? tmpStarMin : tmpStarMin + 1440, tmpEndmin > 0 ? tmpEndmin : tmpEndmin + 1440, item]} pxPerMin={pxPerMin} />
 					)
@@ -41,8 +42,9 @@ export default function AppRunTimeShowcase({ index, data, setOpen, setEvent }) {
 			<div className="relative w-10 h-10 p-0 mx-1 transition-all bg-blue-300 sm:p-2 sm:w-16 sm:h-16 md:w-20 md:h-20 rounded-2xl hover:shadow-2xl hover:bg-blue-400 group"
 			>
 				{/* //！混了…………onclick没有arg………… */}
-				<img className="w-full h-full rounded-2xl" src={data === undefined ? null : data[3]} alt={data[0]} onClick={(e) => { e.stopPropagation(); setEvent(e); setOpen(true); }} id={index} />
-				<span className='absolute bottom-0 hidden p-1 text-xs text-center text-black -translate-x-1/2 bg-white rounded-md opacity-75 pointer-events-none left-1/2 w-fit group-hover:block'>{data === undefined ? null : data[0]}</span>
+				<div className="w-full h-full group-hover:opacity-25 transition-all duration-500"><img className="w-full h-full rounded-2xl items-center" src={data === undefined ? null : data[3]} alt={data[0]} onClick={handleClick} id={index} /></div>
+				<div className='absolute hidden group-hover:block left-1/2 -translate-x-1/2 text-nowrap w-fit top-1/2 -translate-y-1/2 text-sm sm:text-lg md:text-2xl text-center rounded-md opacity-75 pointer-events-none'>{data === undefined ? null : data[0]}</div>
+				<span className='absolute p-1 text-xs text-center text-black -translate-x-1/2 bg-white rounded-md opacity-75 pointer-events-none left-1/2 w-fit'>{totalTime.toFixed(2)}h</span>
 			</div>
 		</div>
 	)

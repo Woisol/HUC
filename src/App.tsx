@@ -32,8 +32,11 @@ export default function App() {
     setIsDarkMode(arg);
     // !初次启动可能无法设置…………
   })
+  if (isDarkMode) document.body.classList.add('dark');
+  else document.body.classList.remove('dark');
+  // ${ isDarkMode ? 'dark' : '' }
   return (
-    <div className={`dark:text-gray-200 ${isDarkMode ? 'dark' : ''}`}>
+    <div className={`dark:text-gray-200`}>
       <Tab.Group selectedIndex={selectedIndex}>
         {/* //！！用了as div才能使用view！ */}
         <SlideBar />

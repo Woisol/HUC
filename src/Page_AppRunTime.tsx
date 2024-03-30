@@ -3,6 +3,8 @@ import ReactEcharts from 'echarts-for-react';
 import $ from 'jquery';
 import AppRunTimeShowcase from './Components/AppRunTime/AppRunTimeShowcase.tsx';
 import Dialog from './Components/Layout/Dialog.tsx';
+import EChartsReact from 'echarts-for-react';
+import { RadioGroup } from '@headlessui/react';
 const ipcRenderer = window.require("electron").ipcRenderer;
 // ipcRenderer.send("UpdateRunTime");
 var today = new Date();
@@ -31,9 +33,11 @@ var runTimeHistory = [];
 export default function PageAppRunTime() {
 	const [RunTimeData, setRunTimeData] = useState([]);
 	const [LastSeven, setLastSeven] = useState([0, 0, 0, 0, 0, 0, 0, 0]);
+	const [SingleRunTimeData, setSingleRunTimeData] = useState([]);
 	const [open, setOpen] = useState(false);
 	const [event, setEvent] = useState(null);
 	const [isEdit, setIsEdit] = useState(false);
+	const [appInfoWeek, setAppInfoWeek] = useState(0);
 	// const [history, setHistory] = useState([...RunTimeData.slice()]);
 	var id = event === null ? 0 : event.target.id;
 	// var event, arg;
@@ -57,12 +61,18 @@ export default function PageAppRunTime() {
 		setLastSeven(data);
 	})
 	ipcRenderer.on('set_edit', (event, arg) => setIsEdit(true))
+	ipcRenderer.on('update_single_app_info', (event, arg) => {
+		setSingleRunTimeData(arg);
+	})
 	const todayDateString = today.getFullYear() + "-" + String(today.getMonth() + 1).padStart(2, '0') + "-" + String(today.getDate()).padStart(2, '0');
 	//！ From TY，这格式要求也太严格吧……………………估计是差了0就不得…………………
 	//**----------------------------LastSeven-----------------------------------------------------
-	var option = {
+	var lastSevenOption = {
 		xAxis: {
-			data: [`${today.getMonth() + 1}-${today.getDate() - 6}`, `${today.getMonth() + 1}-${today.getDate() - 5}`, `${today.getMonth() + 1}-${today.getDate() - 4}`, `${today.getMonth() + 1}-${today.getDate() - 3}`, `${today.getMonth() + 1}-${today.getDate() - 2}`, `${today.getMonth() + 1}-${today.getDate() - 1}`, `${today.getMonth() + 1}-${today.getDate()}`]
+			data: [6, 5, 4, 3, 2, 1, 0].map((day) => {
+				let theDay = new Date(today.getTime() - 24 * 60 * 60 * 1000 * day);
+				return `${theDay.getMonth() + 1}-${theDay.getDate()}`
+			})
 		},
 		yAxis: {},
 		series: [
@@ -74,6 +84,32 @@ export default function PageAppRunTime() {
 					opacity: 0.5
 				},
 				data: [...LastSeven]
+			}
+		],
+		tooltip: {
+			trigger: 'item',
+			formatter: '{a}:{c}h'
+		},
+	};
+	let singleAppInfoDay = new Date(today.getTime() - 24 * 60 * 60 * 1000 * 7 * appInfoWeek)
+	var singleInfoOption = {
+		xAxis: {
+			data: [6, 5, 4, 3, 2, 1, 0].map((day) => {
+				let today = new Date(singleAppInfoDay.getTime() - 24 * 60 * 60 * 1000 * day);
+				return `${today.getMonth() + 1}-${today.getDate()}`
+			})
+			// data: [`${(new Date(singleAppInfoDay.getTime() - (arg[1] * 7 + value) * 24 * 60 * 60 * 1000)).getMonth() + 1}-${sing.getDate() - 6}`, `${sing.getMonth() + 1}-${sing.getDate() - 5}`, `${sing.getMonth() + 1}-${sing.getDate() - 4}`, `${sing.getMonth() + 1}-${sing.getDate() - 3}`, `${sing.getMonth() + 1}-${sing.getDate() - 2}`, `${sing.getMonth() + 1}-${sing.getDate() - 1}`, `${sing.getMonth() + 1}-${sing.getDate()}`]
+		},
+		yAxis: {},
+		series: [
+			{
+				name: '小时数',
+				type: 'bar',
+				"areaStyle": {
+					color: "#87CEFA",
+					opacity: 0.5
+				},
+				data: [...SingleRunTimeData]
 			}
 		],
 		tooltip: {
@@ -101,7 +137,7 @@ export default function PageAppRunTime() {
 			<div className="relative flex flex-col items-center justify-center w-full h-full p-5" >
 				<div className="relative w-5/6 mb-5 transition-all bg-white shadow-lg dark:bg-gray-700 h-44 rounded-2xl hover:shadow-xl hover:bg-gray-100" onContextMenu={(event) => { ipcRenderer.send("ContextMenu_LastSeven",); }}>
 					<span className='absolute -top-3 left-4'>近7天使用情况</span>
-					<ReactEcharts option={option} style={{ width: "110%", height: "150%", position: "absolute", left: "-15px", top: "-30px" }} />
+					<ReactEcharts option={lastSevenOption} style={{ width: "110%", height: "150%", position: "absolute", left: "-15px", top: "-30px" }} />
 					{/* //!艹分不清楚………………这个是{}不是{{}}………… */}
 				</div>
 				{/* //td此处为什么full会超出屏幕？？？ */}
@@ -110,32 +146,55 @@ export default function PageAppRunTime() {
 					{/* <AppRunTimeShowcase key={1} data={["Test", "Test", "#87CEFA", "", [[0, 1440]]]} /> */}
 					{RunTimeData.map((data, index) => {
 						return (
-							<AppRunTimeShowcase index={index} data={data} setOpen={setOpen} setEvent={setEvent} />
+							<AppRunTimeShowcase index={index} data={data} handleClick={handleAppClick} />
 							// ！艹一样的传进去的变量是副本修改无效…………
 							// ！woq我说这个key属性怎么都传不进去…………应该是和react本身的冲突了/汗，注意！！！
 							// ~~~这个data同名好像可以隐藏？并不行
 						)
 					})}
 				</div>
-				{event !== null && RunTimeData.length > id && <Dialog open={open} setOpen={(value) => { setOpen(value); setIsEdit(value); }}>
-					<div className="absolute flex w-4/5 -translate-x-1/2 -translate-y-1/2 bg-white dark:bg-gray-900 h-4/5 RoundAndShadow top-1/2 left-1/2">
+				{event !== null && RunTimeData.length > id && <Dialog open={open} setOpen={(value) => { setOpen(value); setIsEdit(value); setAppInfoWeek(0) }}>
+					<div className="absolute flex w-4/5 -translate-x-1/2 -translate-y-1/2 bg-white dark:bg-gray-800 dark:text-white h-4/5 RoundAndShadow top-1/2 left-1/2">
 						<div className="relative flex flex-col items-center justify-center w-40 h-full p-2 border-r-2 border-gray-300 RoundAndShadow" style={{ backgroundColor: RunTimeData[id][2] }} >
-							<img className='w-2/3 p-2 my-1 bg-white border-gray-500 RoundAndShadow' src={RunTimeData[id][3]} alt={RunTimeData[id][0]} />
-							<input className='rounded-md w-full text-xl text-center bg-white text-wrap' disabled={isEdit ? false : true} onContextMenu={() => { if (!isEdit) sendContextRequest() }} value={RunTimeData[id][0]} onChange={(e) => { handleInputChange(e.target.value, 0) }} />
+							<img className={`w-2/3 p-2 my-1 bg-white border-gray-500 transition-all duration-500 RoundAndShadow ${isEdit ? 'opacity-75' : ''}`} src={RunTimeData[id][3]} alt={RunTimeData[id][0]} />
+							<input className='rounded-md w-full text-xl text-center bg-white  dark:bg-gray-600 text-wrap' disabled={isEdit ? false : true} onContextMenu={() => { if (!isEdit) sendContextRequest() }} value={RunTimeData[id][0]} onChange={(e) => { handleInputChange(e.target.value, 0) }} />
 							{/* //td太长会超………… */}
 							<span className="w-full h-4"></span>
-							<div className='flex w-full p-1 mx-1 mt-4 bg-gray-300 rounded-lg dark:bg-gray-600'>Class:<input disabled={isEdit ? false : true} onContextMenu={() => { if (!isEdit) sendContextRequest() }} title='Class' className='rounded-md w-full ml-1 text-sm bg-transparen' value={RunTimeData[id][1]} onChange={(e) => handleInputChange(e.target.value, 1)} /></div>
-							<div className='flex w-full p-1 mx-1 bg-gray-300 rounded-lg dark:bg-gray-600'>Color:<input disabled={isEdit ? false : true} onContextMenu={() => { if (!isEdit) sendContextRequest() }} type='color' title='Color' className='rounded-md w-full ml-1 text-sm bg-transparen' value={RunTimeData[id][2]} onChange={(e) => handleInputChange(e.target.value, 2)} /></div>
-							<div className='flex w-full p-1 mx-1 bg-gray-300 rounded-lg dark:bg-gray-600'>IconBase64:<input disabled={isEdit ? false : true} onContextMenu={() => { if (!isEdit) sendContextRequest() }} title='IconBase64' className='rounded-md w-full ml-1 text-sm bg-transparen' value={RunTimeData[id][3]} onChange={(e) => handleInputChange(e.target.value, 3)} onFocus={(event) => { event.target.select() }} /></div>
+							<div className='flex w-full p-1 mx-1 mt-4 bg-gray-300 rounded-lg dark:bg-gray-600' onContextMenu={() => { if (!isEdit) sendContextRequest() }}>Class:<input disabled={isEdit ? false : true} title='Class' className='rounded-md w-full ml-1 text-sm bg-transparent' value={RunTimeData[id][1]} onChange={(e) => handleInputChange(e.target.value, 1)} /></div>
+							<div className='flex w-full p-1 mx-1 bg-gray-300 rounded-lg dark:bg-gray-600' onContextMenu={() => { if (!isEdit) sendContextRequest() }}>Color:<input disabled={isEdit ? false : true} type='color' title='Color' className='rounded-md w-full ml-1 text-sm bg-transparent' value={RunTimeData[id][2]} onChange={(e) => handleInputChange(e.target.value, 2)} /></div>
+							<div className='flex w-full p-1 mx-1 bg-gray-300 rounded-lg dark:bg-gray-600' onContextMenu={() => { if (!isEdit) sendContextRequest() }}>IconBase64:<input disabled={isEdit ? false : true} title='IconBase64' className='rounded-md w-full ml-1 text-sm bg-transparent' value={RunTimeData[id][3]} onChange={(e) => handleInputChange(e.target.value, 3)} onFocus={(event) => { event.target.select() }} /></div>
 							{/* //！网上看到的this用不了…………必须用evet.target */}
-							{isEdit ? (
-								<div className="flex">
-									<button className='h-6 px-4 mt-4 transition-all bg-gray-300 hover:h-7 hove RoundAndShadow hover:bg-gray-400 hover:text-xl hover:mt-3' onClick={handleConfirmClick}>确认</button>
-									<button className='h-6 px-4 mt-4 transition-all bg-gray-300 hover:h-7 hove RoundAndShadow hover:bg-gray-400 hover:text-xl hover:mt-3' onClick={handleCancelClick}>取消</button>
-								</div>
-							) : null}
+							<div className={`flex transition-all overflow-hidden ${isEdit ? 'h-10' : 'w-0 h-0'}`}>
+								<button className='h-6 px-4 mt-4 transition-all bg-gray-300 hover:h-7 text-nowrap dark:bg-gray-600 RoundAndShadow hover:bg-gray-400 hover:text-xl hover:mt-3' onClick={handleConfirmClick}>确认</button>
+								<button className='h-6 px-4 mt-4 transition-all bg-gray-300 hover:h-7 text-nowrap dark:bg-gray-600 RoundAndShadow hover:bg-gray-400 hover:text-xl hover:mt-3' onClick={handleCancelClick}>取消</button>
+							</div>
 						</div>
-						<div className="dark:bg-gray-900 ">TEST</div>
+						<div className="w-full relative">
+							<div className="absolute top-1/2 -translate-y-1/2 left-1/2 -translate-x-1/2 w-5/6 transition-all bg-white shadow-lg dark:bg-gray-700 h-fit rounded-2xl hover:shadow-xl hover:bg-gray-100" onContextMenu={(event) => { ipcRenderer.send("ContextMenu_LastSeven",); }}>
+								<RadioGroup as='div' className='flex w-full' value={appInfoWeek} onChange={handleRadioChange}>
+									{[5, 4, 3, 2, 1].map((value) => {
+										return (
+											<RadioGroup.Option value={value} className='flex-1'>
+												{({ checked }) =>
+													<div className={`hover:bg-gray-300 dark:hover:bg-gray-400  rounded-lg ${checked ? 'bg-gray-300 dark:bg-gray-400' : 'bg-gray-200 dark:bg-gray-500'}`}>上{value}周</div>
+												}
+											</RadioGroup.Option>
+
+										)
+									})}
+									<RadioGroup.Option value={0} className='flex-1'>
+										{({ checked }) =>
+											<div className={`hover:bg-gray-300 dark:hover:bg-gray-400  rounded-lg ${checked ? 'bg-gray-300 dark:bg-gray-400' : 'bg-gray-200 dark:bg-gray-500'}`}>本周</div>
+										}
+									</RadioGroup.Option>
+								</RadioGroup>
+								<div className="relative mt-5">
+									<span className='absolute -top-3 left-4'>近7天使用情况</span>
+									<ReactEcharts option={singleInfoOption} />
+									{/* //!艹分不清楚………………这个是{}不是{{}}………… */}
+								</div>
+							</div>
+						</div>
 					</div>
 				</Dialog >}
 			</div>
@@ -192,4 +251,13 @@ export default function PageAppRunTime() {
 	// ！不对React官方也用的是{ }，不过注意官方那个确实是一个对象而不是数组…………
 	// {...RunTimeData,
 	// [event.target.id]: [{ ...RunTimeData[event.target.id], [RunTimeData[event.target.id][valueIndex]]: e.target.value }]}
+	function handleAppClick(e: MouseEvent) {
+		e.stopPropagation(); setEvent(e); setOpen(true);
+		// !此时id还没有做更新…………必须在这里手动更新一次
+		ipcRenderer.send('update_single_app_info', [RunTimeData[e.target.id][0], appInfoWeek]);
+	}
+	function handleRadioChange(value) {
+		setAppInfoWeek(value);
+		ipcRenderer.send('update_single_app_info', [RunTimeData[id][0], value]);
+	}
 }
