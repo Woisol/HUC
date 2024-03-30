@@ -314,7 +314,7 @@ ipcMain.on("UIInited", (event, arg) => {
 function MonitorInit() {
 	MonitorPcs = spawn(path.join(process.cwd(), '/Monitor/HUC_Backend.exe'), []);
 	// ！就唯独这个必须要用process.cwd()才能读到…………上面的json可以直接require…………
-	MonitorPcs.stdout.on("data", (data) => {
+	MonitorPcs.stdout.on("data", async (data) => {
 		// !这个依然要在定义了以后才能执行………………
 		win.webContents.send("ConsoleReOpen");
 		//**----------------------------Console-----------------------------------------------------
@@ -354,6 +354,11 @@ function MonitorInit() {
 			}
 		})
 		//**----------------------------RunningAppIcons-----------------------------------------------------
+		AppInfo = JSON.parse(fs.readFileSync(path.join(process.cwd(), "AppInfo.json")))
+
+		// AppInfo = require(path.join(process.cwd(), "AppInfo.json"));
+		// !注意不要忘记更新…………
+
 		var runningAppsInfo = [];
 		runningApps.forEach(app => {
 			var tmpAppInfo = [];
@@ -451,16 +456,34 @@ function setFollowSystemDarkMode(follow) {
 }
 //**----------------------------AppInfo-----------------------------------------------------
 ipcMain.on('update_app_info', (event, arg) => {
-	fs.writeFile(path.join(process.cwd(), "AppInfo.json"), JSON.stringify(arg, null, 4))
+	// var json = "";
+	// arg.forEach(value => json += `${JSON.stringify({ [value[0]]: { 'Icon': value[3], 'Class': value[1], 'Color': value[2] } }, null, 4)},`)
+
+	// const json = [];
+	// arg.forEach(value => json.push({ [value[0]]: { 'Icon': value[3], 'Class': value[1], 'Color': value[2] } }))
+
+	var jsonObj = {};
+	arg.filter(v => v[1] !== "None").forEach(value =>
+		// !注意和固定名称的jsonObj.Icon不一样！
+		// ！在json中这个[]非常常用！
+		jsonObj[value[0]] = {
+			'Icon': value[3],
+			'Class': value[1],
+			'Color': value[2]
+		}
+	)
+	fs.writeFileSync(path.join(process.cwd(), "AppInfo.json"), JSON.stringify(jsonObj, null, 4))
+	// !一不用Sync就强制要求你要用回调…………
 	UpdateRunTime(new Date());
 })
 //**----------------------------RunTimeShow-----------------------------------------------------
-// ！艹最关键是这个async吧………………
+ipcMain.on('update_run_time', () => [UpdateRunTime(new Date())])
+//~~艹最关键是这个async吧………………
 function UpdateRunTime(date) {
 	// console.log("Enter Func UpdateRunTime");
 	// if (connection.state == "disconnected")
 	// ！mysql模块居然是旧版的…………报错说客户端不支持
-	// !上网查了说是改plugin，在sqlyog里面改了以后突然登不上
+	// !上网查了说是改plugin，lyog里面改了以后突然登不上
 	// !要被吓死还好看到网上，其实这个时候是没有密码，输入密码直接回车就能进了，后续再改密码就行
 	// !相关：报错mysql Client does not support authentication protocol requested by server; consider upgrading MySQL client
 	// !ERROR 1045(28000)就是密码错误或者服务器关闭之类的无法登录
@@ -472,6 +495,9 @@ function UpdateRunTime(date) {
 	// let queryRunTimeInfo = new Promise((resolve, reject) => {//！不用Promise.all的话其实只是为了解决回调嵌套而已你这种简单的嵌套用不上
 	// let runTimeInfo = Promise.all((resolve, reject) => {//！傻…………返回的不是结果是Promise对象…………
 	// ！注意Promise.all传入的是数组而不是函数！
+	AppInfo = JSON.parse(fs.readFileSync(path.join(process.cwd(), "AppInfo.json")))
+	// ！注意readFileSync是同步不是异步…………………………可以用的…………
+	// ！然后注意返回的是buffer…………可以用JSON.parse转换回来！
 	Promise.all(
 		// ！哦哦哦！！！.all是执行里面全部的 Promise ！！不是执行任意函数啊…………
 		// ！！！map和forEach的另一个差别是前者才能实现异步而后者是同步遍历的！！！！！

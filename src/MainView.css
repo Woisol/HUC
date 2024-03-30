@@ -60,10 +60,6 @@
   left: 50%;
 }
 
-.left-2{
-  left: 0.5rem;
-}
-
 .left-3{
   left: 0.75rem;
 }
@@ -179,10 +175,6 @@
 
 .ml-5{
   margin-left: 1.25rem;
-}
-
-.mt-1{
-  margin-top: 0.25rem;
 }
 
 .mt-4{

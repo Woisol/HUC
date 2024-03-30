@@ -27,21 +27,34 @@ function SideBarOption({ OnClickFunc, Title }) {
 //**----------------------------AppRunTimeShowcase-----------------------------------------------------
 // !这个数据做不到跟随窗口变化即时改变…………考虑用state
 //**----------------------------Page-----------------------------------------------------
+var runTimeHistory = [];
 export default function PageAppRunTime() {
-	const [LastSeven, UpdateLastSeven] = useState([0, 0, 0, 0, 0, 0, 0, 0]);
-	const [RunTimeData, UpdateRunTimeData] = useState([]);
+	const [RunTimeData, setRunTimeData] = useState([]);
+	const [LastSeven, setLastSeven] = useState([0, 0, 0, 0, 0, 0, 0, 0]);
 	const [open, setOpen] = useState(false);
 	const [event, setEvent] = useState(null);
 	const [isEdit, setIsEdit] = useState(false);
+	// const [history, setHistory] = useState([...RunTimeData.slice()]);
+	var id = event === null ? 0 : event.target.id;
 	// var event, arg;
 	today = new Date();
+
 	ipcRenderer.on("UpdateRunTime", (event, data) => {
-		UpdateRunTimeData(data[0]);
+		setRunTimeData(data[0]);
+
+		// ！以为修改复制的数组不会导致原数组变化………………
+		// ！但是其实本质是slice会创建新的数组但是里面的引用元素会同步更改………………
+		// runTimeHistory = data[0]
+		// setRunTimeData(runTimeHistory.slice());
+
+		// runTimeHistory = new Array(...data[0]);
+		// runTimeHistory = data[0].slice(0)
+		// runTimeHistory = [...data[0].slice()]
 		$("#DateSelector").val(data[1].getFullYear() + "-" + String(data[1].getMonth() + 1).padStart(2, '0') + "-" + String(data[1].getDate()).padStart(2, '0'));
 		// !艹老是忘记这个语法…………
 	})
 	ipcRenderer.on("UpdateLastSeven", (event, data) => {
-		UpdateLastSeven(data);
+		setLastSeven(data);
 	})
 	ipcRenderer.on('set_edit', (event, arg) => setIsEdit(true))
 	const todayDateString = today.getFullYear() + "-" + String(today.getMonth() + 1).padStart(2, '0') + "-" + String(today.getDate()).padStart(2, '0');
@@ -68,6 +81,7 @@ export default function PageAppRunTime() {
 			formatter: '{a}:{c}h'
 		},
 	};
+
 
 	return (
 		<div id="Page_AppDetail" className="relative flex w-screen h-screen px-1 bg-gray-300 border-black dark:bg-gray-800 md:pl-20 md:py-6 border-y-2 snap-start">
@@ -103,49 +117,47 @@ export default function PageAppRunTime() {
 						)
 					})}
 				</div>
+				{event !== null && RunTimeData.length > id && <Dialog open={open} setOpen={(value) => { setOpen(value); setIsEdit(value); }}>
+					<div className="absolute flex w-4/5 -translate-x-1/2 -translate-y-1/2 bg-white dark:bg-gray-900 h-4/5 RoundAndShadow top-1/2 left-1/2">
+						<div className="relative flex flex-col items-center justify-center w-40 h-full p-2 border-r-2 border-gray-300 RoundAndShadow" style={{ backgroundColor: RunTimeData[id][2] }} >
+							<img className='w-2/3 p-2 my-1 bg-white border-gray-500 RoundAndShadow' src={RunTimeData[id][3]} alt={RunTimeData[id][0]} />
+							<input className='rounded-md w-full text-xl text-center bg-white text-wrap' disabled={isEdit ? false : true} onContextMenu={() => { if (!isEdit) sendContextRequest() }} value={RunTimeData[id][0]} onChange={(e) => { handleInputChange(e.target.value, 0) }} />
+							{/* //td太长会超………… */}
+							<span className="w-full h-4"></span>
+							<div className='flex w-full p-1 mx-1 mt-4 bg-gray-300 rounded-lg dark:bg-gray-600'>Class:<input disabled={isEdit ? false : true} onContextMenu={() => { if (!isEdit) sendContextRequest() }} title='Class' className='rounded-md w-full ml-1 text-sm bg-transparen' value={RunTimeData[id][1]} onChange={(e) => handleInputChange(e.target.value, 1)} /></div>
+							<div className='flex w-full p-1 mx-1 bg-gray-300 rounded-lg dark:bg-gray-600'>Color:<input disabled={isEdit ? false : true} onContextMenu={() => { if (!isEdit) sendContextRequest() }} type='color' title='Color' className='rounded-md w-full ml-1 text-sm bg-transparen' value={RunTimeData[id][2]} onChange={(e) => handleInputChange(e.target.value, 2)} /></div>
+							<div className='flex w-full p-1 mx-1 bg-gray-300 rounded-lg dark:bg-gray-600'>IconBase64:<input disabled={isEdit ? false : true} onContextMenu={() => { if (!isEdit) sendContextRequest() }} title='IconBase64' className='rounded-md w-full ml-1 text-sm bg-transparen' value={RunTimeData[id][3]} onChange={(e) => handleInputChange(e.target.value, 3)} onFocus={(event) => { event.target.select() }} /></div>
+							{/* //！网上看到的this用不了…………必须用evet.target */}
+							{isEdit ? (
+								<div className="flex">
+									<button className='h-6 px-4 mt-4 transition-all bg-gray-300 hover:h-7 hove RoundAndShadow hover:bg-gray-400 hover:text-xl hover:mt-3' onClick={handleConfirmClick}>确认</button>
+									<button className='h-6 px-4 mt-4 transition-all bg-gray-300 hover:h-7 hove RoundAndShadow hover:bg-gray-400 hover:text-xl hover:mt-3' onClick={handleCancelClick}>取消</button>
+								</div>
+							) : null}
+						</div>
+						<div className="dark:bg-gray-900 ">TEST</div>
+					</div>
+				</Dialog >}
 			</div>
 			{/* //！崩溃的关键就在这里…………！！！main那边传过来的时候会导致数据不全但这里又没有判断………… */}
-			{event !== null && RunTimeData.length >= event.target.id && <Dialog open={open} setOpen={(value) => { setOpen(value); setIsEdit(value); }}>
-				<div className="absolute flex w-4/5 -translate-x-1/2 -translate-y-1/2 bg-white dark:bg-gray-900 h-4/5 RoundAndShadow top-1/2 left-1/2">
-					<div className="relative flex flex-col items-center justify-center w-40 h-full p-2 border-r-2 border-gray-300 RoundAndShadow" style={{ backgroundColor: RunTimeData[event.target.id][2] }} >
-						{isEdit ? (
-							<>
-								<img className='w-2/3 p-2 my-1 bg-white border-gray-500 RoundAndShadow' src={RunTimeData[event.target.id][3]} alt={RunTimeData[event.target.id][0]} />
-								<input className='w-full text-xl text-center bg-white rounded-lg text-wrap' value={RunTimeData[event.target.id][0]} onChange={(e) => { handleInputChange(e, 0) }} />
-								{/* //td太长会超………… */}
-								<span className="w-full h-4"></span>
-								<div className='flex w-full p-1 mx-1 mt-4 bg-gray-300 rounded-lg dark:bg-gray-600'>Class:<input title='Class' className='w-full ml-1 text-sm bg-transparen' value={RunTimeData[event.target.id][1]} onChange={(e) => handleInputChange(e, 1)} /></div>
-								<div className='flex w-full p-1 mx-1 bg-gray-300 rounded-lg dark:bg-gray-600'>Color:<input title='Color' className='w-full ml-1 text-sm bg-transparen' value={RunTimeData[event.target.id][2]} onChange={(e) => handleInputChange(e, 2)} /></div>
-								<div className='flex w-full p-1 mx-1 bg-gray-300 rounded-lg dark:bg-gray-600'>IconBase64:<input title='IconBase64' className='w-full ml-1 text-sm bg-transparen' value={RunTimeData[event.target.id][3]} onChange={(e) => handleInputChange(e, 3)} onFocus={(event) => { event.target.select() }} /></div>
-								{/* //！网上看到的this用不了…………必须用evet.target */}
-								<button className='h-6 px-4 mt-4 transition-all bg-gray-300 hover:h-7 hove RoundAndShadow hover:bg-gray-400 hover:text-xl hover:mt-3' onClick={handleConfirmClick}>确认</button>
-							</>
-						) : (
-							<>
-								<img className='w-2/3 p-2 my-1 bg-white border-gray-500 RoundAndShadow' src={RunTimeData[event.target.id][3]} alt={RunTimeData[event.target.id][0]} onContextMenu={sendContextRequest} />
-								<b className='w-full text-xl text-center bg-white rounded-lg text-wrap' onContextMenu={sendContextRequest}>{RunTimeData[event.target.id][0]}</b>
-								{/* //td太长会超………… */}
-								<span className='relative w-full mt-4 text-sm left-2' onContextMenu={sendContextRequest}><span className='p-1 bg-gray-300 rounded-lg dark:bg-gray-600'>Class:</span> {RunTimeData[event.target.id][1]}</span>
-								<span className='relative w-full mt-1 text-sm left-2' onContextMenu={sendContextRequest}><span className='p-1 bg-gray-300 rounded-lg dark:bg-gray-600'>Color:</span> {RunTimeData[event.target.id][2]}</span>
-							</>
-						)}
-					</div>
-					<div className=""></div>
-				</div>
-			</Dialog >}
 		</div >
 	)
 	// function setEvent(e) {event = e; }
 	//！也无法通过自定的函数传递值…………
 	function sendContextRequest() { ipcRenderer.send('ContextMenu_EditAppInfo') }
 	function handleConfirmClick() {
-		ipcRenderer.send('')
+		ipcRenderer.send('update_app_info', RunTimeData)
 		setIsEdit(false);
 	}
-	function handleInputChange(e, valueIndex) {
+	function handleCancelClick() {
+		setRunTimeData(runTimeHistory);
+		setIsEdit(false);
+		runTimeHistory = [];
+	}
+	function handleInputChange(value, valueIndex) {
 		// const newValue = ;
 		// console.log(ow);
-		const id = event.target.id;
+		// const id = event.target.id;
 		// const ow = [RunTimeData[id].splice(id - 1, 1, e.target.value)]
 		// const newValue = [
 		// 	...RunTimeData.slice(0, id),
@@ -162,16 +174,19 @@ export default function PageAppRunTime() {
 
 		// RunTimeData[id][valueIndex] = e.target.value;
 
+
 		var copy = RunTimeData.slice();
-		copy[id][valueIndex] = e.target.value;
+		if (runTimeHistory.length === 0) runTimeHistory.push(copy[id].slice());
+
+		copy[id][valueIndex] = value;
 		// ！md你要说这个方法还清晰多了…………………………
-		UpdateRunTimeData(copy)
-		// UpdateRunTimeData(() => { RunTimeData[event.target.id][valueIndex] = e.target.value })
+		setRunTimeData(copy)
+		// UpdateRunTimeData(() => {RunTimeData[event.target.id][valueIndex] = e.target.value})
 	}
 	// ！！！！！！关于嵌套对象的修改：
 	// ！1.注意如果是数组不能用下面的方法………………只能用slice复制一个新的！！！！
-	// ！2.分清{}和[]………………上面被TY多次误导老是要用{}导致怎么搞都不对…………………………………………
-	// ！不对React官方也用的是{}，不过注意官方那个确实是一个对象而不是数组…………
+	// ！2.分清{ }和[]………………上面被TY多次误导老是要用{ }导致怎么搞都不对…………………………………………
+	// ！不对React官方也用的是{ }，不过注意官方那个确实是一个对象而不是数组…………
 	// {...RunTimeData,
 	// [event.target.id]: [{ ...RunTimeData[event.target.id], [RunTimeData[event.target.id][valueIndex]]: e.target.value }]}
 }
