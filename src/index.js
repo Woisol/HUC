@@ -8,9 +8,9 @@ const ipcRenderer = window.require('electron').ipcRenderer;
 // let runningState = true;
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode >
+  // <React.StrictMode>
+  <App />
+  //</React.StrictMode >
 );
 ipcRenderer.send("UIInited");
 // ！对啦！应该在这里sent嘛而不是在App里面…………export那个函数必须在前面…………

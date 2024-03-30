@@ -1,5 +1,6 @@
 import * as React from 'react';
-import $, { event } from 'jquery';
+import $ from 'jquery';
+import { Draggable } from 'react-beautiful-dnd';
 const useState = React.useState;
 function TimeCard({ data, pxPerMin }) {
 	// !艹…………又是渲染先后的问题…………这个计算必须放在Showcase外面…………
@@ -17,35 +18,45 @@ export default function AppRunTimeShowcase({ index, data, handleClick }) {
 	//！艹…………jQuery的方法…………直接用height就自动返回第一个元素的不用[0]
 	let totalTime = 0;
 	return (
-		<div className='flex flex-col items-center w-16 h-full p-2 mx-2 transition-all shadow-xl sm:w-20 md:w-28 rounded-2xl hover:shadow-2xl' style={{ backgroundColor: `${data[2]}` }}>
-			<div className="relative w-3 h-full transition-all bg-gray-300 rounded-lg shadow-lg dark:bg-gray-600 AppRunTimeShowcase sm:w-5 md:w-7 right-2 hover:shadow-2xl">
-				{data[4].map((item, index) => {
-					let tmpStarMin = item[0].getHours() * 60 + item[0].getMinutes() + item[0].getSeconds() / 60 - 240;
-					let tmpEndmin = item[1].getHours() * 60 + item[1].getMinutes() + item[1].getSeconds() / 60 - 240;
-					totalTime += (tmpEndmin - tmpStarMin) / 60;
-					return (
-						<TimeCard key={index} data={[tmpStarMin > 0 ? tmpStarMin : tmpStarMin + 1440, tmpEndmin > 0 ? tmpEndmin : tmpEndmin + 1440, item]} pxPerMin={pxPerMin} />
-					)
-				})}
-				{/* //~~傻………………明明可以在return的时候用js的……………… */}
-				{/* //!并不能在return里面用传统js…………必须有返回值………… */}
-				{[4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 0, 1, 2, 3].map((cur, index) => (
-					<small className='absolute w-8 text-xs text-right text-gray-500 align-text-bottom border-b-2 md:text-base left-3 sm:left-5 md:left-7'
-						style={{
-							bottom: `${index * 60 * pxPerMin}px`,
-							height: `${60 * pxPerMin}px`,
-						}} key={index - 3}>{`${cur}:00`}</small>
-				))}
+		<Draggable key={data[0]} draggableId={data[0]} index={index}>
+			{(provided, snapshot) => (
+				// ！这里不能再有transition了不然拖拽后又有动画……
+				<div ref={provided.innerRef} {...provided.draggableProps} {...provided.dragHandleProps}>
+					{/* //！这里加了Draggable的属性会导致背景颜色失效………… */}
+					<div className='flex flex-col items-center w-16 h-full p-2 mx-2 shadow-xl sm:w-20 md:w-28 rounded-2xl hover:shadow-2xl'
+						style={{ backgroundColor: `${data[2]}` }} >
+						{/* //！注意这个组件有点特殊…………要有函数要有ref要有props */}
+						<div className="relative w-3 h-full transition-all bg-gray-300 rounded-lg shadow-lg dark:bg-gray-600 AppRunTimeShowcase sm:w-5 md:w-7 right-2 hover:shadow-2xl">
+							{data[4].map((item, index) => {
+								let tmpStarMin = item[0].getHours() * 60 + item[0].getMinutes() + item[0].getSeconds() / 60 - 240;
+								let tmpEndmin = item[1].getHours() * 60 + item[1].getMinutes() + item[1].getSeconds() / 60 - 240;
+								totalTime += (tmpEndmin - tmpStarMin) / 60;
+								return (
+									<TimeCard key={index} data={[tmpStarMin > 0 ? tmpStarMin : tmpStarMin + 1440, tmpEndmin > 0 ? tmpEndmin : tmpEndmin + 1440, item]} pxPerMin={pxPerMin} />
+								)
+							})}
+							{/* //~~傻………………明明可以在return的时候用js的……………… */}
+							{/* //!并不能在return里面用传统js…………必须有返回值………… */}
+							{[4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 0, 1, 2, 3].map((cur, index) => (
+								<small className='absolute w-8 text-xs text-right text-gray-500 align-text-bottom border-b-2 md:text-base left-3 sm:left-5 md:left-7'
+									style={{
+										bottom: `${index * 60 * pxPerMin}px`,
+										height: `${60 * pxPerMin}px`,
+									}} key={index - 3}>{`${cur}:00`}</small>
+							))}
 
-			</div>
-			{/* //！芜湖实现用group搞父类悬浮！ */}
-			<div className="relative w-10 h-10 p-0 mx-1 transition-all bg-blue-300 sm:p-2 sm:w-16 sm:h-16 md:w-20 md:h-20 rounded-2xl hover:shadow-2xl hover:bg-blue-400 group"
-			>
-				{/* //！混了…………onclick没有arg………… */}
-				<div className="w-full h-full group-hover:opacity-25 transition-all duration-500"><img className="w-full h-full rounded-2xl items-center" src={data === undefined ? null : data[3]} alt={data[0]} onClick={(event) => { event.stopPropagation(); handleClick(event.target.id) }} id={index} /></div>
-				<div className='absolute hidden group-hover:block left-1/2 -translate-x-1/2 text-nowrap w-fit top-1/2 -translate-y-1/2 text-sm sm:text-lg md:text-2xl text-center rounded-md opacity-75 pointer-events-none'>{data === undefined ? null : data[0]}</div>
-				<span className='absolute p-1 text-xs text-center text-black -translate-x-1/2 bg-white rounded-md opacity-75 pointer-events-none left-1/2 w-fit'>{totalTime.toFixed(2)}h</span>
-			</div>
-		</div>
+						</div>
+						{/* //！芜湖实现用group搞父类悬浮！ */}
+						<div className="relative w-10 h-10 p-0 mx-1 transition-all bg-blue-300 sm:p-2 sm:w-16 sm:h-16 md:w-20 md:h-20 rounded-2xl hover:shadow-2xl hover:bg-blue-400 group"
+						>
+							{/* //！混了…………onclick没有arg………… */}
+							<div className="w-full h-full group-hover:opacity-25 transition-all duration-500"><img className="w-full h-full rounded-2xl items-center" src={data === undefined ? null : data[3]} alt={data[0]} onClick={(event) => { event.stopPropagation(); handleClick(event.target.id) }} id={index} /></div>
+							<div className='absolute hidden group-hover:block left-1/2 -translate-x-1/2 text-nowrap w-fit top-1/2 -translate-y-1/2 text-sm sm:text-lg md:text-2xl text-center rounded-md opacity-75 pointer-events-none'>{data === undefined ? null : data[0]}</div>
+							<span className='absolute p-1 text-xs text-center text-black -translate-x-1/2 bg-white rounded-md opacity-75 pointer-events-none left-1/2 w-fit'>{totalTime.toFixed(2)}h</span>
+						</div>
+					</div>
+				</div>
+			)}
+		</Draggable>
 	)
 }

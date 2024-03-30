@@ -1,10 +1,11 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import ReactEcharts from 'echarts-for-react';
 import $ from 'jquery';
 import AppRunTimeShowcase from './Components/AppRunTime/AppRunTimeShowcase.tsx';
 import Dialog from './Components/Layout/Dialog.tsx';
 import EChartsReact from 'echarts-for-react';
 import { RadioGroup } from '@headlessui/react';
+import { DragDropContext, Droppable } from "react-beautiful-dnd";
 const ipcRenderer = window.require("electron").ipcRenderer;
 // ipcRenderer.send("UpdateRunTime");
 var today = new Date();
@@ -43,6 +44,12 @@ export default function PageAppRunTime() {
 	// var id = event === null ? 0 : event.target.id;
 	// var event, arg;
 	today = new Date();
+	useEffect(() => {
+		let tmpAppsOrder = [];
+		RunTimeData.forEach(value => tmpAppsOrder.push(value[0]))
+		ipcRenderer.send('update_app_order', tmpAppsOrder);
+	});
+
 
 	ipcRenderer.on("UpdateRunTime", (event, data) => {
 		setRunTimeData(data[0]);
@@ -119,7 +126,18 @@ export default function PageAppRunTime() {
 		},
 	};
 
+	// ！注意光有个数字还不够还要有字符！………………额az…………
+	// ！每个对象又有自己id反而不是要点…………
+	// !额其实用name作为id也可以的…………
+	// ~~不过没有这个也会导致Drag完后React渲染错误…………
+	//!并不是这个的问题…………去掉Droppable的transition就行了
 
+	// var RunTimeDataWithId = [...RunTimeData.map((item, index) => {
+	// 	return {
+	// 		...item,
+	// 		id: `Drag${index}`
+	// 	}
+	// })]
 	return (
 		<div id="Page_AppDetail" className="relative flex w-screen h-screen px-1 bg-gray-300 border-black dark:bg-gray-800 md:pl-20 md:py-6 border-y-2 snap-start">
 			<div className="absolute top-0 left-0 z-20 hidden w-full h-full pointer-events-none bg-black/30 dark:block"></div>
@@ -142,19 +160,32 @@ export default function PageAppRunTime() {
 					{/* //!艹分不清楚………………这个是{}不是{{}}………… */}
 				</div>
 				{/* //td此处为什么full会超出屏幕？？？ */}
-				<div className="flex h-full max-w-full p-3 overflow-x-scroll transition-all bg-white shadow-xl dark:bg-gray-700 hover:shadow-2xl rounded-2xl" onContextMenu={(event) => { ipcRenderer.send("ContextMenu_RunTime"); }}>
-					{/* <AppRunTimeShowcase key={1} data={["Test", "Test", "#87CEFA", "", [[0, 60]]]} /> */}
-					{/* <AppRunTimeShowcase key={1} data={["Test", "Test", "#87CEFA", "", [[0, 1440]]]} /> */}
-					{RunTimeData.map((data, index) => {
-						return (
-							<AppRunTimeShowcase index={index} data={data} handleClick={handleAppClick} />
-							// ！艹一样的传进去的变量是副本修改无效…………
-							// ！woq我说这个key属性怎么都传不进去…………应该是和react本身的冲突了/汗，注意！！！
-							// ~~~这个data同名好像可以隐藏？并不行
-						)
-					})}
-				</div>
-				{RunTimeData.length > id && <Dialog open={open} setOpen={(value) => { setOpen(value); setIsEdit(value); setAppInfoWeek(0) }}>
+				<DragDropContext onDragEnd={onDragEnd}>
+					{/* //！注意这个direction是指定交换的方向…………不是效果不要怕用！…………元素乱跳就是没有设置这个 */}
+					<Droppable droppableId='default' direction='horizontal'>
+						{/* //！同时艹注意报错的是Droppable…………这个key是必有的！！！ */}
+						{/* //!额艹…………随机事件…………不管有没有key都必须在打开窗口后修改一下才能防止出现Cannot find droppable entry with id [default] */}
+						{/* //！来自https://github.com/atlassian/react-beautiful-dnd/issues/2396的解决方案！！去掉React.StrictMode！！！ */}
+						{(provided, snapshot) => (
+							<div className="flex h-full w-full p-3 overflow-x-scroll transition-all bg-white shadow-xl dark:bg-gray-700 hover:shadow-2xl rounded-2xl"
+								ref={provided.innerRef} {...provided.droppableProps} onContextMenu={(event) => { ipcRenderer.send("ContextMenu_RunTime"); }}>
+								{/* <AppRunTimeShowcase key={1} data={["Test", "Test", "#87CEFA", "", [[0, 60]]]} /> */}
+								{/* <AppRunTimeShowcase key={1} data={["Test", "Test", "#87CEFA", "", [[0, 1440]]]} /> */}
+								{RunTimeData.map((data, index) => {
+									return (
+										<AppRunTimeShowcase index={index} data={data} handleClick={handleAppClick} />
+										// ！艹一样的传进去的变量是副本修改无效…………
+										// ！woq我说这个key属性怎么都传不进去…………应该是和react本身的冲突了/汗，注意！！！
+										// ~~~这个data同名好像可以隐藏？并不行
+									)
+								})}
+								{provided.placeholder}
+							</div>
+
+						)}
+					</Droppable>
+				</DragDropContext>
+				{<Dialog open={open} setOpen={(value) => { setOpen(value); setIsEdit(value); setAppInfoWeek(0) }}>
 					<div className="absolute flex w-4/5 -translate-x-1/2 -translate-y-1/2 bg-white dark:bg-gray-800 dark:text-white h-4/5 RoundAndShadow top-1/2 left-1/2">
 						<div className="relative flex flex-col items-center justify-center w-40 h-full p-2 border-r-2 border-gray-300 RoundAndShadow transition-all duration-500" style={{ backgroundColor: RunTimeData[id][2] }} >
 							<img className={`w-2/3 p-2 my-1 bg-white border-gray-500 transition-all duration-700 RoundAndShadow ${isEdit ? 'opacity-75' : ''}`} src={RunTimeData[id][3]} alt={RunTimeData[id][0]} />
@@ -189,15 +220,16 @@ export default function PageAppRunTime() {
 										}
 									</RadioGroup.Option>
 								</RadioGroup>
-								<div className="relative mt-5">
+								<div className="relative mt-5 w-full h-full">
 									<span className='absolute -top-3 left-4'>近7天使用情况</span>
 									<ReactEcharts option={singleInfoOption} />
+									{/* //！onChartReady={(chart) => { setInterval(() => { chart.resize() }, 1) }}加补丁😭傻了而且必须要延迟哪怕1ms都行，而且这样把动画都丢了………… */}
 									{/* //!艹分不清楚………………这个是{}不是{{}}………… */}
 								</div>
 							</div>
 						</div>
-						<button disabled={id < 1 ? true : false} className={`absolute -left-8 top-1/2 size-16 -translate-y-1/2 rounded-full shadow-2xl text-5xl transition-all bg-gray-300 opacity-50 ${id < 1 ? 'cursor-not-allowed' : 'hover:bg-gray-500 '}`} onClick={() => { setId(id - 1); ipcRenderer.send('update_single_app_info', [RunTimeData[id - 1][0], appInfoWeek]); }}>&lt;</button>
-						<button disabled={id > RunTimeData.length - 2 ? true : false} className={`absolute -right-8 top-1/2 size-16 -translate-y-1/2 rounded-full shadow-2xl text-5xl transition-all bg-gray-300 opacity-50 ${id > RunTimeData.length - 2 ? 'cursor-not-allowed' : 'hover:bg-gray-500 '}`} onClick={() => { setId(id + 1); ipcRenderer.send('update_single_app_info', [RunTimeData[id + 1][0], appInfoWeek]); }}>&gt;</button>
+						<button className={`absolute overflow-hidden -left-8 top-1/2 size-16 -translate-y-1/2 rounded-full shadow-2xl text-5xl transition-all bg-gray-300 opacity-50 hover:bg-gray-500 ${id < 1 ? 'w-0 h-0' : ''}`} onClick={() => { setId(id - 1); ipcRenderer.send('update_single_app_info', [RunTimeData[id - 1][0], appInfoWeek]); }}>&lt;</button>
+						<button className={`absolute overflow-hidden -right-8 top-1/2 size-16 -translate-y-1/2 rounded-full shadow-2xl text-5xl transition-all bg-gray-300 opacity-50 hover:bg-gray-500 ${id > RunTimeData.length - 2 ? 'w-0 h-0' : ''}`} onClick={() => { setId(id + 1); ipcRenderer.send('update_single_app_info', [RunTimeData[id + 1][0], appInfoWeek]); }}>&gt;</button>
 					</div>
 					{/* //！woq要显示<的转义是这样的……………额为什么是l和g………… */}
 				</Dialog >}
@@ -265,4 +297,18 @@ export default function PageAppRunTime() {
 		setAppInfoWeek(value);
 		ipcRenderer.send('update_single_app_info', [RunTimeData[id][0], value]);
 	}
+	function onDragEnd(result) {
+		const { source, destination, reason } = result;
+		if (!destination) return
+		const sourceIndex = source.index;
+		const destIndex = destination.index;
+
+		var tmpRunTimeData = [...RunTimeData];
+		const tmpData = tmpRunTimeData.splice(sourceIndex, 1);
+		tmpRunTimeData.splice(destIndex, 0, tmpData[0]);
+
+		setRunTimeData(tmpRunTimeData);
+
+	}
+
 }

@@ -645,6 +645,11 @@ function adjudgeDateBy4(date) {
 	return d;
 }
 
+//**----------------------------UpdateAppsOrder-----------------------------------------------------
+ipcMain.on('update_app_order', (event, arg) => {
+	// console.log(arg);
+	fs.writeFileSync(path.join(process.cwd(), 'AppsOrder.json'), JSON.stringify(arg))
+})
 //**----------------------------test-----------------------------------------------------
 module.exports = {
 	appConfig,
