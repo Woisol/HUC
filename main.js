@@ -16,6 +16,7 @@ var MonitorPcs, MonitorState = true;
 var appConfig = require(path.join(process.cwd(), "config.json"));
 //**----------------------------AppInfo-----------------------------------------------------
 var AppInfo = require(path.join(process.cwd(), "AppInfo.json"));
+var appsOrder = require(path.join(process.cwd(), "AppsOrder.json"));
 //**----------------------------AppRunning-----------------------------------------------------
 var runningApps = [];
 var mntApps = [];
@@ -497,18 +498,27 @@ function UpdateRunTime(date) {
 
 
 	// ！艹！！！！终于定位问题了………………………………一直以为执行了两次Update函数，还非常好奇为什么query函数执行完后面为什么断点没用了
-	// ！其实本质就是回调………………太慢了导致顺序都反了………………搞一堆log都没用………………………………
+	// ！其实本质就是回调………………太慢了顺序都反了………………搞一堆log都没用………………………………
 	// let queryRunTimeInfo = new Promise((resolve, reject) => {//！不用Promise.all的话其实只是为了解决回调嵌套而已你这种简单的嵌套用不上
 	// let runTimeInfo = Promise.all((resolve, reject) => {//！傻…………返回的不是结果是Promise对象…………
 	// ！注意Promise.all传入的是数组而不是函数！
 	AppInfo = JSON.parse(fs.readFileSync(path.join(process.cwd(), "AppInfo.json")))
+	appsOrder = JSON.parse(fs.readFileSync(path.join(process.cwd(), "AppsOrder.json")))
+	if (appsOrder.length < mntApps.length) {
+		appsOrder.push(...mntApps.filter((app => { return !appsOrder.includes(app) })));
+		fs.writeFileSync(path.join(process.cwd(), "AppsOrder.json"), JSON.stringify(appsOrder))
+	}
 	// ！注意readFileSync是同步不是异步…………………………可以用的…………
 	// ！然后注意返回的是buffer…………可以用JSON.parse转换回来！
 	Promise.all(
 		// ！哦哦哦！！！.all是执行里面全部的 Promise ！！不是执行任意函数啊…………
 		// ！！！map和forEach的另一个差别是前者才能实现异步而后者是同步遍历的！！！！！
 		// ！这里搞了巨久，现在不知道当初为什么会不得了，有可能是resolve了错误的变量…………不论如何Promise.all在mysql上是正常运作的…………
-		mntApps.map(async mntApp => {
+		// appsOrder.forEach((curApp) => {
+		// mntApps.filter((mntApp, index, array) => { return mntApp === curApp }).map(async mntApp => {
+
+
+		appsOrder.map(async mntApp => {
 			let isPushed = false;
 			let tmpRunTimeInfo = [];
 			tmpRunTimeInfo.push(mntApp);

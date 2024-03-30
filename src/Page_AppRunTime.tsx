@@ -157,7 +157,7 @@ export default function PageAppRunTime() {
 				{RunTimeData.length > id && <Dialog open={open} setOpen={(value) => { setOpen(value); setIsEdit(value); setAppInfoWeek(0) }}>
 					<div className="absolute flex w-4/5 -translate-x-1/2 -translate-y-1/2 bg-white dark:bg-gray-800 dark:text-white h-4/5 RoundAndShadow top-1/2 left-1/2">
 						<div className="relative flex flex-col items-center justify-center w-40 h-full p-2 border-r-2 border-gray-300 RoundAndShadow transition-all duration-500" style={{ backgroundColor: RunTimeData[id][2] }} >
-							<img className={`w-2/3 p-2 my-1 bg-white border-gray-500 transition-all duration-500 RoundAndShadow ${isEdit ? 'opacity-75' : ''}`} src={RunTimeData[id][3]} alt={RunTimeData[id][0]} />
+							<img className={`w-2/3 p-2 my-1 bg-white border-gray-500 transition-all duration-700 RoundAndShadow ${isEdit ? 'opacity-75' : ''}`} src={RunTimeData[id][3]} alt={RunTimeData[id][0]} />
 							<input className='rounded-md w-full text-xl text-center bg-white  dark:bg-gray-600 text-wrap' disabled={isEdit ? false : true} onContextMenu={() => { if (!isEdit) sendContextRequest() }} value={RunTimeData[id][0]} onChange={(e) => { handleInputChange(e.target.value, 0) }} />
 							{/* //td太长会超………… */}
 							<span className="w-full h-4"></span>
