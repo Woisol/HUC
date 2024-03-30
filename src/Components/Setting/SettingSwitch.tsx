@@ -1,6 +1,6 @@
 import { Switch } from '@headlessui/react';
 import * as React from 'react';
-export default function SettingSwtich({ title, value, setValue }) {
+export default function SettingSwtich({ title, value, handleChange }) {
 	return (
 		<div className={'flex relative'}>
 			<span className="">{title}</span>
@@ -9,7 +9,7 @@ export default function SettingSwtich({ title, value, setValue }) {
 				<Switch
 					as='div'
 					checked={value}
-					onChange={setValue}
+					onChange={handleChange}
 					className={`p-1 w-16 h-8 relative rounded-full transition-colors duration-500 hover:focus:ring-[2px] focus:ring-white dark:focus:ring-black ${value ? 'bg-blue-300' : 'bg-gray-400'}`}>
 					{/* //！border和ring的一个大区别是ring不会挤占内部元素位置！ */}
 					<span className="sr-only">{title}</span>

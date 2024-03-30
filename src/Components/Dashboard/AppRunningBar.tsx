@@ -10,7 +10,10 @@ const ipcRenderer = window.require("electron").ipcRenderer;
 
 function AppRunning(props) {
 	return (
-		<div className="relative w-12 h-12 p-2 mx-1 transition-all bg-blue-300 shadow-2xl dark:bg-blue-800 sm:w-16 sm:h-16 rounded-2xl hover:bg-blue-400 group" > <img className="w-full h-full" src={props.img} alt="More" /> <span className='absolute bottom-0 hidden p-1 text-xs text-center -translate-x-1/2 bg-white rounded-md opacity-75 left-1/2 w-fit group-hover:block'>{props.appName}</span></div>
+		<div className="relative w-12 h-12 p-2 mx-1 transition-all bg-blue-300 shadow-2xl dark:bg-blue-800 sm:w-16 sm:h-16 rounded-2xl hover:bg-blue-400 group" >
+			<img className="w-full h-full" src={props.img} alt="More" />
+			<span className='absolute bottom-0 hidden p-1 text-xs text-center -translate-x-1/2 bg-white rounded-md opacity-75 text-black left-1/2 w-fit group-hover:block'>{props.appName}</span>
+		</div>
 	);
 	// ！艹艹艹啊啊啊啊啊又是props的问题！！！！！！！！！！！！！
 }
