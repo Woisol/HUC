@@ -3,14 +3,14 @@
 // !Cannot use import outside of moudle…………
 // !额不支持ts…………
 const spawn = require("child_process").spawn;
-const { app, BrowserWindow, ipcMain, Tray, nativeTheme, ipcRenderer } = require('electron');
+const { app, BrowserWindow, ipcMain, Tray, nativeTheme, ipcRenderer, Notification, dialog } = require('electron');
 const $ = require("jquery");
 const path = require("path");
 const url = require("url");
 const iconv = require("iconv-lite");
 const fs = require('fs');
 //##----------------------------Initialize-----------------------------------------------------
-const VERSION = "1.0"
+const VERSION = "2.0"
 var win, tray, isToQuit = false;
 var MonitorPcs, MonitorState = true;
 var appConfig = require(path.join(process.cwd(), "config.json"));
@@ -24,33 +24,85 @@ var mntApps = [];
 var RunTimeDB = require("mysql");
 var today = adjudgeDateBy4(new Date());
 //**----------------------------ContexMenu-----------------------------------------------------
-var ContextMenu_Fresh, ContextMenu_MainSwitch, ContextMenu_Console, ContextMenu_RunTime, ContextMenu_LastSeven, ContextMenu_EditAppInfo
+var ContextMenu_Fresh, ContextMenu_MainSwitch, ContextMenu_Console, ContextMenu_RunTime, ContextMenu_LastSeven, ContextMenu_EditAppInfo, ContextMenu_SingleAppInfo
 const { Menu } = require("electron");
+const { error } = require("console");
+const { exec } = require("child_process");
 // !用sql2/promise就是pool而不是原来的connection了（虽然也有）
 var connection = RunTimeDB.createConnection({
 	host: "localhost",
 	user: appConfig.SQLUser,
 	password: appConfig.SQLPassword,
-	database: appConfig.DATABASE_NAME,
 	port: appConfig.SQLPort
 });
 // ！啊啊？？？为什么这里不用{}？
-connection.connect();
-connection.query(`SELECT TABLE_NAME FROM information_schema.tables WHERE TABLE_SCHEMA = ?;`, [appConfig.DATABASE_NAME], function (err, rows, fields) {
-	// ！异步的！！不需要Asyn
-	// dtd注意可能有注入攻击…………
-	if (err !== null) {
-		//!这里为什么为null了还进得来…………
-		console.log(`Query Error: ${err}`);
-		return;
-	}
-	mntApps = [];
-	// !这里不清掉大问题………………
-	rows.forEach(RowDataPacket => {
-		mntApps.push(RowDataPacket.TABLE_NAME);
-	})
-})
 const createWindow = () => {
+	connection.connect();
+
+	// !艹又是异步的问题……………………
+	connection.query(`USE ${appConfig.DATABASE_NAME};`, (err) => {
+		if (err !== null) {
+			if (err.code === 'ER_BAD_DB_ERROR') {
+				let choice;
+				if ((choice = dialog.showMessageBoxSync({
+					type: "error",
+					title: "数据库连接失败",
+					message: "无法连接至数据库",
+					detail: `数据库${appConfig.DATABASE_NAME}不存在，创建一个新的数据库还是修改配置？`,
+					buttons: ["退出", "创建新数据库", "打开配置文件"]
+				})) === 2) {
+					// spawn('notepad', path.join(process.cwd(), "config.json"), [])
+					exec(`start notepad ${path.join(process.cwd(), "config.json")}`);
+					app.exit();
+				}
+				else if (choice === 1) {
+					connection.query(`CREATE DATABASE ${appConfig.DATABASE_NAME};`, (err) => {
+						if (err === null)
+							app.relaunch();
+						else
+							dialog.showMessageBoxSync({
+								type: "error",
+								title: "数据库创建失败",
+								message: "无法创建数据库",
+								detail: `无法创建数据库${appConfig.DATABASE_NAME}，请检查SQL服务器连接`,
+								buttons: ["退出"]
+							});
+						app.exit();
+					});
+					connection.query(`USE ${appConfig.DATABASE_NAME}`);
+					fs.writeFileSync(path.join(process.cwd(), "/AppsOrder.json"), JSON.stringify([], null, 4));
+				} else {
+					app.exit();
+				}
+			} else if (err.code === 'ER_ACCESS_DENIED_ERROR') {
+				if (dialog.showMessageBoxSync({
+					type: "error",
+					title: "SQL服务器连接失败",
+					message: "无法连接至SQL服务器",
+					detail: `无法连接至SQL服务器，请打开配置文件检查本地SQL配置是否正确\n当前信息：\n用户名：(${appConfig.SQLUser})\n密码:(${appConfig.SQLPassword})\n端口:(${appConfig.SQLPort})`,
+					buttons: ["退出", "打开配置文件"]
+				}) === 1)
+					// spawn('notepad', path.join(process.cwd()), "config.json")
+					exec(`start notepad ${path.join(process.cwd(), "config.json")}`);
+				app.exit();
+			}
+		}
+
+		connection.query(`SELECT TABLE_NAME FROM information_schema.tables WHERE TABLE_SCHEMA = ?;`, [appConfig.DATABASE_NAME], function (err, rows, fields) {
+			// ！异步的！！不需要Asyn
+			// dtd注意可能有注入攻击…………
+			if (err !== null) {
+				//!这里为什么为null了还进得来…………
+				console.log(`Query Error: ${err}`);
+				return;
+			}
+			mntApps = [];
+			// !这里不清掉大问题………………
+			rows.forEach(RowDataPacket => {
+				mntApps.push(RowDataPacket.TABLE_NAME);
+			})
+		})
+	});
 	win = new BrowserWindow({
 		width: 600,
 		height: 1024,
@@ -65,6 +117,7 @@ const createWindow = () => {
 			// !啊所以为什么不用preload了？是因为上面关了上下文隔离？确实…………而且再打开以后react无法使用windows.require了…………
 		},
 	});
+	// ！注意打包前先检查一下…………一旦哪里出错页面就是直接白一片的
 	if (app.isPackaged) {
 		win.removeMenu();
 
@@ -78,7 +131,9 @@ const createWindow = () => {
 	}
 	else {
 		win.loadURL('http://localhost:3000/');
-		win.webContents.openDevTools();
+		// win.webContents.openDevTools();
+		// app.setAppUserModelId('com.woisol.huc');
+		// app.setAppUserModelId(process.execPath);
 	}
 	// ！关于打包
 	// 03-17搞了半天了啊啊啊啊啊啊啊啊！！！！！
@@ -144,12 +199,28 @@ const createWindow = () => {
 	const ContextMenu_Tray = Menu.buildFromTemplate([
 		{
 			label: "重启",
-			click: () => { isToQuit = true; app.relaunch(); }
+			click: () => {
+				if (dialog.showMessageBoxSync({
+					type: 'warning',
+					buttons: ['取消', '确认'],
+					title: '提示',
+					message: '是否重启应用？'
+				}) === 0) return;
+				app.relaunch(); isToQuit = true; app.quit();
+			}
 		},
 		{
 			label: "退出",
 			// role: "close"
-			click: () => { isToQuit = true; app.quit(); }
+			click: () => {
+				if (dialog.showMessageBoxSync({
+					type: 'warning',
+					buttons: ['取消', '确认'],
+					title: '提示',
+					message: '真的要退出吗？'
+				}) === 0) return;
+				isToQuit = true; app.quit();
+			}
 			// !额两个都关不了………………
 			// !quit关不了…………是下面的win.on("close")导致的…………
 		}])
@@ -216,6 +287,12 @@ ContextMenu_MainSwitch = Menu.buildFromTemplate([
 	{
 		label: "重启",
 		click: (menuItem, browserWindow, event) => {
+			if (dialog.showMessageBoxSync({
+				type: 'warning',
+				title: '重启监视器',
+				buttons: ['取消', '确认'],
+				message: '是否重启监视器？'
+			}) === 0) return;
 			MonitorPcs.kill()
 			MonitorInit();
 			// !注意不能直接spawn完事………………之前的事件都要加回来！
@@ -229,7 +306,21 @@ ContextMenu_Console = Menu.buildFromTemplate([
 	{
 		label: "清空",
 		click: (menuItem, browserWindow, event) => {
+
+			// 注意不要忘了sync…………
+			if (dialog.showMessageBoxSync({
+				type: 'question',
+				title: '清空控制台',
+				buttons: ["取消", "确定"],
+				message: "确认要清空控制台吗？"
+			}) === 0) return;
 			win.webContents.send("ConsoleClear")
+			// ~~额按照官方文档说的将electron.exe放到开始菜单也不行？
+			// !额你自己开了免打扰了😥似乎不用放快捷方式不用设app.setAppUserModelId也可以
+			new Notification({
+				title: "提示",
+				body: "已清空控制台"
+			}).show()
 		}
 	}])
 ContextMenu_RunTime = Menu.buildFromTemplate([
@@ -251,6 +342,13 @@ ContextMenu_EditAppInfo = Menu.buildFromTemplate([
 		label: "编辑",
 		click: (menuItem, browserWindow, event) => {
 			win.webContents.send("set_edit");
+		}
+	}])
+ContextMenu_SingleAppInfo = Menu.buildFromTemplate([
+	{
+		label: "刷新",
+		click: (menuItem, browserWindow, event) => {
+			UpdateSingleAppInfo(storedSingleAppInfoData)
 		}
 	}])
 //**----------------------------ipcMain-----------------------------------------------------
@@ -283,6 +381,10 @@ ipcMain.on("ContextMenu_EditAppInfo", (event, arg) => {
 	event.preventDefault();
 	ContextMenu_EditAppInfo.popup()
 })
+ipcMain.on("ContextMenu_SingleAppInfo", (event, arg) => {
+	event.preventDefault();
+	ContextMenu_SingleAppInfo.popup()
+})
 function UpdateRunningApp(App, Delete = false) {
 	if (Delete) {
 		if (runningApps.includes(App)) runningApps = runningApps.filter((app) => app !== App);
@@ -301,6 +403,15 @@ app.on('ready', createWindow);
 ipcMain.on("UpdateRunTime", (event, arg) => {
 	UpdateRunTime(arg);
 })
+ipcMain.on('setting_apply_relauch', () => {
+	if (dialog.showMessageBoxSync({
+		type: 'warning',
+		buttons: ['取消', '确认'],
+		title: '提示',
+		message: '是否重启应用？'
+	}) === 0) return;
+	app.relaunch(); isToQuit = true; app.quit();
+})
 // ！az在electron里面打开没办法初始化文件………………
 //!艹注意这个不要放里面…………
 //**----------------------------UIInit-----------------------------------------------------
@@ -316,6 +427,18 @@ ipcMain.on('update_config', (event, arg) => {
 	if (Object.keys(arg).length === 0) return;
 	fs.writeFileSync(path.join(process.cwd(), 'config.json'), JSON.stringify(arg, null, 4))
 	// event.reply('update_config:Successfully')
+	new Notification({
+		title: "配置更新",
+		body: "Config.json已更新。"
+	}).show()
+	// if (dialog.showMessageBox({
+	// 	type: 'info',
+	// 	title: '配置更新',
+	// 	message: 'Config.json已更新，需要重启应用这些更改吗？',
+	// 	buttons: ['取消', '确定']
+	// }) === 1) {
+	// 	app.relaunch(); isToQuit = true; app.quit();
+	// }
 })
 //**----------------------------Monitor-----------------------------------------------------
 function MonitorInit() {
@@ -386,15 +509,24 @@ function MonitorInit() {
 	MonitorPcs.on("error", err => {
 		win.webContents.send("ContentUpdate", err.toString());
 		win.webContents.send("MonitorStateChange", false);
-		console.log(`Monitor Failed: ${err}`);
+		// console.log(`Monitor Failed: ${err}`);
+		new Notification({
+			title: "监视器异常",
+			body: `错误消息：${err}`,
+		})
 	})
 	// ！艹………………在react里面设置的
 	MonitorPcs.on("exit", arg => {
 		MonitorPcs.stdin.write("Monitor off\n")
 		win.webContents.send("ContentUpdate", `Monitor Exit: ${arg}`);
 		win.webContents.send("MonitorStateChange", false);
-		console.log(`Monitor Exit: ${arg}`);
+		// console.log(`Monitor Exit: ${arg}`);
 		// setTimeout(() => { if ((MonitorPcs = spawn("./src/Monitor/HUC_Backend.exe")) !== null) win.webContents.send("ContentUpdate", "Monitor Reboot Successfully!"); }, 1000)
+		dialog.showMessageBox({
+			title: '监视器已退出',
+			message: `监视器已退出${arg === null ? '' : `错误信息：${arg}`}`,
+			type: 'error'
+		})
 	})
 }
 ipcMain.on("MonitorStateChange", (event, arg) => {
@@ -409,6 +541,10 @@ ipcMain.on("MonitorStateChange", (event, arg) => {
 	else {
 		MonitorPcs.stdin.write("Monitor off\n");
 		// win.webContents.send("MonitorStateChange", false);
+		new Notification({
+			title: '监视已暂停😥',
+			body: '没什么事最好还是尽快开启比较厚。'
+		})
 	}
 })
 ipcMain.on("MonitorPcsStdinWrite", (event, arg) => {
@@ -617,12 +753,15 @@ function UpdateLastSeven() {
 	})
 }
 //**----------------------------UpdateSingleAppInfo-----------------------------------------------------
-ipcMain.on('update_single_app_info', (event, arg) => {
+ipcMain.on('update_single_app_info', (event, arg) => { UpdateSingleAppInfo(arg) })
+var storedSingleAppInfoData;
+function UpdateSingleAppInfo(data) {
+	storedSingleAppInfoData = data;
 	Promise.all(
 		[6, 5, 4, 3, 2, 1, 0].map(async (value, index) => {
 			return await new Promise((resolve, reject) => {
-				// console.log(`SELECT * FROM ${arg[0]} WHERE StartTime${toQueryString(new Date(today.getTime() - (arg[1] * 7 + value) * 24 * 60 * 60 * 1000), 1)};\n`)
-				connection.query(`SELECT * FROM ${arg[0]} WHERE StartTime${toQueryString(new Date(today.getTime() - (arg[1] * 7 + value) * 24 * 60 * 60 * 1000), 1)};`, (err, res) => {
+				// console.log(`SELECT * FROM ${data[0]} WHERE StartTime${toQueryString(new Date(today.getTime() - (data[1] * 7 + value) * 24 * 60 * 60 * 1000), 1)};\n`)
+				connection.query(`SELECT * FROM ${data[0]} WHERE StartTime${toQueryString(new Date(today.getTime() - (data[1] * 7 + value) * 24 * 60 * 60 * 1000), 1)};`, (err, res) => {
 					let tmpTime = 0;
 					if (err !== null) {
 						console.log(`Failed to Read DB: ${err}`)
@@ -636,7 +775,7 @@ ipcMain.on('update_single_app_info', (event, arg) => {
 				})
 			})
 		})).then((res) => win.webContents.send('update_single_app_info', res))
-})
+}
 function adjudgeDateBy4(date) {
 	var d = new Date(date);
 	if (d.getHours() <= 4) {

@@ -120,3 +120,14 @@ out/win-unpacked/extra/Monitor/Microsoft.Extensions.Logging.Abstractions.dll
 out/win-unpacked/extra/Monitor/MySqlConnector.dll
 out/win-unpacked/extra/Monitor/pcsMntBlackList.plf
 out/win-unpacked/extra/Monitor/runtimeLog.rlf
+out/HUC 2.0.0.exe
+out/HUC 2.0.0.exe.blockmap
+out/win-unpacked/AppInfo.json
+out/win-unpacked/AppsOrder.json
+out/win-unpacked/Monitor/HUC_Backend.deps.json
+out/win-unpacked/Monitor/HUC_Backend.dll
+out/win-unpacked/Monitor/HUC_Backend.exe
+out/win-unpacked/Monitor/HUC_Backend.pdb
+out/win-unpacked/Monitor/HUC_Backend.runtimeconfig.json
+out/win-unpacked/Monitor/Microsoft.Extensions.Logging.Abstractions.dll
+out/win-unpacked/Monitor/MySqlConnector.dll

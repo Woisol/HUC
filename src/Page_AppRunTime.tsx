@@ -167,7 +167,7 @@ export default function PageAppRunTime() {
 						{/* //!额艹…………随机事件…………不管有没有key都必须在打开窗口后修改一下才能防止出现Cannot find droppable entry with id [default] */}
 						{/* //！来自https://github.com/atlassian/react-beautiful-dnd/issues/2396的解决方案！！去掉React.StrictMode！！！ */}
 						{(provided, snapshot) => (
-							<div className="flex h-full w-full p-3 overflow-x-scroll transition-all bg-white shadow-xl dark:bg-gray-700 hover:shadow-2xl rounded-2xl"
+							<div className="flex h-full w-full p-3 overflow-x-scroll overflow-y-hidden transition-all bg-white shadow-xl dark:bg-gray-700 hover:shadow-2xl rounded-2xl"
 								ref={provided.innerRef} {...provided.droppableProps} onContextMenu={(event) => { ipcRenderer.send("ContextMenu_RunTime"); }}>
 								{/* <AppRunTimeShowcase key={1} data={["Test", "Test", "#87CEFA", "", [[0, 60]]]} /> */}
 								{/* <AppRunTimeShowcase key={1} data={["Test", "Test", "#87CEFA", "", [[0, 1440]]]} /> */}
@@ -185,54 +185,58 @@ export default function PageAppRunTime() {
 						)}
 					</Droppable>
 				</DragDropContext>
-				{<Dialog open={open} setOpen={(value) => { setOpen(value); setIsEdit(value); setAppInfoWeek(0) }}>
-					<div className="absolute flex w-4/5 -translate-x-1/2 -translate-y-1/2 bg-white dark:bg-gray-800 dark:text-white h-4/5 RoundAndShadow top-1/2 left-1/2">
-						<div className="relative flex flex-col items-center justify-center w-40 h-full p-2 border-r-2 border-gray-300 RoundAndShadow transition-all duration-500" style={{ backgroundColor: RunTimeData[id][2] }} >
-							<img className={`w-2/3 p-2 my-1 bg-white border-gray-500 transition-all duration-700 RoundAndShadow ${isEdit ? 'opacity-75' : ''}`} src={RunTimeData[id][3]} alt={RunTimeData[id][0]} />
-							<input className='rounded-md w-full text-xl text-center bg-white  dark:bg-gray-600 text-wrap' disabled={isEdit ? false : true} onContextMenu={() => { if (!isEdit) sendContextRequest() }} value={RunTimeData[id][0]} onChange={(e) => { handleInputChange(e.target.value, 0) }} />
-							{/* //td太长会超………… */}
-							<span className="w-full h-4"></span>
-							<div className='flex w-full p-1 mx-1 mt-4 bg-gray-300 rounded-lg dark:bg-gray-600' onContextMenu={() => { if (!isEdit) sendContextRequest() }}>Class:<input disabled={isEdit ? false : true} title='Class' className='rounded-md w-full ml-1 text-sm bg-transparent' value={RunTimeData[id][1]} onChange={(e) => handleInputChange(e.target.value, 1)} /></div>
-							<div className='flex w-full p-1 mx-1 bg-gray-300 rounded-lg dark:bg-gray-600' onContextMenu={() => { if (!isEdit) sendContextRequest() }}>Color:<input disabled={isEdit ? false : true} type='color' title='Color' className='rounded-md w-full ml-1 text-sm bg-transparent' value={RunTimeData[id][2]} onChange={(e) => handleInputChange(e.target.value, 2)} /></div>
-							<div className='flex w-full p-1 mx-1 bg-gray-300 rounded-lg dark:bg-gray-600' onContextMenu={() => { if (!isEdit) sendContextRequest() }}>IconBase64:<input disabled={isEdit ? false : true} title='IconBase64' className='rounded-md w-full ml-1 text-sm bg-transparent' value={RunTimeData[id][3]} onChange={(e) => handleInputChange(e.target.value, 3)} onFocus={(event) => { event.target.select() }} /></div>
-							{/* //！网上看到的this用不了…………必须用evet.target */}
-							<div className={`flex transition-all overflow-hidden ${isEdit ? 'h-10' : 'w-0 h-0'}`}>
-								<button className='h-6 px-4 mt-4 transition-all bg-gray-300 hover:h-7 text-nowrap dark:bg-gray-600 RoundAndShadow hover:bg-gray-400 hover:text-xl hover:mt-3' onClick={handleConfirmClick}>确认</button>
-								<button className='h-6 px-4 mt-4 transition-all bg-gray-300 hover:h-7 text-nowrap dark:bg-gray-600 RoundAndShadow hover:bg-gray-400 hover:text-xl hover:mt-3' onClick={handleCancelClick}>取消</button>
-							</div>
-						</div>
-						<div className="w-full relative">
-							<div className="absolute top-1/2 -translate-y-1/2 left-1/2 -translate-x-1/2 w-5/6 transition-all bg-white shadow-lg dark:bg-gray-700 h-fit rounded-2xl hover:shadow-xl hover:bg-gray-100" onContextMenu={(event) => { ipcRenderer.send("ContextMenu_LastSeven",); }}>
-								<RadioGroup as='div' className='flex w-full' value={appInfoWeek} onChange={handleRadioChange}>
-									{[5, 4, 3, 2, 1].map((value) => {
-										return (
-											<RadioGroup.Option value={value} className='flex-1'>
-												{({ checked }) =>
-													<div className={`hover:bg-gray-300 dark:hover:bg-gray-400  rounded-lg ${checked ? 'bg-gray-300 dark:bg-gray-400' : 'bg-gray-200 dark:bg-gray-500'}`}>上{value}周</div>
-												}
-											</RadioGroup.Option>
-
-										)
-									})}
-									<RadioGroup.Option value={0} className='flex-1'>
-										{({ checked }) =>
-											<div className={`hover:bg-gray-300 dark:hover:bg-gray-400  rounded-lg ${checked ? 'bg-gray-300 dark:bg-gray-400' : 'bg-gray-200 dark:bg-gray-500'}`}>本周</div>
-										}
-									</RadioGroup.Option>
-								</RadioGroup>
-								<div className="relative mt-5 w-full h-full">
-									<span className='absolute -top-3 left-4'>近7天使用情况</span>
-									<ReactEcharts option={singleInfoOption} />
-									{/* //！onChartReady={(chart) => { setInterval(() => { chart.resize() }, 1) }}加补丁😭傻了而且必须要延迟哪怕1ms都行，而且这样把动画都丢了………… */}
-									{/* //!艹分不清楚………………这个是{}不是{{}}………… */}
+				{/* //！这个地方还是要判断………… */}
+				<React.StrictMode>
+					{/* //！woq哈哈哈哈哈哈艹奇技淫巧哈哈哈哈哈 */}
+					{RunTimeData.length !== 0 && <Dialog open={open} setOpen={(value) => { setOpen(value); setIsEdit(value); setAppInfoWeek(0) }}>
+						<div className="absolute flex w-4/5 -translate-x-1/2 -translate-y-1/2 bg-white dark:bg-gray-800 dark:text-white h-4/5 RoundAndShadow top-1/2 left-1/2">
+							<div className="relative flex flex-col items-center justify-center w-40 h-full p-2 border-r-2 border-gray-300 RoundAndShadow transition-all duration-500" style={{ backgroundColor: RunTimeData[id][2] }} >
+								<img className={`w-2/3 p-2 my-1 bg-white border-gray-500 transition-all duration-700 RoundAndShadow ${isEdit ? 'opacity-75' : ''}`} src={RunTimeData[id][3]} alt={RunTimeData[id][0]} />
+								<input className='rounded-md w-full text-xl text-center bg-white  dark:bg-gray-600 text-wrap' disabled={isEdit ? false : true} onContextMenu={() => { if (!isEdit) sendContextRequest() }} value={RunTimeData[id][0]} onChange={(e) => { handleInputChange(e.target.value, 0) }} />
+								{/* //td太长会超………… */}
+								<span className="w-full h-4"></span>
+								<div className='flex w-full p-1 mx-1 mt-4 bg-gray-300 rounded-lg dark:bg-gray-600' onContextMenu={() => { if (!isEdit) sendContextRequest() }}>Class:<input disabled={isEdit ? false : true} title='Class' className='rounded-md w-full ml-1 text-sm bg-transparent' value={RunTimeData[id][1]} onChange={(e) => handleInputChange(e.target.value, 1)} /></div>
+								<div className='flex w-full p-1 mx-1 bg-gray-300 rounded-lg dark:bg-gray-600' onContextMenu={() => { if (!isEdit) sendContextRequest() }}>Color:<input disabled={isEdit ? false : true} type='color' title='Color' className='rounded-md w-full ml-1 text-sm bg-transparent' value={RunTimeData[id][2]} onChange={(e) => handleInputChange(e.target.value, 2)} /></div>
+								<div className='flex w-full p-1 mx-1 bg-gray-300 rounded-lg dark:bg-gray-600' onContextMenu={() => { if (!isEdit) sendContextRequest() }}>IconBase64:<input disabled={isEdit ? false : true} title='IconBase64' className='rounded-md w-full ml-1 text-sm bg-transparent' value={RunTimeData[id][3]} onChange={(e) => handleInputChange(e.target.value, 3)} onFocus={(event) => { event.target.select() }} /></div>
+								{/* //！网上看到的this用不了…………必须用evet.target */}
+								<div className={`flex transition-all overflow-hidden ${isEdit ? 'h-10' : 'w-0 h-0'}`}>
+									<button className='h-6 px-4 mt-4 transition-all bg-gray-300 hover:h-7 text-nowrap dark:bg-gray-600 RoundAndShadow hover:bg-gray-400 hover:text-xl hover:mt-3' onClick={handleConfirmClick}>确认</button>
+									<button className='h-6 px-4 mt-4 transition-all bg-gray-300 hover:h-7 text-nowrap dark:bg-gray-600 RoundAndShadow hover:bg-gray-400 hover:text-xl hover:mt-3' onClick={handleCancelClick}>取消</button>
 								</div>
 							</div>
+							<div className="w-full relative">
+								<div className="absolute top-1/2 -translate-y-1/2 left-1/2 -translate-x-1/2 w-5/6 transition-all bg-white shadow-lg dark:bg-gray-700 h-fit rounded-2xl hover:shadow-xl hover:bg-gray-100" onContextMenu={(event) => { ipcRenderer.send("ContextMenu_SingleAppInfo"); }}>
+									<RadioGroup as='div' className='flex w-full' value={appInfoWeek} onChange={handleRadioChange}>
+										{[5, 4, 3, 2, 1].map((value) => {
+											return (
+												<RadioGroup.Option value={value} className='flex-1'>
+													{({ checked }) =>
+														<div className={`hover:bg-gray-300 dark:hover:bg-gray-400  rounded-lg ${checked ? 'bg-gray-300 dark:bg-gray-400' : 'bg-gray-200 dark:bg-gray-500'}`}>上{value}周</div>
+													}
+												</RadioGroup.Option>
+
+											)
+										})}
+										<RadioGroup.Option value={0} className='flex-1'>
+											{({ checked }) =>
+												<div className={`hover:bg-gray-300 dark:hover:bg-gray-400  rounded-lg ${checked ? 'bg-gray-300 dark:bg-gray-400' : 'bg-gray-200 dark:bg-gray-500'}`}>本周</div>
+											}
+										</RadioGroup.Option>
+									</RadioGroup>
+									<div className="relative mt-5 w-full h-full">
+										<span className='absolute -top-3 left-4'>近7天使用情况</span>
+										<ReactEcharts option={singleInfoOption} />
+										{/* //！onChartReady={(chart) => { setInterval(() => { chart.resize() }, 1) }}加补丁😭傻了而且必须要延迟哪怕1ms都行，而且这样把动画都丢了………… */}
+										{/* //!艹分不清楚………………这个是{}不是{{}}………… */}
+									</div>
+								</div>
+							</div>
+							<button className={`absolute overflow-hidden -left-8 top-1/2 size-16 -translate-y-1/2 rounded-full shadow-2xl text-5xl transition-all bg-gray-300 opacity-50 hover:bg-gray-500 ${id < 1 ? 'w-0 h-0' : ''}`} onClick={() => { setId(id - 1); ipcRenderer.send('update_single_app_info', [RunTimeData[id - 1][0], appInfoWeek]); }}>&lt;</button>
+							<button className={`absolute overflow-hidden -right-8 top-1/2 size-16 -translate-y-1/2 rounded-full shadow-2xl text-5xl transition-all bg-gray-300 opacity-50 hover:bg-gray-500 ${id > RunTimeData.length - 2 ? 'w-0 h-0' : ''}`} onClick={() => { setId(id + 1); ipcRenderer.send('update_single_app_info', [RunTimeData[id + 1][0], appInfoWeek]); }}>&gt;</button>
 						</div>
-						<button className={`absolute overflow-hidden -left-8 top-1/2 size-16 -translate-y-1/2 rounded-full shadow-2xl text-5xl transition-all bg-gray-300 opacity-50 hover:bg-gray-500 ${id < 1 ? 'w-0 h-0' : ''}`} onClick={() => { setId(id - 1); ipcRenderer.send('update_single_app_info', [RunTimeData[id - 1][0], appInfoWeek]); }}>&lt;</button>
-						<button className={`absolute overflow-hidden -right-8 top-1/2 size-16 -translate-y-1/2 rounded-full shadow-2xl text-5xl transition-all bg-gray-300 opacity-50 hover:bg-gray-500 ${id > RunTimeData.length - 2 ? 'w-0 h-0' : ''}`} onClick={() => { setId(id + 1); ipcRenderer.send('update_single_app_info', [RunTimeData[id + 1][0], appInfoWeek]); }}>&gt;</button>
-					</div>
-					{/* //！woq要显示<的转义是这样的……………额为什么是l和g………… */}
-				</Dialog >}
+						{/* //！woq要显示<的转义是这样的……………额为什么是l和g………… */}
+					</Dialog >}
+				</React.StrictMode>
 			</div>
 			{/* //！崩溃的关键就在这里…………！！！main那边传过来的时候会导致数据不全但这里又没有判断………… */}
 		</div >

@@ -4,7 +4,7 @@ import SettingSection from './Components/Setting/SettingSection.tsx';
 import SettingSwtich from './Components/Setting/SettingSwitch.tsx';
 import { Disclosure } from '@headlessui/react';
 import SettingInput from './Components/Setting/SettingInput.tsx';
-import { use } from 'echarts';
+// const dialog = window.require('electron').dialog;
 const ipcRenderer = window.require('electron').ipcRenderer;
 const defaultConfig = {
 	"ProcessListFileDir": "pcsMntBlackList.plf",
@@ -76,8 +76,9 @@ export default function PageSetting() {
 					<SettingInput title={'数据库密码:'} value={config.SQLPassword} handleChange={(e) => { setConfig({ ...config, SQLPassword: e.target.value }); setHasChange_DATABASE(true); }} type={'password'}></SettingInput>
 					<SettingInput title={'数据库端口:'} value={config.SQLPort} handleChange={(e) => { setConfig({ ...config, SQLPort: e.target.value }); setHasChange_DATABASE(true); }}></SettingInput>
 					<div className={`flex transition-all overflow-hidden w-full justify-around h-10 `}>
-						<button className='h-6 w-32 px-4 mt-4 transition-all bg-gray-300 hover:h-7 text-nowrap dark:bg-gray-600 RoundAndShadow hover:bg-gray-400 hover:text-xl hover:mt-3' onClick={handleConfirmClick}>保存</button>
-						<button className='h-6 w-32 px-4 mt-4 transition-all bg-gray-300 hover:h-7 text-nowrap dark:bg-gray-600 RoundAndShadow hover:bg-gray-400 hover:text-xl hover:mt-3' onClick={handleCancelClick}>{hasChange_DATABASE ? '取消' : '恢复默认'}</button>
+						<button className={`${hasChange_DATABASE ? 'w-32 hover:h-7 flex-1 h-6 ' : 'w-0 h-0 absolute'} overflow-hidden px-4 mt-4 transition-all bg-gray-300 text-nowrap dark:bg-gray-600 RoundAndShadow hover:bg-gray-400 hover:text-xl hover:mt-3`} onClick={handleApplyClick}>应用</button>
+						<button className='h-6 w-32 px-4 mt-4 transition-all bg-gray-300 hover:h-7 flex-1 text-nowrap dark:bg-gray-600 RoundAndShadow hover:bg-gray-400 hover:text-xl hover:mt-3' onClick={handleConfirmClick}>保存</button>
+						<button className='h-6 w-32 px-4 mt-4 transition-all bg-gray-300 hover:h-7 flex-1 text-nowrap dark:bg-gray-600 RoundAndShadow hover:bg-gray-400 hover:text-xl hover:mt-3' onClick={handleCancelClick}>{hasChange_DATABASE ? '取消' : '恢复默认'}</button>
 					</div>
 
 				</SettingSection>
@@ -112,5 +113,16 @@ export default function PageSetting() {
 			setConfig(defaultConfig);
 			history = { ...defaultConfig };
 		}
+	}
+	function handleApplyClick() {
+		// if (dialog.showMessageBoxSync({
+		// 	type: 'warning',
+		// 	buttons: ['取消', '确认'],
+		// 	title: '提示',
+		// 	message: '是否重启应用？'
+		// }) === 1)
+		handleConfirmClick();
+		// ！不像notification，dialog不能在渲染进程里用
+		ipcRenderer.send('setting_apply_relauch');
 	}
 }
