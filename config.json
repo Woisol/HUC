@@ -5,6 +5,6 @@
     "SQLUser": "root",
     "SQLPassword": "",
     "SQLPort": "3306",
-    "FollowSystemDarkMode": false,
+    "FollowSystemDarkMode": true,
     "StartBoot": false
 }

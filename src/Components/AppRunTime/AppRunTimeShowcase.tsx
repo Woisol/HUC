@@ -23,7 +23,7 @@ export default function AppRunTimeShowcase({ index, data, handleClick }) {
 				// ！这里不能再有transition了不然拖拽后又有动画……
 				<div ref={provided.innerRef} {...provided.draggableProps} {...provided.dragHandleProps}>
 					{/* //！这里加了Draggable的属性会导致背景颜色失效………… */}
-					<div className='flex flex-col items-center w-16 h-full p-2 mx-2 shadow-xl sm:w-20 md:w-28 rounded-2xl hover:shadow-2xl'
+					<div className='flex flex-col items-center w-16 h-full p-2 mx-2 shadow-xl sm:w-20 md:w-28 rounded-2xl hover:shadow-2xl cursor-default'
 						style={{ backgroundColor: `${data[2]}` }} >
 						{/* //！注意这个组件有点特殊…………要有函数要有ref要有props */}
 						<div className="relative w-3 h-full transition-all bg-gray-300 rounded-lg shadow-lg dark:bg-gray-600 AppRunTimeShowcase sm:w-5 md:w-7 right-2 hover:shadow-2xl">

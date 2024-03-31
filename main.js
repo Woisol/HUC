@@ -3,7 +3,7 @@
 // !Cannot use import outside of moudle…………
 // !额不支持ts…………
 const spawn = require("child_process").spawn;
-const { app, BrowserWindow, ipcMain, Tray, nativeTheme, ipcRenderer, Notification, dialog } = require('electron');
+const { app, BrowserWindow, ipcMain, Tray, nativeTheme, Notification, dialog } = require('electron');
 const $ = require("jquery");
 const path = require("path");
 const url = require("url");
@@ -79,7 +79,7 @@ const createWindow = () => {
 					type: "error",
 					title: "SQL服务器连接失败",
 					message: "无法连接至SQL服务器",
-					detail: `无法连接至SQL服务器，请打开配置文件检查本地SQL配置是否正确\n当前信息：\n用户名：(${appConfig.SQLUser})\n密码:(${appConfig.SQLPassword})\n端口:(${appConfig.SQLPort})`,
+					detail: `${appConfig.SQLPassword === '' ? '第一次使用本软件，请打开配置文件设置本地SQL服务器的用户名（SQLUser属性）和密码（SQLPassword属性）后再次打开' : `无法连接至SQL服务器，请打开配置文件检查本地SQL配置是否正确\n当前信息：\n用户名：${appConfig.SQLUser}\n密码:${appConfig.SQLPassword}\n端口:${appConfig.SQLPort}`}`,
 					buttons: ["退出", "打开配置文件"]
 				}) === 1)
 					// spawn('notepad', path.join(process.cwd()), "config.json")
@@ -773,6 +773,7 @@ function UpdateSingleAppInfo(data) {
 					})
 					resolve(tmpTime / 60);
 				})
+
 			})
 		})).then((res) => win.webContents.send('update_single_app_info', res))
 }

@@ -4,6 +4,8 @@ import SettingSection from './Components/Setting/SettingSection.tsx';
 import SettingSwtich from './Components/Setting/SettingSwitch.tsx';
 import { Disclosure } from '@headlessui/react';
 import SettingInput from './Components/Setting/SettingInput.tsx';
+// import { VERSION } from '../main.js';
+const VERSION = '2.0';
 // const dialog = window.require('electron').dialog;
 const ipcRenderer = window.require('electron').ipcRenderer;
 const defaultConfig = {
@@ -13,7 +15,7 @@ const defaultConfig = {
 	"SQLUser": "root",
 	"SQLPassword": "60017089",
 	"SQLPort": "3306",
-	"FollowSystemDarkMode": false,
+	"FollowSystemDarkMode": true,
 	"StartBoot": false
 }
 var history;
@@ -83,6 +85,7 @@ export default function PageSetting() {
 
 				</SettingSection>
 			</div>
+			<div className='absolute right-4 bottom-4' ><small>V{VERSION} ©2024 Woisol-G </small></div>
 		</div>
 	)
 	function handleStartBoot(value) {
