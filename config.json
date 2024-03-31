@@ -1,9 +1,9 @@
 {
     "ProcessListFileDir": "pcsMntBlackList.plf",
     "RuntimeLogFileDir": "runtimeLog.rlf",
-    "DATABASE_NAME": "HUC_AppUsageLog_Test",
+    "DATABASE_NAME": "HUC_AppUsageLog",
     "SQLUser": "root",
-    "SQLPassword": "60017089",
+    "SQLPassword": "",
     "SQLPort": "3306",
     "FollowSystemDarkMode": false,
     "StartBoot": false
