@@ -80,7 +80,7 @@ export default function Console() {
 	ipcRenderer.on("ConsoleClear", () => {
 		UpdateContent([]);
 	})
-	// ipcRenderer.on("ConsoleReOpen", () => { if (inputRef.current !== null) inputRef.current.disabled = false; })
+	ipcRenderer.on("ConsoleReOpen", () => { if (inputRef.current !== null) inputRef.current.disabled = false; })
 	return (
 		<>
 			<Transition

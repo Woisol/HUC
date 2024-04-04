@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useSyncExternalStore } from 'react';
 import ReactEcharts from 'echarts-for-react';
 import $ from 'jquery';
 import AppRunTimeShowcase from './Components/AppRunTime/AppRunTimeShowcase.tsx';
@@ -35,7 +35,9 @@ export default function PageAppRunTime() {
 	const [RunTimeData, setRunTimeData] = useState([]);
 	const [LastSeven, setLastSeven] = useState([0, 0, 0, 0, 0, 0, 0, 0]);
 	const [SingleRunTimeData, setSingleRunTimeData] = useState([]);
-	const [open, setOpen] = useState(false);
+	const [singleAppInfoOpen, setSingleAppInfoOpen] = useState(false);
+	const [addAppsOpen, setAddAppsOpen] = useState(false);
+	const [addAppInfo, setAddAppInfo] = useState(['newApp', 'None', '#BFDBFE', 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAwLjAwMDAwMCIgaGVpZ2h0PSI0MDAuMDAwMDAwIiB2aWV3Qm94PSIwIDAgNDAwIDQwMCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB4bWxuczp4bGluaz0iaHR0cDovL3d3dy53My5vcmcvMTk5OS94bGluayI+Cgk8ZGVzYz4KCQkJQ3JlYXRlZCB3aXRoIFBpeHNvLgoJPC9kZXNjPgoJPGRlZnM+CgkJPGZpbHRlciBpZD0iZmlsdGVyXzcwXzE4NF9kZCIgeD0iMjIuNzk0OTIyIiB5PSIzNy4wMDAwMDAiIHdpZHRoPSIzNTQuNDEwMTU2IiBoZWlnaHQ9IjI5Ni43NTAwMDAiIGZpbHRlclVuaXRzPSJ1c2VyU3BhY2VPblVzZSIgY29sb3ItaW50ZXJwb2xhdGlvbi1maWx0ZXJzPSJzUkdCIj4KCQkJPGZlRmxvb2QgZmxvb2Qtb3BhY2l0eT0iMCIgcmVzdWx0PSJCYWNrZ3JvdW5kSW1hZ2VGaXgiLz4KCQkJPGZlQ29sb3JNYXRyaXggaW49IlNvdXJjZUFscGhhIiB0eXBlPSJtYXRyaXgiIHZhbHVlcz0iMCAwIDAgMCAwIDAgMCAwIDAgMCAwIDAgMCAwIDAgMCAwIDAgMTI3IDAiIHJlc3VsdD0iaGFyZEFscGhhIi8+CgkJCTxmZU9mZnNldCBkeD0iMCIgZHk9IjQiLz4KCQkJPGZlR2F1c3NpYW5CbHVyIHN0ZERldmlhdGlvbj0iMS4zMzMzMyIvPgoJCQk8ZmVDb21wb3NpdGUgaW4yPSJoYXJkQWxwaGEiIG9wZXJhdG9yPSJvdXQiIGsyPSItMSIgazM9IjEiLz4KCQkJPGZlQ29sb3JNYXRyaXggdHlwZT0ibWF0cml4IiB2YWx1ZXM9IjAgMCAwIDAgMCAwIDAgMCAwIDAgMCAwIDAgMCAwIDAgMCAwIDAuMjUgMCIvPgoJCQk8ZmVCbGVuZCBtb2RlPSJub3JtYWwiIGluMj0iQmFja2dyb3VuZEltYWdlRml4IiByZXN1bHQ9ImVmZmVjdF9kcm9wU2hhZG93XzEiLz4KCQkJPGZlQmxlbmQgbW9kZT0ibm9ybWFsIiBpbj0iU291cmNlR3JhcGhpYyIgaW4yPSJlZmZlY3RfZHJvcFNoYWRvd18xIiByZXN1bHQ9InNoYXBlIi8+CgkJPC9maWx0ZXI+CgkJPGZpbHRlciBpZD0iZmlsdGVyXzcwXzE4OF9kZCIgeD0iMjE2LjAwMDAwMCIgeT0iMjcwLjAwMDAwMCIgd2lkdGg9IjE4OC4wMDAwMDAiIGhlaWdodD0iODguMDAwMDAwIiBmaWx0ZXJVbml0cz0idXNlclNwYWNlT25Vc2UiIGNvbG9yLWludGVycG9sYXRpb24tZmlsdGVycz0ic1JHQiI+CgkJCTxmZUZsb29kIGZsb29kLW9wYWNpdHk9IjAiIHJlc3VsdD0iQmFja2dyb3VuZEltYWdlRml4Ii8+CgkJCTxmZUNvbG9yTWF0cml4IGluPSJTb3VyY2VBbHBoYSIgdHlwZT0ibWF0cml4IiB2YWx1ZXM9IjAgMCAwIDAgMCAwIDAgMCAwIDAgMCAwIDAgMCAwIDAgMCAwIDEyNyAwIiByZXN1bHQ9ImhhcmRBbHBoYSIvPgoJCQk8ZmVPZmZzZXQgZHg9IjAiIGR5PSI0Ii8+CgkJCTxmZUdhdXNzaWFuQmx1ciBzdGREZXZpYXRpb249IjEuMzMzMzMiLz4KCQkJPGZlQ29tcG9zaXRlIGluMj0iaGFyZEFscGhhIiBvcGVyYXRvcj0ib3V0IiBrMj0iLTEiIGszPSIxIi8+CgkJCTxmZUNvbG9yTWF0cml4IHR5cGU9Im1hdHJpeCIgdmFsdWVzPSIwIDAgMCAwIDAgMCAwIDAgMCAwIDAgMCAwIDAgMCAwIDAgMCAwLjI1IDAiLz4KCQkJPGZlQmxlbmQgbW9kZT0ibm9ybWFsIiBpbjI9IkJhY2tncm91bmRJbWFnZUZpeCIgcmVzdWx0PSJlZmZlY3RfZHJvcFNoYWRvd18xIi8+CgkJCTxmZUJsZW5kIG1vZGU9Im5vcm1hbCIgaW49IlNvdXJjZUdyYXBoaWMiIGluMj0iZWZmZWN0X2Ryb3BTaGFkb3dfMSIgcmVzdWx0PSJzaGFwZSIvPgoJCTwvZmlsdGVyPgoJCTxjbGlwUGF0aCBpZD0iY2xpcDcwXzE4NiI+CgkJCTxyZWN0IGlkPSLnlLvmnb8gMTgiIHdpZHRoPSI0MDAuMDAwMDAwIiBoZWlnaHQ9IjQwMC4wMDAwMDAiIGZpbGw9IndoaXRlIiBmaWxsLW9wYWNpdHk9IjAiLz4KCQk8L2NsaXBQYXRoPgoJPC9kZWZzPgoJPHJlY3QgaWQ9IueUu+advyAxOCIgd2lkdGg9IjQwMC4wMDAwMDAiIGhlaWdodD0iNDAwLjAwMDAwMCIgZmlsbD0iI0ZGRkZGRiIgZmlsbC1vcGFjaXR5PSIwIi8+Cgk8ZyBjbGlwLXBhdGg9InVybCgjY2xpcDcwXzE4NikiPgoJCTxnIGZpbHRlcj0idXJsKCNmaWx0ZXJfNzBfMTg0X2RkKSI+CgkJCTxwYXRoIGlkPSLlt67pm4YiIGQ9Ik0yNi43OTQ5IDMyNS43NUwyMDAgMzdMMzczLjIwNSAzMjUuNzVMMjYuNzk0OSAzMjUuNzVaTTIwMCAxODBDMTYxLjM0IDE4MCAxMzAgMTk3LjkwOSAxMzAgMjIwQzEzMCAyNDIuMDkxIDE2MS4zNCAyNjAgMjAwIDI2MEMyMzguNjYgMjYwIDI3MCAyNDIuMDkxIDI3MCAyMjBDMjcwIDE5Ny45MDkgMjM4LjY2IDE4MCAyMDAgMTgwWiIgY2xpcC1ydWxlPSJldmVub2RkIiBmaWxsPSIjNDQ0NDQ0IiBmaWxsLW9wYWNpdHk9IjEuMDAwMDAwIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiLz4KCQk8L2c+CgkJPGVsbGlwc2UgaWQ9IuakreWchiAyIiBjeD0iMjAwLjAwMDAwMCIgY3k9IjIxOS40Mjg1NzQiIHJ4PSIyMC4wMDAwMDAiIHJ5PSIxMS40Mjg1NzIiIGZpbGw9IiM0NDQ0NDQiIGZpbGwtb3BhY2l0eT0iMS4wMDAwMDAiLz4KCQk8ZyBmaWx0ZXI9InVybCgjZmlsdGVyXzcwXzE4OF9kZCkiPgoJCQk8cmVjdCBpZD0i55+p5b2iIDI3IiB4PSIyMjAuMDAwMDAwIiB5PSIyNzAuMDAwMDAwIiByeD0iMjAuMDAwMDAwIiB3aWR0aD0iMTgwLjAwMDAwMCIgaGVpZ2h0PSI4MC4wMDAwMDAiIGZpbGw9IiNEREREREQiIGZpbGwtb3BhY2l0eT0iMS4wMDAwMDAiLz4KCQk8L2c+CgkJPHJlY3QgaWQ9IuefqeW9oiAyNyIgeD0iMjIwLjUwMDAwMCIgeT0iMjcwLjUwMDAwMCIgcng9IjIwLjAwMDAwMCIgd2lkdGg9IjE3OS4wMDAwMDAiIGhlaWdodD0iNzkuMDAwMDAwIiBzdHJva2U9IiMwMDAwMDAiIHN0cm9rZS1vcGFjaXR5PSIxLjAwMDAwMCIgc3Ryb2tlLXdpZHRoPSIxLjAwMDAwMCIvPgoJCTxwYXRoIGlkPSJBcHAiIGQ9Ik0yNTcuMDk5IDMyOEwyNTEuMDgzIDMyOEwyNjcuMDIxIDI4MS4wMzFMMjczLjYxNSAyODEuMDMxTDI4OS41NTIgMzI4TDI4My4yODcgMzI4TDI3OC44MDIgMzEzLjY1NkwyNjEuNjQ2IDMxMy42NTZMMjU3LjA5OSAzMjhaTTI3MC4wOTkgMjg1Ljg5MUMyNjguNjMgMjkxLjM5MSAyNjcuMDgzIDI5Ni40NTMgMjY1LjQyNyAzMDEuNzY2TDI2My4xMTUgMzA4LjkyMkwyNzcuMzMzIDMwOC45MjJMMjc1LjA4MyAzMDEuNzY2QzI3My4zNjUgMjk2LjQ1MyAyNzEuODggMjkxLjMyOCAyNzAuMzQ5IDI4NS44OTFMMjcwLjA5OSAyODUuODkxWk0zMDEuNDYzIDM0Mi42NTZMMjk1LjYzNSAzNDIuNjU2TDI5NS42MzUgMjkzLjI1TDMwMC40MzIgMjkzLjI1TDMwMC45NDcgMjk3LjIxOUwzMDEuMTM1IDI5Ny4yMTlDMzA0LjI3NSAyOTQuNjU2IDMwOC4xODIgMjkyLjM1OSAzMTIuMjEzIDI5Mi4zNTlDMzIxLjE2NiAyOTIuMzU5IDMyNi4wMjUgMjk5LjM5MSAzMjYuMDI1IDMxMC4wNzhDMzI2LjAyNSAzMjEuOTg0IDMxOC45MzIgMzI4LjgyOCAzMTAuOTMyIDMyOC44MjhDMzA3Ljc5MSAzMjguODI4IDMwNC40NjMgMzI3LjM1OSAzMDEuMzIyIDMyNC43OTdMMzAxLjQ2MyAzMzAuODc1TDMwMS40NjMgMzQyLjY1NlpNMzQxLjE0MyAzNDIuNjU2TDMzNS4zMTUgMzQyLjY1NkwzMzUuMzE1IDI5My4yNUwzNDAuMTEyIDI5My4yNUwzNDAuNjI3IDI5Ny4yMTlMMzQwLjgxNSAyOTcuMjE5QzM0My45NTUgMjk0LjY1NiAzNDcuODYyIDI5Mi4zNTkgMzUxLjg5MyAyOTIuMzU5QzM2MC44NDYgMjkyLjM1OSAzNjUuNzA1IDI5OS4zOTEgMzY1LjcwNSAzMTAuMDc4QzM2NS43MDUgMzIxLjk4NCAzNTguNjEyIDMyOC44MjggMzUwLjYxMiAzMjguODI4QzM0Ny40NzEgMzI4LjgyOCAzNDQuMTQzIDMyNy4zNTkgMzQxLjAwMiAzMjQuNzk3TDM0MS4xNDMgMzMwLjg3NUwzNDEuMTQzIDM0Mi42NTZaTTMwMS40NjMgMzIwLjMxMkMzMDQuNTg4IDMyMy4wMTYgMzA3LjY2NiAzMjMuOTY5IDMwOS45NjMgMzIzLjk2OUMzMTUuNzI4IDMyMy45NjkgMzE5Ljk0NyAzMTguNzgxIDMxOS45NDcgMzEwLjE0MUMzMTkuOTQ3IDMwMi40NjkgMzE3LjM4NSAyOTcuMjgxIDMxMC44MDcgMjk3LjI4MUMzMDcuODUzIDI5Ny4yODEgMzA0Ljg1MyAyOTguOTM4IDMwMS40NjMgMzAyLjA3OEwzMDEuNDYzIDMyMC4zMTJaTTM0MS4xNDMgMzIwLjMxMkMzNDQuMjY4IDMyMy4wMTYgMzQ3LjM0NiAzMjMuOTY5IDM0OS42NDMgMzIzLjk2OUMzNTUuNDA4IDMyMy45NjkgMzU5LjYyNyAzMTguNzgxIDM1OS42MjcgMzEwLjE0MUMzNTkuNjI3IDMwMi40NjkgMzU3LjA2NSAyOTcuMjgxIDM1MC40ODcgMjk3LjI4MUMzNDcuNTMzIDI5Ny4yODEgMzQ0LjUzMyAyOTguOTM4IDM0MS4xNDMgMzAyLjA3OEwzNDEuMTQzIDMyMC4zMTJaIiBmaWxsPSIjMDAwMDAwIiBmaWxsLW9wYWNpdHk9IjEuMDAwMDAwIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiLz4KCTwvZz4KPC9zdmc+Cg==']);
 	// const [event, setEvent] = useState(null);
 	const [id, setId] = useState(0);
 	const [isEdit, setIsEdit] = useState(false);
@@ -149,8 +151,10 @@ export default function PageAppRunTime() {
 				}} />
 				<SideBarTemplate />
 				<SideBarSpace />
-				<SideBarOption Title="日视图" OnClickFunc={{}} />
-				<SideBarOption Title="周视图" OnClickFunc={{}} />
+				{/* <SideBarOption Title="日视图" OnClickFunc={{}} /> */}
+				<SideBarOption Title="添加应用" OnClickFunc={() => {
+					setAddAppsOpen(true);
+				}} />
 			</div>
 			{/* //**Chart */}
 			<div className="relative flex flex-col items-center justify-center w-full h-full p-5" >
@@ -189,11 +193,11 @@ export default function PageAppRunTime() {
 				{/* <React.StrictMode> */}
 				{/* //~~woq哈哈哈哈哈哈艹奇技淫巧哈哈哈哈哈 */}
 				{/* //!难搞…………生产环境是会失效的…………看来只能丢动画了………… */}
-				{RunTimeData.length !== 0 && <Dialog open={open} setOpen={(value) => { setOpen(value); setIsEdit(value); setAppInfoWeek(0) }}>
+				{RunTimeData.length !== 0 && <Dialog open={singleAppInfoOpen} setOpen={(value) => { setSingleAppInfoOpen(value); setIsEdit(value); setAppInfoWeek(0) }}>
 					<div className="absolute flex w-4/5 -translate-x-1/2 -translate-y-1/2 bg-white dark:bg-gray-800 dark:text-white h-4/5 RoundAndShadow top-1/2 left-1/2">
 						<div className="relative flex flex-col items-center justify-center w-40 h-full p-2 border-r-2 border-gray-300 RoundAndShadow transition-all duration-500" style={{ backgroundColor: RunTimeData[id][2] }} >
 							<img className={`w-2/3 p-2 my-1 bg-white border-gray-500 transition-all duration-700 RoundAndShadow ${isEdit ? 'opacity-75' : ''}`} src={RunTimeData[id][3]} alt={RunTimeData[id][0]} />
-							<input className='rounded-md w-full text-xl text-center bg-white  dark:bg-gray-600 text-wrap' disabled={isEdit ? false : true} onContextMenu={() => { if (!isEdit) sendContextRequest() }} value={RunTimeData[id][0]} onChange={(e) => { handleInputChange(e.target.value, 0) }} />
+							<b className='rounded-md w-full text-xl text-center bg-white  dark:bg-gray-600 text-wrap' onContextMenu={() => { if (!isEdit) sendContextRequest() }}  >{RunTimeData[id][0]}</b>
 							{/* //td太长会超………… */}
 							<span className="w-full h-4"></span>
 							<div className='flex w-full p-1 mx-1 mt-4 bg-gray-300 rounded-lg dark:bg-gray-600' onContextMenu={() => { if (!isEdit) sendContextRequest() }}>Class:<input disabled={isEdit ? false : true} title='Class' className='rounded-md w-full ml-1 text-sm bg-transparent' value={RunTimeData[id][1]} onChange={(e) => handleInputChange(e.target.value, 1)} /></div>
@@ -248,6 +252,22 @@ export default function PageAppRunTime() {
 					</div>
 					{/* //！woq要显示<的转义是这样的……………额为什么是l和g………… */}
 				</Dialog >}
+				<Dialog open={addAppsOpen} setOpen={setAddAppsOpen}>
+					<div className="absolute flex flex-col items-center p-5 justify-center w-72 h-4/5 border-r-2 top-1/2 left-20 -translate-y-1/2 border-gray-300 RoundAndShadow transition-all duration-500" style={{ backgroundColor: addAppInfo[2] }}  >
+						<img className="w-32 p-2 my-1 bg-white border-gray-500 transition-all duration-700 RoundAndShadow opacity-75" src={addAppInfo[3]} />
+						<input className='rounded-md w-full text-xl text-center bg-white  dark:bg-gray-600 text-wrap' value={addAppInfo[0]} onChange={(e) => { handleAddAppInputChange(e.target.value, 0) }} onFocus={(event) => { event.target.select() }} />
+						{/* //td太长会超………… */}
+						<span className="w-full h-4"></span>
+						<div className='flex w-full p-1 mx-1 mt-4 bg-gray-300 rounded-lg dark:bg-gray-600' >Class:<input title='Class' className='rounded-md w-full ml-1 text-sm bg-transparent' value={addAppInfo[1]} onChange={(e) => { handleAddAppInputChange(e.target.value, 1) }} onFocus={(event) => { event.target.select() }} /></div>
+						<div className='flex w-full p-1 mx-1 bg-gray-300 rounded-lg dark:bg-gray-600' >Color:<input type='color' title='Color' className='rounded-md w-full ml-1 text-sm bg-transparent' value={addAppInfo[2]} onChange={(e) => { handleAddAppInputChange(e.target.value, 2) }} /></div>
+						<div className='flex w-full p-1 mx-1 bg-gray-300 rounded-lg dark:bg-gray-600' >IconBase64:<input title='IconBase64' className='rounded-md w-full ml-1 text-sm bg-transparent' value={addAppInfo[3]} onChange={(e) => { handleAddAppInputChange(e.target.value, 3) }} onFocus={(event) => { event.target.select() }} /></div>
+						{/* //！网上看到的this用不了…………必须用evet.target */}
+						<div className={`flex transition-all overflow-hidden h-10 `}>
+							<button className='h-6 px-4 mt-4 transition-all bg-gray-300 hover:h-7 text-nowrap dark:bg-gray-600 RoundAndShadow hover:bg-gray-400 hover:text-xl hover:mt-3' onClick={handleAddAppConfirmClick}>确认</button>
+							<button className='h-6 px-4 mt-4 transition-all bg-gray-300 hover:h-7 text-nowrap dark:bg-gray-600 RoundAndShadow hover:bg-gray-400 hover:text-xl hover:mt-3' onClick={handleAddAppCancelClick}>取消</button>
+						</div>
+					</div>
+				</Dialog>
 				{/* </React.StrictMode> */}
 			</div>
 			{/* //！崩溃的关键就在这里…………！！！main那边传过来的时候会导致数据不全但这里又没有判断………… */}
@@ -297,6 +317,25 @@ export default function PageAppRunTime() {
 		setRunTimeData(copy)
 		// UpdateRunTimeData(() => {RunTimeData[event.target.id][valueIndex] = e.target.value})
 	}
+	function handleAddAppInputChange(value, valueIndex) {
+		setAddAppInfo([
+			...addAppInfo.slice(0, valueIndex),
+			value,
+			...addAppInfo.slice(valueIndex + 1)
+		])
+		addAppInfo[valueIndex] = value;
+		// ！md你要说这个方法还清晰多了…………………………
+		// UpdateRunTimeData(() => {RunTimeData[event.target.id][valueIndex] = e.target.value})
+	}
+	function handleAddAppConfirmClick() {
+		ipcRenderer.send('add_app', addAppInfo);
+		setIsEdit(false);
+	}
+	function handleAddAppCancelClick() {
+		setAddAppInfo(['newApp', 'None', '#BFDBFE', 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAwLjAwMDAwMCIgaGVpZ2h0PSI0MDAuMDAwMDAwIiB2aWV3Qm94PSIwIDAgNDAwIDQwMCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB4bWxuczp4bGluaz0iaHR0cDovL3d3dy53My5vcmcvMTk5OS94bGluayI+Cgk8ZGVzYz4KCQkJQ3JlYXRlZCB3aXRoIFBpeHNvLgoJPC9kZXNjPgoJPGRlZnM+CgkJPGZpbHRlciBpZD0iZmlsdGVyXzcwXzE4NF9kZCIgeD0iMjIuNzk0OTIyIiB5PSIzNy4wMDAwMDAiIHdpZHRoPSIzNTQuNDEwMTU2IiBoZWlnaHQ9IjI5Ni43NTAwMDAiIGZpbHRlclVuaXRzPSJ1c2VyU3BhY2VPblVzZSIgY29sb3ItaW50ZXJwb2xhdGlvbi1maWx0ZXJzPSJzUkdCIj4KCQkJPGZlRmxvb2QgZmxvb2Qtb3BhY2l0eT0iMCIgcmVzdWx0PSJCYWNrZ3JvdW5kSW1hZ2VGaXgiLz4KCQkJPGZlQ29sb3JNYXRyaXggaW49IlNvdXJjZUFscGhhIiB0eXBlPSJtYXRyaXgiIHZhbHVlcz0iMCAwIDAgMCAwIDAgMCAwIDAgMCAwIDAgMCAwIDAgMCAwIDAgMTI3IDAiIHJlc3VsdD0iaGFyZEFscGhhIi8+CgkJCTxmZU9mZnNldCBkeD0iMCIgZHk9IjQiLz4KCQkJPGZlR2F1c3NpYW5CbHVyIHN0ZERldmlhdGlvbj0iMS4zMzMzMyIvPgoJCQk8ZmVDb21wb3NpdGUgaW4yPSJoYXJkQWxwaGEiIG9wZXJhdG9yPSJvdXQiIGsyPSItMSIgazM9IjEiLz4KCQkJPGZlQ29sb3JNYXRyaXggdHlwZT0ibWF0cml4IiB2YWx1ZXM9IjAgMCAwIDAgMCAwIDAgMCAwIDAgMCAwIDAgMCAwIDAgMCAwIDAuMjUgMCIvPgoJCQk8ZmVCbGVuZCBtb2RlPSJub3JtYWwiIGluMj0iQmFja2dyb3VuZEltYWdlRml4IiByZXN1bHQ9ImVmZmVjdF9kcm9wU2hhZG93XzEiLz4KCQkJPGZlQmxlbmQgbW9kZT0ibm9ybWFsIiBpbj0iU291cmNlR3JhcGhpYyIgaW4yPSJlZmZlY3RfZHJvcFNoYWRvd18xIiByZXN1bHQ9InNoYXBlIi8+CgkJPC9maWx0ZXI+CgkJPGZpbHRlciBpZD0iZmlsdGVyXzcwXzE4OF9kZCIgeD0iMjE2LjAwMDAwMCIgeT0iMjcwLjAwMDAwMCIgd2lkdGg9IjE4OC4wMDAwMDAiIGhlaWdodD0iODguMDAwMDAwIiBmaWx0ZXJVbml0cz0idXNlclNwYWNlT25Vc2UiIGNvbG9yLWludGVycG9sYXRpb24tZmlsdGVycz0ic1JHQiI+CgkJCTxmZUZsb29kIGZsb29kLW9wYWNpdHk9IjAiIHJlc3VsdD0iQmFja2dyb3VuZEltYWdlRml4Ii8+CgkJCTxmZUNvbG9yTWF0cml4IGluPSJTb3VyY2VBbHBoYSIgdHlwZT0ibWF0cml4IiB2YWx1ZXM9IjAgMCAwIDAgMCAwIDAgMCAwIDAgMCAwIDAgMCAwIDAgMCAwIDEyNyAwIiByZXN1bHQ9ImhhcmRBbHBoYSIvPgoJCQk8ZmVPZmZzZXQgZHg9IjAiIGR5PSI0Ii8+CgkJCTxmZUdhdXNzaWFuQmx1ciBzdGREZXZpYXRpb249IjEuMzMzMzMiLz4KCQkJPGZlQ29tcG9zaXRlIGluMj0iaGFyZEFscGhhIiBvcGVyYXRvcj0ib3V0IiBrMj0iLTEiIGszPSIxIi8+CgkJCTxmZUNvbG9yTWF0cml4IHR5cGU9Im1hdHJpeCIgdmFsdWVzPSIwIDAgMCAwIDAgMCAwIDAgMCAwIDAgMCAwIDAgMCAwIDAgMCAwLjI1IDAiLz4KCQkJPGZlQmxlbmQgbW9kZT0ibm9ybWFsIiBpbjI9IkJhY2tncm91bmRJbWFnZUZpeCIgcmVzdWx0PSJlZmZlY3RfZHJvcFNoYWRvd18xIi8+CgkJCTxmZUJsZW5kIG1vZGU9Im5vcm1hbCIgaW49IlNvdXJjZUdyYXBoaWMiIGluMj0iZWZmZWN0X2Ryb3BTaGFkb3dfMSIgcmVzdWx0PSJzaGFwZSIvPgoJCTwvZmlsdGVyPgoJCTxjbGlwUGF0aCBpZD0iY2xpcDcwXzE4NiI+CgkJCTxyZWN0IGlkPSLnlLvmnb8gMTgiIHdpZHRoPSI0MDAuMDAwMDAwIiBoZWlnaHQ9IjQwMC4wMDAwMDAiIGZpbGw9IndoaXRlIiBmaWxsLW9wYWNpdHk9IjAiLz4KCQk8L2NsaXBQYXRoPgoJPC9kZWZzPgoJPHJlY3QgaWQ9IueUu+advyAxOCIgd2lkdGg9IjQwMC4wMDAwMDAiIGhlaWdodD0iNDAwLjAwMDAwMCIgZmlsbD0iI0ZGRkZGRiIgZmlsbC1vcGFjaXR5PSIwIi8+Cgk8ZyBjbGlwLXBhdGg9InVybCgjY2xpcDcwXzE4NikiPgoJCTxnIGZpbHRlcj0idXJsKCNmaWx0ZXJfNzBfMTg0X2RkKSI+CgkJCTxwYXRoIGlkPSLlt67pm4YiIGQ9Ik0yNi43OTQ5IDMyNS43NUwyMDAgMzdMMzczLjIwNSAzMjUuNzVMMjYuNzk0OSAzMjUuNzVaTTIwMCAxODBDMTYxLjM0IDE4MCAxMzAgMTk3LjkwOSAxMzAgMjIwQzEzMCAyNDIuMDkxIDE2MS4zNCAyNjAgMjAwIDI2MEMyMzguNjYgMjYwIDI3MCAyNDIuMDkxIDI3MCAyMjBDMjcwIDE5Ny45MDkgMjM4LjY2IDE4MCAyMDAgMTgwWiIgY2xpcC1ydWxlPSJldmVub2RkIiBmaWxsPSIjNDQ0NDQ0IiBmaWxsLW9wYWNpdHk9IjEuMDAwMDAwIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiLz4KCQk8L2c+CgkJPGVsbGlwc2UgaWQ9IuakreWchiAyIiBjeD0iMjAwLjAwMDAwMCIgY3k9IjIxOS40Mjg1NzQiIHJ4PSIyMC4wMDAwMDAiIHJ5PSIxMS40Mjg1NzIiIGZpbGw9IiM0NDQ0NDQiIGZpbGwtb3BhY2l0eT0iMS4wMDAwMDAiLz4KCQk8ZyBmaWx0ZXI9InVybCgjZmlsdGVyXzcwXzE4OF9kZCkiPgoJCQk8cmVjdCBpZD0i55+p5b2iIDI3IiB4PSIyMjAuMDAwMDAwIiB5PSIyNzAuMDAwMDAwIiByeD0iMjAuMDAwMDAwIiB3aWR0aD0iMTgwLjAwMDAwMCIgaGVpZ2h0PSI4MC4wMDAwMDAiIGZpbGw9IiNEREREREQiIGZpbGwtb3BhY2l0eT0iMS4wMDAwMDAiLz4KCQk8L2c+CgkJPHJlY3QgaWQ9IuefqeW9oiAyNyIgeD0iMjIwLjUwMDAwMCIgeT0iMjcwLjUwMDAwMCIgcng9IjIwLjAwMDAwMCIgd2lkdGg9IjE3OS4wMDAwMDAiIGhlaWdodD0iNzkuMDAwMDAwIiBzdHJva2U9IiMwMDAwMDAiIHN0cm9rZS1vcGFjaXR5PSIxLjAwMDAwMCIgc3Ryb2tlLXdpZHRoPSIxLjAwMDAwMCIvPgoJCTxwYXRoIGlkPSJBcHAiIGQ9Ik0yNTcuMDk5IDMyOEwyNTEuMDgzIDMyOEwyNjcuMDIxIDI4MS4wMzFMMjczLjYxNSAyODEuMDMxTDI4OS41NTIgMzI4TDI4My4yODcgMzI4TDI3OC44MDIgMzEzLjY1NkwyNjEuNjQ2IDMxMy42NTZMMjU3LjA5OSAzMjhaTTI3MC4wOTkgMjg1Ljg5MUMyNjguNjMgMjkxLjM5MSAyNjcuMDgzIDI5Ni40NTMgMjY1LjQyNyAzMDEuNzY2TDI2My4xMTUgMzA4LjkyMkwyNzcuMzMzIDMwOC45MjJMMjc1LjA4MyAzMDEuNzY2QzI3My4zNjUgMjk2LjQ1MyAyNzEuODggMjkxLjMyOCAyNzAuMzQ5IDI4NS44OTFMMjcwLjA5OSAyODUuODkxWk0zMDEuNDYzIDM0Mi42NTZMMjk1LjYzNSAzNDIuNjU2TDI5NS42MzUgMjkzLjI1TDMwMC40MzIgMjkzLjI1TDMwMC45NDcgMjk3LjIxOUwzMDEuMTM1IDI5Ny4yMTlDMzA0LjI3NSAyOTQuNjU2IDMwOC4xODIgMjkyLjM1OSAzMTIuMjEzIDI5Mi4zNTlDMzIxLjE2NiAyOTIuMzU5IDMyNi4wMjUgMjk5LjM5MSAzMjYuMDI1IDMxMC4wNzhDMzI2LjAyNSAzMjEuOTg0IDMxOC45MzIgMzI4LjgyOCAzMTAuOTMyIDMyOC44MjhDMzA3Ljc5MSAzMjguODI4IDMwNC40NjMgMzI3LjM1OSAzMDEuMzIyIDMyNC43OTdMMzAxLjQ2MyAzMzAuODc1TDMwMS40NjMgMzQyLjY1NlpNMzQxLjE0MyAzNDIuNjU2TDMzNS4zMTUgMzQyLjY1NkwzMzUuMzE1IDI5My4yNUwzNDAuMTEyIDI5My4yNUwzNDAuNjI3IDI5Ny4yMTlMMzQwLjgxNSAyOTcuMjE5QzM0My45NTUgMjk0LjY1NiAzNDcuODYyIDI5Mi4zNTkgMzUxLjg5MyAyOTIuMzU5QzM2MC44NDYgMjkyLjM1OSAzNjUuNzA1IDI5OS4zOTEgMzY1LjcwNSAzMTAuMDc4QzM2NS43MDUgMzIxLjk4NCAzNTguNjEyIDMyOC44MjggMzUwLjYxMiAzMjguODI4QzM0Ny40NzEgMzI4LjgyOCAzNDQuMTQzIDMyNy4zNTkgMzQxLjAwMiAzMjQuNzk3TDM0MS4xNDMgMzMwLjg3NUwzNDEuMTQzIDM0Mi42NTZaTTMwMS40NjMgMzIwLjMxMkMzMDQuNTg4IDMyMy4wMTYgMzA3LjY2NiAzMjMuOTY5IDMwOS45NjMgMzIzLjk2OUMzMTUuNzI4IDMyMy45NjkgMzE5Ljk0NyAzMTguNzgxIDMxOS45NDcgMzEwLjE0MUMzMTkuOTQ3IDMwMi40NjkgMzE3LjM4NSAyOTcuMjgxIDMxMC44MDcgMjk3LjI4MUMzMDcuODUzIDI5Ny4yODEgMzA0Ljg1MyAyOTguOTM4IDMwMS40NjMgMzAyLjA3OEwzMDEuNDYzIDMyMC4zMTJaTTM0MS4xNDMgMzIwLjMxMkMzNDQuMjY4IDMyMy4wMTYgMzQ3LjM0NiAzMjMuOTY5IDM0OS42NDMgMzIzLjk2OUMzNTUuNDA4IDMyMy45NjkgMzU5LjYyNyAzMTguNzgxIDM1OS42MjcgMzEwLjE0MUMzNTkuNjI3IDMwMi40NjkgMzU3LjA2NSAyOTcuMjgxIDM1MC40ODcgMjk3LjI4MUMzNDcuNTMzIDI5Ny4yODEgMzQ0LjUzMyAyOTguOTM4IDM0MS4xNDMgMzAyLjA3OEwzNDEuMTQzIDMyMC4zMTJaIiBmaWxsPSIjMDAwMDAwIiBmaWxsLW9wYWNpdHk9IjEuMDAwMDAwIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiLz4KCTwvZz4KPC9zdmc+Cg=='])
+		setAddAppsOpen(false);
+	}
+
 	// ！！！！！！关于嵌套对象的修改：
 	// ！1.注意如果是数组不能用下面的方法………………只能用slice复制一个新的！！！！
 	// ！2.分清{ }和[]………………上面被TY多次误导老是要用{ }导致怎么搞都不对…………………………………………
@@ -304,7 +343,7 @@ export default function PageAppRunTime() {
 	// {...RunTimeData,
 	// [event.target.id]: [{ ...RunTimeData[event.target.id], [RunTimeData[event.target.id][valueIndex]]: e.target.value }]}
 	function handleAppClick(id: number) {
-		setId(Number(id)); setOpen(true);
+		setId(Number(id)); setSingleAppInfoOpen(true);
 		// ！真神奇…………传过来的id居然是string…………
 		// !此时id还没有做更新…………必须在这里手动更新一次
 		ipcRenderer.send('update_single_app_info', [RunTimeData[id][0], appInfoWeek]);

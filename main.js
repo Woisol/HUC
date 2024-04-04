@@ -17,6 +17,7 @@ var appConfig = require(path.join(process.cwd(), "config.json"));
 //**----------------------------AppInfo-----------------------------------------------------
 var AppInfo = require(path.join(process.cwd(), "AppInfo.json"));
 var appsOrder = require(path.join(process.cwd(), "AppsOrder.json"));
+var storedSingleAppInfoData;
 //**----------------------------AppRunning-----------------------------------------------------
 var runningApps = [];
 var mntApps = [];
@@ -87,22 +88,8 @@ const createWindow = () => {
 				app.exit();
 			}
 		}
-
-		connection.query(`SELECT TABLE_NAME FROM information_schema.tables WHERE TABLE_SCHEMA = ?;`, [appConfig.DATABASE_NAME], function (err, rows, fields) {
-			// ！异步的！！不需要Asyn
-			// dtd注意可能有注入攻击…………
-			if (err !== null) {
-				//!这里为什么为null了还进得来…………
-				console.log(`Query Error: ${err}`);
-				return;
-			}
-			mntApps = [];
-			// !这里不清掉大问题………………
-			rows.forEach(RowDataPacket => {
-				mntApps.push(RowDataPacket.TABLE_NAME);
-			})
-		})
 	});
+	UpdateMntApps();
 	win = new BrowserWindow({
 		width: 600,
 		height: 1024,
@@ -314,7 +301,9 @@ ContextMenu_Console = Menu.buildFromTemplate([
 				buttons: ["取消", "确定"],
 				message: "确认要清空控制台吗？"
 			}) === 0) return;
-			win.webContents.send("ConsoleClear")
+			win.webContents.send("ConsoleClear");
+			win.webContents.send("ConsoleReOpen");
+
 			// ~~额按照官方文档说的将electron.exe放到开始菜单也不行？
 			// !额你自己开了免打扰了😥似乎不用放快捷方式不用设app.setAppUserModelId也可以
 			new Notification({
@@ -329,7 +318,8 @@ ContextMenu_RunTime = Menu.buildFromTemplate([
 		click: (menuItem, browserWindow, event) => {
 			UpdateRunTime(adjudgeDateBy4(new Date()));
 		}
-	}])
+	}
+])
 ContextMenu_LastSeven = Menu.buildFromTemplate([
 	{
 		label: "刷新",
@@ -597,6 +587,23 @@ function setFollowSystemDarkMode(follow) {
 		else nativeTheme.themeSource = 'light';
 	}
 }
+//**----------------------------MntApps-----------------------------------------------------
+function UpdateMntApps() {
+	connection.query(`SELECT TABLE_NAME FROM information_schema.tables WHERE TABLE_SCHEMA = ?;`, [appConfig.DATABASE_NAME], function (err, rows, fields) {
+		// ！异步的！！不需要Asyn
+		// dtd注意可能有注入攻击…………
+		if (err !== null) {
+			//!这里为什么为null了还进得来…………
+			console.log(`Query Error: ${err}`);
+			return;
+		}
+		mntApps = [];
+		// !这里不清掉大问题………………
+		rows.forEach(RowDataPacket => {
+			mntApps.push(RowDataPacket.TABLE_NAME);
+		})
+	})
+}
 //**----------------------------AppInfo-----------------------------------------------------
 ipcMain.on('update_app_info', (event, arg) => {
 	// var json = "";
@@ -754,7 +761,6 @@ function UpdateLastSeven() {
 }
 //**----------------------------UpdateSingleAppInfo-----------------------------------------------------
 ipcMain.on('update_single_app_info', (event, arg) => { UpdateSingleAppInfo(arg) })
-var storedSingleAppInfoData;
 function UpdateSingleAppInfo(data) {
 	storedSingleAppInfoData = data;
 	Promise.all(
@@ -789,6 +795,30 @@ function adjudgeDateBy4(date) {
 ipcMain.on('update_app_order', (event, arg) => {
 	// console.log(arg);
 	fs.writeFileSync(path.join(process.cwd(), 'AppsOrder.json'), JSON.stringify(arg))
+})
+//**----------------------------AddApp-----------------------------------------------------
+ipcMain.on('add_app', (event, arg) => {
+	if (mntApps.includes(arg[0])) {
+		dialog.showMessageBox(win, {
+			type: 'error',
+			title: '错误',
+			message: '应用已存在',
+			buttons: ['确定']
+		})
+		return;
+	}
+	MonitorPcs.stdin.write(`add ${arg[0]}\n`)
+	mntApps.push(arg[0]);
+	AppInfo = {
+		...AppInfo,
+		[arg[0]]: {
+			'Icon': arg[3],
+			'Class': arg[1],
+			'Color': arg[2]
+		}
+	};
+	fs.writeFileSync(path.join(process.cwd(), 'AppInfo.json'), JSON.stringify(AppInfo))
+	UpdateRunTime();
 })
 //**----------------------------test-----------------------------------------------------
 module.exports = {
