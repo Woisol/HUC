@@ -1,8 +1,9 @@
 import * as React from 'react';
 import { useState } from 'react';
-import SlideBarIcon1 from "../../Asset/dashboard.svg";
-import SlideBarIcon2 from "../../Asset/AppDetail.svg";
-import SlideBarIcon3 from "../../Asset/setting_SlideBar.svg";
+import game from "../../Asset/game.svg"
+import dashBoard from "../../Asset/dashboard.svg";
+import appDetail from "../../Asset/AppDetail.svg";
+import setting from "../../Asset/setting_SlideBar.svg";
 import { Tab } from '@headlessui/react';
 import { event } from 'jquery';
 // import $ from "jquery";
@@ -11,9 +12,10 @@ import { event } from 'jquery';
 // 	$("#" + props.PageID).scrollTop(0);
 // }
 const SlideBarOpProps = [
-	{ icon: SlideBarIcon1, title: "DashBoard", PageID: "Page_DashBoard" },
-	{ icon: SlideBarIcon2, title: "AppDetail", PageID: "Page_AppDetail" },
-	{ icon: SlideBarIcon3, title: "Setting", PageID: "Page_Setting" }
+	{ icon: game, title: "Game", PageID: "Page_GameBooter" },
+	{ icon: dashBoard, title: "DashBoard", PageID: "Page_DashBoard" },
+	{ icon: appDetail, title: "AppDetail", PageID: "Page_AppDetail" },
+	{ icon: setting, title: "Setting", PageID: "Page_Setting" }
 ]
 // ！啊啊注意分清[]和{}！！
 function SlideBarOption({ icon, title, PageID, index }) {

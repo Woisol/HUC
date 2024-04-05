@@ -26,7 +26,7 @@ var mntApps = [];
 var RunTimeDB = require("mysql");
 var today = adjudgeDateBy4(new Date());
 //**----------------------------ContexMenu-----------------------------------------------------
-var ContextMenu_Fresh, ContextMenu_MainSwitch, ContextMenu_Console, ContextMenu_RunTime, ContextMenu_LastSeven, ContextMenu_EditAppInfo, ContextMenu_SingleAppInfo
+var ContextMenu_Fresh, ContextMenu_MainSwitch, ContextMenu_Console, ContextMenu_RunTime, ContextMenu_LastSeven, ContextMenu_EditAppInfo, ContextMenu_SingleAppInfo, ContextMenu_OpenAppsorder
 const { Menu } = require("electron");
 const { error } = require("console");
 const { exec } = require("child_process");
@@ -346,6 +346,13 @@ ContextMenu_SingleAppInfo = Menu.buildFromTemplate([
 			UpdateSingleAppInfo(storedSingleAppInfoData)
 		}
 	}])
+ContextMenu_OpenAppsorder = Menu.buildFromTemplate([
+	{
+		label: "修改游戏展示配置文件",
+		click: (menuItem, browserWindow, event) => {
+			exec(`start notepad ${path.join(process.cwd(), "AppsOrder.json")}`);
+		}
+	}])
 //**----------------------------ipcMain-----------------------------------------------------
 // $("#MainSwitchImg").on("contextmenu", (event, params) => {
 // 	const { } = params;
@@ -379,6 +386,9 @@ ipcMain.on("ContextMenu_EditAppInfo", (event, arg) => {
 ipcMain.on("ContextMenu_SingleAppInfo", (event, arg) => {
 	event.preventDefault();
 	ContextMenu_SingleAppInfo.popup()
+})
+ipcMain.on('open_config_appsorder', () => {
+	ContextMenu_OpenAppsorder.popup();
 })
 function UpdateRunningApp(App, Delete = false) {
 	if (Delete) {
@@ -664,8 +674,8 @@ function UpdateRunTime(date) {
 	if (appsOrder.length < mntApps.length) {
 		appsOrder.push(...mntApps.filter((app => { return !appsOrder.includes(app) })));
 		let newJson = {
-			"AppsOrder": appsOrder,
-			"GamesOrder": gamesOrder
+			"GamesOrder": gamesOrder,
+			"AppsOrder": appsOrder
 		}
 		fs.writeFileSync(path.join(process.cwd(), "AppsOrder.json"), JSON.stringify(newJson))
 	}
@@ -815,8 +825,8 @@ function adjudgeDateBy4(date) {
 ipcMain.on('update_app_order', (event, arg) => {
 	// console.log(arg);
 	let newJson = {
-		"AppsOrder": arg,
-		"GamesOrder": gamesOrder
+		"GamesOrder": gamesOrder,
+		"AppsOrder": arg
 	}
 	fs.writeFileSync(path.join(process.cwd(), 'AppsOrder.json'), JSON.stringify(newJson))
 })
@@ -912,7 +922,7 @@ ipcMain.on('launch_game', async (event, arg) => {
 			buttons: ['取消限制', '延长10min', '确定']
 		})) {
 			case 0:
-				if (!arg[4]) {
+				if (!arg[3]) {
 					dialog.showMessageBoxSync({
 						type: 'error',
 						title: '不许反悔！',
@@ -923,7 +933,7 @@ ipcMain.on('launch_game', async (event, arg) => {
 				clearTimeout(killTimer);
 				break;
 			case 1:
-				if (!arg[4]) {
+				if (!arg[3]) {
 					dialog.showMessageBoxSync({
 						type: 'error',
 						title: '不许反悔！',
@@ -934,7 +944,7 @@ ipcMain.on('launch_game', async (event, arg) => {
 				clearTimeout(killTimer);
 				killTimer = setKiller(15);
 				break;
-			default:
+			default: break;
 			// }
 			// )
 			// }
@@ -950,7 +960,7 @@ ipcMain.on('launch_game', async (event, arg) => {
 				buttons: ['取消限制', '延长10min', '确定']
 			})) {
 				case 0:
-					if (!arg[4]) {
+					if (!arg[3]) {
 						dialog.showMessageBoxSync({
 							type: 'error',
 							title: '不许反悔！',
@@ -961,7 +971,7 @@ ipcMain.on('launch_game', async (event, arg) => {
 					clearTimeout(killTimer);
 					break;
 				case 1:
-					if (!arg[4]) {
+					if (!arg[3]) {
 						dialog.showMessageBoxSync({
 							type: 'error',
 							title: '不许反悔！',
@@ -979,7 +989,7 @@ ipcMain.on('launch_game', async (event, arg) => {
 						}
 					}
 					break;
-				default:
+				default: break;
 			}
 		}, (arg[2] - 5) * 60 * 1000)
 	}
@@ -993,7 +1003,7 @@ ipcMain.on('launch_game', async (event, arg) => {
 				buttons: ['取消限制', '延长10min', '确定']
 			})) {
 				case 0:
-					if (!arg[4]) {
+					if (!arg[3]) {
 						dialog.showMessageBoxSync({
 							type: 'error',
 							title: '不许反悔！',
@@ -1004,7 +1014,7 @@ ipcMain.on('launch_game', async (event, arg) => {
 					clearTimeout(killTimer); reject();
 					break;
 				case 1:
-					if (!arg[4]) {
+					if (!arg[3]) {
 						dialog.showMessageBoxSync({
 							type: 'error',
 							title: '不许反悔！',
@@ -1016,13 +1026,17 @@ ipcMain.on('launch_game', async (event, arg) => {
 					killTimer = setKiller(15);
 					break;
 				case 2: reject(); break;
-				default:
+				default: break;
 			}
 			resolve();
 		}, 10 * 60 * 1000)//
 
 	}
 	function setKiller(min) {
+		new Notification({
+			title: '计时器已设置',
+			body: `游戏${arg[0]}将在${min}分钟后自动关闭`
+		})
 		return setTimeout(() => {
 			dialog.showMessageBoxSync({
 				type: 'warning',
@@ -1033,6 +1047,7 @@ ipcMain.on('launch_game', async (event, arg) => {
 		}, min * 60 * 1000)
 	}
 })
+
 
 // let killTimer = setTimeout(() => {exec("taskkill /im " + arg[0] + '.exe')}, 1000)
 //**----------------------------test-----------------------------------------------------
