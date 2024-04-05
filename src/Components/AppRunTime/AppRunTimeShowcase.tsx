@@ -27,7 +27,7 @@ export default function AppRunTimeShowcase({ index, data, handleClick }) {
 						style={{ backgroundColor: `${data[2]}` }} >
 						{/* //！注意这个组件有点特殊…………要有函数要有ref要有props */}
 						<div className="relative w-3 h-full transition-all bg-gray-300 rounded-lg shadow-lg dark:bg-gray-600 AppRunTimeShowcase sm:w-5 md:w-7 right-2 hover:shadow-2xl">
-							{data[4].map((item, index) => {
+							{data[5].map((item, index) => {
 								let tmpStarMin = item[0].getHours() * 60 + item[0].getMinutes() + item[0].getSeconds() / 60 - 240;
 								let tmpEndmin = item[1].getHours() * 60 + item[1].getMinutes() + item[1].getSeconds() / 60 - 240;
 								totalTime += (tmpEndmin - tmpStarMin) / 60;

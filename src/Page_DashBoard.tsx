@@ -13,12 +13,12 @@ export default function PageDashBoard({ isMonitorRunning, isDarkMode, setIsDarkM
 	// console.log(isMonitorRunning);
 	// let isMonitorRunnin = true, isOverseersRunning = true;
 	return (
-		<div id="Page_DashBoard" className="w-full h-screen overflow-hidden transition-all bg-blue-200 border-black border-y-2 snap-start dark:bg-gray-800" >
+		<div id="Page_DashBoard" className="w-full relative h-screen overflow-hidden transition-all bg-blue-200 border-black border-y-2 snap-start dark:bg-gray-800" >
 			{/* //！？？？为什么？？？上面div不搞opacity就是显示不了后面的东西…………下面两个放在后面div也不行………… */}
 			{/* //!注意这里加了pointer-event-none会导致后面的按钮也无法点击………… */}
 			<DarkModeSwitcher isDarkMode={isDarkMode} setIsDarkMode={setIsDarkMode} />
 			<BGGear isMonitorRunning={isMonitorRunning} />
-			<div className="absolute bottom-0 w-full py-20 bg-gray-300 border-t-2 border-black dark:bg-gray-900 h-3/4 rounded-t-2xl ">
+			<div className="absolute bottom-0 w-full py-20 bg-gray-100 border-t-2 border-black dark:bg-gray-900 h-3/4 rounded-t-2xl ">
 				<MainSwitch isMonitorRunning={isMonitorRunning} />
 				<Console />
 				<div className="flex flex-col items-center w-full h-full">

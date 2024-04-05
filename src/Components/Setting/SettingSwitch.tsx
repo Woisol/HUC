@@ -2,7 +2,7 @@ import { Switch } from '@headlessui/react';
 import * as React from 'react';
 export default function SettingSwtich({ title, value, handleChange }) {
 	return (
-		<div className={'flex relative'}>
+		<div className={'flex relative w-full'}>
 			<span className="">{title}</span>
 			<Switch.Group as='div' className='absolute right-0'>
 				{/* <Switch.Label className={'text-lg mx-4'}>{title}</Switch.Label> */}

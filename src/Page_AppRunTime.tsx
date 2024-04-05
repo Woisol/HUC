@@ -53,7 +53,7 @@ export default function PageAppRunTime() {
 	});
 
 
-	ipcRenderer.on("UpdateRunTime", (event, data) => {
+	ipcRenderer.on("update_run_time", (event, data) => {
 		setRunTimeData(data[0]);
 
 		// ！以为修改复制的数组不会导致原数组变化………………
@@ -141,7 +141,7 @@ export default function PageAppRunTime() {
 	// 	}
 	// })]
 	return (
-		<div id="Page_AppDetail" className="relative flex w-screen h-screen px-1 bg-gray-300 border-black dark:bg-gray-800 md:pl-20 md:py-6 border-y-2 snap-start">
+		<div id="Page_AppDetail" className="relative flex w-screen h-screen px-1 bg-gray-100 border-black dark:bg-gray-800 md:pl-20 md:py-6 border-y-2 snap-start">
 			<div className="absolute top-0 left-0 z-20 hidden w-full h-full pointer-events-none bg-black/30 dark:block"></div>
 			{/* //！！！刚刚看不久的！！pointer-events-none！！就实现穿透了！！！ */}
 			{/* //**SideBar */}
@@ -200,13 +200,14 @@ export default function PageAppRunTime() {
 							<b className='rounded-md w-full text-xl text-center bg-white  dark:bg-gray-600 text-wrap' onContextMenu={() => { if (!isEdit) sendContextRequest() }}  >{RunTimeData[id][0]}</b>
 							{/* //td太长会超………… */}
 							<span className="w-full h-4"></span>
-							<div className='flex w-full p-1 mx-1 mt-4 bg-gray-300 rounded-lg dark:bg-gray-600' onContextMenu={() => { if (!isEdit) sendContextRequest() }}>Class:<input disabled={isEdit ? false : true} title='Class' className='rounded-md w-full ml-1 text-sm bg-transparent' value={RunTimeData[id][1]} onChange={(e) => handleInputChange(e.target.value, 1)} /></div>
-							<div className='flex w-full p-1 mx-1 bg-gray-300 rounded-lg dark:bg-gray-600' onContextMenu={() => { if (!isEdit) sendContextRequest() }}>Color:<input disabled={isEdit ? false : true} type='color' title='Color' className='rounded-md w-full ml-1 text-sm bg-transparent' value={RunTimeData[id][2]} onChange={(e) => handleInputChange(e.target.value, 2)} /></div>
-							<div className='flex w-full p-1 mx-1 bg-gray-300 rounded-lg dark:bg-gray-600' onContextMenu={() => { if (!isEdit) sendContextRequest() }}>IconBase64:<input disabled={isEdit ? false : true} title='IconBase64' className='rounded-md w-full ml-1 text-sm bg-transparent' value={RunTimeData[id][3]} onChange={(e) => handleInputChange(e.target.value, 3)} onFocus={(event) => { event.target.select() }} /></div>
+							<div className='flex w-full p-1 mx-1 mt-4 bg-gray-100 rounded-lg dark:bg-gray-600' onContextMenu={() => { if (!isEdit) sendContextRequest() }}>Class:<input disabled={isEdit ? false : true} title='Class' className='rounded-md w-full ml-1 text-sm bg-transparent' value={RunTimeData[id][1]} onChange={(e) => handleInputChange(e.target.value, 1)} /></div>
+							<div className='flex w-full p-1 mx-1 bg-gray-100 rounded-lg dark:bg-gray-600' onContextMenu={() => { if (!isEdit) sendContextRequest() }}>Color:<input disabled={isEdit ? false : true} type='color' title='Color' className='rounded-md w-full ml-1 text-sm bg-transparent' value={RunTimeData[id][2]} onChange={(e) => handleInputChange(e.target.value, 2)} /></div>
+							<div className='flex w-full p-1 mx-1 bg-gray-100 rounded-lg dark:bg-gray-600' onContextMenu={() => { if (!isEdit) sendContextRequest() }}>IconBase64:<input disabled={isEdit ? false : true} title='IconBase64' className='rounded-md w-full ml-1 text-sm bg-transparent' value={RunTimeData[id][3]} onChange={(e) => handleInputChange(e.target.value, 3)} onFocus={(event) => { event.target.select() }} /></div>
+							{RunTimeData[id][1] === 'Game' ? <div className='flex w-full p-1 mx-1 bg-gray-100 rounded-lg dark:bg-gray-600' onContextMenu={() => { if (!isEdit) sendContextRequest() }}>Path:<input disabled={isEdit ? false : true} title='Path' className='rounded-md w-full ml-1 text-sm bg-transparent' value={RunTimeData[id][4]} onChange={(e) => handleInputChange(e.target.value, 4)} onFocus={(event) => { event.target.select() }} /></div> : ''}
 							{/* //！网上看到的this用不了…………必须用evet.target */}
 							<div className={`flex transition-all overflow-hidden ${isEdit ? 'h-10' : 'w-0 h-0'}`}>
-								<button className='h-6 px-4 mt-4 transition-all bg-gray-300 hover:h-7 text-nowrap dark:bg-gray-600 RoundAndShadow hover:bg-gray-400 hover:text-xl hover:mt-3' onClick={handleConfirmClick}>确认</button>
-								<button className='h-6 px-4 mt-4 transition-all bg-gray-300 hover:h-7 text-nowrap dark:bg-gray-600 RoundAndShadow hover:bg-gray-400 hover:text-xl hover:mt-3' onClick={handleCancelClick}>取消</button>
+								<button className='h-6 px-4 mt-4 transition-all bg-gray-200 hover:h-7 text-nowrap dark:bg-gray-600 RoundAndShadow hover:bg-gray-300 hover:text-xl hover:mt-3' onClick={handleConfirmClick}>确认</button>
+								<button className='h-6 px-4 mt-4 transition-all bg-gray-200 hover:h-7 text-nowrap dark:bg-gray-600 RoundAndShadow hover:bg-gray-300 hover:text-xl hover:mt-3' onClick={handleCancelClick}>取消</button>
 							</div>
 						</div>
 						<div className="w-full relative">
@@ -258,13 +259,13 @@ export default function PageAppRunTime() {
 						<input className='rounded-md w-full text-xl text-center bg-white  dark:bg-gray-600 text-wrap' value={addAppInfo[0]} onChange={(e) => { handleAddAppInputChange(e.target.value, 0) }} onFocus={(event) => { event.target.select() }} />
 						{/* //td太长会超………… */}
 						<span className="w-full h-4"></span>
-						<div className='flex w-full p-1 mx-1 mt-4 bg-gray-300 rounded-lg dark:bg-gray-600' >Class:<input title='Class' className='rounded-md w-full ml-1 text-sm bg-transparent' value={addAppInfo[1]} onChange={(e) => { handleAddAppInputChange(e.target.value, 1) }} onFocus={(event) => { event.target.select() }} /></div>
-						<div className='flex w-full p-1 mx-1 bg-gray-300 rounded-lg dark:bg-gray-600' >Color:<input type='color' title='Color' className='rounded-md w-full ml-1 text-sm bg-transparent' value={addAppInfo[2]} onChange={(e) => { handleAddAppInputChange(e.target.value, 2) }} /></div>
-						<div className='flex w-full p-1 mx-1 bg-gray-300 rounded-lg dark:bg-gray-600' >IconBase64:<input title='IconBase64' className='rounded-md w-full ml-1 text-sm bg-transparent' value={addAppInfo[3]} onChange={(e) => { handleAddAppInputChange(e.target.value, 3) }} onFocus={(event) => { event.target.select() }} /></div>
+						<div className='flex w-full p-1 mx-1 mt-4 bg-gray-100 rounded-lg dark:bg-gray-600' >Class:<input title='Class' className='rounded-md w-full ml-1 text-sm bg-transparent' value={addAppInfo[1]} onChange={(e) => { handleAddAppInputChange(e.target.value, 1) }} onFocus={(event) => { event.target.select() }} /></div>
+						<div className='flex w-full p-1 mx-1 bg-gray-100 rounded-lg dark:bg-gray-600' >Color:<input type='color' title='Color' className='rounded-md w-full ml-1 text-sm bg-transparent' value={addAppInfo[2]} onChange={(e) => { handleAddAppInputChange(e.target.value, 2) }} /></div>
+						<div className='flex w-full p-1 mx-1 bg-gray-100 rounded-lg dark:bg-gray-600' >IconBase64:<input title='IconBase64' className='rounded-md w-full ml-1 text-sm bg-transparent' value={addAppInfo[3]} onChange={(e) => { handleAddAppInputChange(e.target.value, 3) }} onFocus={(event) => { event.target.select() }} /></div>
 						{/* //！网上看到的this用不了…………必须用evet.target */}
 						<div className={`flex transition-all overflow-hidden h-10 `}>
-							<button className='h-6 px-4 mt-4 transition-all bg-gray-300 hover:h-7 text-nowrap dark:bg-gray-600 RoundAndShadow hover:bg-gray-400 hover:text-xl hover:mt-3' onClick={handleAddAppConfirmClick}>确认</button>
-							<button className='h-6 px-4 mt-4 transition-all bg-gray-300 hover:h-7 text-nowrap dark:bg-gray-600 RoundAndShadow hover:bg-gray-400 hover:text-xl hover:mt-3' onClick={handleAddAppCancelClick}>取消</button>
+							<button className='h-6 px-4 mt-4 transition-all bg-gray-200 hover:h-7 text-nowrap dark:bg-gray-600 RoundAndShadow hover:bg-gray-300 hover:text-xl hover:mt-3' onClick={handleAddAppConfirmClick}>确认</button>
+							<button className='h-6 px-4 mt-4 transition-all bg-gray-200 hover:h-7 text-nowrap dark:bg-gray-600 RoundAndShadow hover:bg-gray-300 hover:text-xl hover:mt-3' onClick={handleAddAppCancelClick}>取消</button>
 						</div>
 					</div>
 				</Dialog>

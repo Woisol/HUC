@@ -5,6 +5,7 @@ import PageAppDetail from './Page_AppRunTime.tsx';
 import PageSetting from './Page_Setting.tsx';
 import SlideBar from './Components/Layout/SideBar.tsx';
 import { Tab } from '@headlessui/react';
+import PageGameBooter from './Page_GameBooter.tsx';
 const ipcRenderer = window.require('electron').ipcRenderer;
 const useState = React.useState;
 
@@ -41,10 +42,11 @@ export default function App() {
         {/* //！！用了as div才能使用view！ */}
         <SlideBar />
         <Tab.Panels ref={ScollRef} as='div' id='View' onScroll={handleScoll} className='absolute w-screen h-screen overflow-auto overflow-x-hidden scroll-smooth snap-y snap-mandatory -z-50 hideScollBar'>
-          {/* ！wok！！！！才知道这个overflow-auto是必须的！！！！！！！ */}
+          {/* ！wok！！！！才知道这bg个overflow-auto是必须的！！！！！！！ */}
           {/* ！同时这里加absolute可以防止子元素相对root定位而超过滚动条……………… */}
           {/* ！！！！必须用absolute！！用relative可能导致鼠标在子元素上时无法滚动 */}
-          <PageDashBoard isMonitorRunning={isMonitorRunning} toggleState={toggleState} isDarkMode={isDarkMode} setIsDarkMode={handleDarkModeChange} />
+          <PageGameBooter />
+          <PageDashBoard isMonitorRunning={isMonitorRunning} isDarkMode={isDarkMode} setIsDarkMode={handleDarkModeChange} />
           <PageAppDetail />
           <PageSetting />
         </Tab.Panels>

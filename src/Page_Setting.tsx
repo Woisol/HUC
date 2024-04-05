@@ -52,14 +52,14 @@ export default function PageSetting() {
 	})
 	// ！！判断对象是否有元素的方法！！
 	if (Object.keys(config).length === 0) return (
-		<div id="Page_Setting" className="relative flex items-center justify-center	 w-screen h-screen p-4 bg-gray-300 border-black dark:bg-gray-900 md:pl-20 md:py-6 border-y-2 snap-start ">
+		<div id="Page_Setting" className="relative flex items-center justify-center	 w-screen h-screen p-4 bg-gray-100 border-black dark:bg-gray-900 md:pl-20 md:py-6 border-y-2 snap-start ">
 			<div className="bg-white text-4xl p-4 RoundAndShadow">😥似乎加载出错了...重新加载试试？</div>
 		</div>
 	);
 	ipcRenderer.on("setting_startboot_change", (event, arg) => setConfig({ ...config, StartBoot: arg }))
 	ipcRenderer.on("setting_follow_system_dark_mode_change", (event, arg) => setConfig({ ...config, FollowSystemDarkMode: arg }))
 	return (
-		<div id="Page_Setting" className="relative flex flex-col items-center w-screen h-screen p-4 bg-gray-300 border-black dark:bg-gray-900 md:pl-20 md:py-6 border-y-2 snap-start ">
+		<div id="Page_Setting" className="relative flex flex-col items-center w-screen h-screen p-4 bg-gray-100 border-black dark:bg-gray-900 md:pl-20 md:py-6 border-y-2 snap-start ">
 			{/* //!？？？？？为什么一定要再设一个div z才能生效？？？ */}
 			{/* //!为什么和上一页一样的属性到这页Gear久上来了？？？ */}
 			{/* //~~目前解决方案…………不知道为什么上面一定要有flex那三个才能实现…………不知道为什么必须要新稿一个div而且必须要z-10…………………… */}
@@ -78,9 +78,9 @@ export default function PageSetting() {
 					<SettingInput title={'数据库密码:'} value={config.SQLPassword} handleChange={(e) => { setConfig({ ...config, SQLPassword: e.target.value }); setHasChange_DATABASE(true); }} type={'password'}></SettingInput>
 					<SettingInput title={'数据库端口:'} value={config.SQLPort} handleChange={(e) => { setConfig({ ...config, SQLPort: e.target.value }); setHasChange_DATABASE(true); }}></SettingInput>
 					<div className={`flex transition-all overflow-hidden w-full justify-around h-10 `}>
-						<button className={`${hasChange_DATABASE ? 'w-32 hover:h-7 flex-1 h-6 ' : 'w-0 h-0 absolute'} overflow-hidden px-4 mt-4 transition-all bg-gray-300 text-nowrap dark:bg-gray-600 RoundAndShadow hover:bg-gray-400 hover:text-xl hover:mt-3`} onClick={handleApplyClick}>应用</button>
-						<button className='h-6 w-32 px-4 mt-4 transition-all bg-gray-300 hover:h-7 flex-1 text-nowrap dark:bg-gray-600 RoundAndShadow hover:bg-gray-400 hover:text-xl hover:mt-3' onClick={handleConfirmClick}>保存</button>
-						<button className='h-6 w-32 px-4 mt-4 transition-all bg-gray-300 hover:h-7 flex-1 text-nowrap dark:bg-gray-600 RoundAndShadow hover:bg-gray-400 hover:text-xl hover:mt-3' onClick={handleCancelClick}>{hasChange_DATABASE ? '取消' : '恢复默认'}</button>
+						<button className={`${hasChange_DATABASE ? 'w-32 hover:h-7 flex-1 h-6 ' : 'w-0 h-0 absolute'} overflow-hidden px-4 mt-4 transition-all bg-gray-100 text-nowrap dark:bg-gray-600 RoundAndShadow hover:bg-gray-200 hover:text-xl hover:mt-3`} onClick={handleApplyClick}>应用</button>
+						<button className='h-6 w-32 px-4 mt-4 transition-all bg-gray-100 hover:h-7 flex-1 text-nowrap dark:bg-gray-600 RoundAndShadow hover:bg-gray-200 hover:text-xl hover:mt-3' onClick={handleConfirmClick}>保存</button>
+						<button className='h-6 w-32 px-4 mt-4 transition-all bg-gray-100 hover:h-7 flex-1 text-nowrap dark:bg-gray-600 RoundAndShadow hover:bg-gray-200 hover:text-xl hover:mt-3' onClick={handleCancelClick}>{hasChange_DATABASE ? '取消' : '恢复默认'}</button>
 					</div>
 
 				</SettingSection>
