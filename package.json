@@ -37,7 +37,7 @@
       "AppInfo.json",
       "config.json",
       "AppsOrder.json",
-      "Asset/*"
+      "Asset/**/*"
     ],
     "nsis": {
       "oneClick": false,

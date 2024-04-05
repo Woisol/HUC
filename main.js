@@ -427,6 +427,7 @@ ipcMain.on("UIInited", (event, arg) => {
 	UpdateLastSeven();
 	UpdateGameInfo();
 
+	win.webContents.send("get_app_config", appConfig);
 	// window.scrollTo(document.documentElement.scrollHeight)
 	// win.webContents.send('scoll_to_dashboard');
 })

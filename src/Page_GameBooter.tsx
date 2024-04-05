@@ -20,16 +20,18 @@ export default function PageGameBooter() {
 				<div className="bg-white text-4xl p-4 RoundAndShadow">😥这里还没有游戏呢，右键去配置文件中添加吧~</div>
 				: gameInfo.map((item, index) => (
 					<div className="overflow-hidden relative w-full h-full flex flex-col items-center flex-1 hover:flex-[2] hover:text-2xl transition-all duration-300 bg-white RoundAndShadow" id={`${index}`} onClick={(event) => { handleClick(event) }}>
-						{item[2] === '' ? <div className='absolute top-1/2 -translate-y-1/2 flex flex-col items-center w-full' id={`${index}`} >
+						{item[2] === '' ? <div className='pointer-events-none absolute top-1/2 -translate-y-1/2 flex flex-col items-center w-full' id={`${index}`} >
 							<img src={item[1]} alt={item[0]} className='max-w-72 object-cover w-full h-full RoundAndShadow' id={`${index}`} />
 							<span className=' bg-white RoundAndShadow p-2'>{item[0]}</span>
-						</div> : <div className='overflow-hidden w-full flex flex-col items-center' id={`${index}`} >
+						</div> : <div className='pointer-events-none overflow-hidden w-full flex flex-col items-center' id={`${index}`} >
 							<img src={item[2]} alt={item[0]} className='absolute object-cover w-full h-full top-1/2 -translate-y-1/2' id={`${index}`} />
-							<div className="absolute bottom-0 flex w-full flex-col items-center ">
-								<div className="w-full h-full bg-gradient-to-t from-black to-white opacity-20"></div>
+							<div className="absolute bottom-0 flex w-full h-fit flex-row sm:flex-col items-center">
+								{/* //！？？？这个必须要有个absolute高度才不为0？？？ */}
 								{/* bg-gradient-to-t from-black to-white bg-opacity-20 */}
-								<img src={item[1]} alt={item[0]} className='items-center RoundAndShadow' />
-								<span className=' bg-white RoundAndShadow p-2'>{item[0]}</span>
+								<div className="w-full h-[150%] absolute bottom-0 bg-gradient-to-t from-black to-transparent "></div>
+								{/* //!芜湖to-transparent！ */}
+								<img src={item[1]} alt={item[0]} className='z-10 w-20 sm:w-28 md:w-32 RoundAndShadow transition-all duration-300' />
+								<span className=' bg-white RoundAndShadow p-2 opacity-80'>{item[0]}</span>
 							</div>
 						</div>}
 					</div>
