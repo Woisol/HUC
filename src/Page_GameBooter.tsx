@@ -9,6 +9,7 @@ export default function PageGameBooter() {
 	const [isOpen, setIsOpen] = useState(false);
 	const [id, setId] = useState(0);
 	const [canDelay, setCanDelay] = useState(false);
+	let estimateTime = '00:20';
 	ipcRenderer.on('update_game_info', (event, arg) => {
 		setGameInfo(arg);
 	})
@@ -36,7 +37,7 @@ export default function PageGameBooter() {
 					</> : <>
 						<span className='absolute top-5 text-xm text-gray-500 text-center'>即将打开文件：{gameInfo[id][3]}</span>
 						<span className='text-xl'>预计使用时间</span>
-						<input type="time" defaultValue={'00:20'} className='text-xl' />
+						<input type="time" defaultValue={'00:20'} className='text-xl' onChange={(e) => { estimateTime = e.target.value }} />
 						<SettingSwtich title='允许中途延长？' value={canDelay} handleChange={setCanDelay}	></SettingSwtich>
 						<div className={`flex transition-all overflow-hidden h-10 `}>
 							<button className='h-6 px-4 mt-4 transition-all bg-gray-200 hover:h-7 text-nowrap dark:bg-gray-600 RoundAndShadow hover:bg-gray-300 hover:text-xl hover:mt-3' onClick={handleConfirmClick}>确认</button>
@@ -52,7 +53,10 @@ export default function PageGameBooter() {
 		setIsOpen(true);
 	}
 	function handleConfirmClick() {
+		let estimateTimeMin = Number(estimateTime.split(':')[0]) * 60 + Number(estimateTime.split(':')[1]);
+		ipcRenderer.send('launch_game', [gameInfo[id][0], gameInfo[id][3], estimateTimeMin, canDelay])
 		setIsOpen(false);
+		estimateTime = '0:20';
 	}
 	function handleCancelClick() {
 		setIsOpen(false);

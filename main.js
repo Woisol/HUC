@@ -31,6 +31,7 @@ const { Menu } = require("electron");
 const { error } = require("console");
 const { exec } = require("child_process");
 const { postcss } = require("tailwindcss");
+const { kill } = require("process");
 // !用sql2/promise就是pool而不是原来的connection了（虽然也有）
 var connection = RunTimeDB.createConnection({
 	host: "localhost",
@@ -637,6 +638,7 @@ ipcMain.on('update_app_info', (event, arg) => {
 	fs.writeFileSync(path.join(process.cwd(), "AppInfo.json"), JSON.stringify(jsonObj, null, 4))
 	// !一不用Sync就强制要求你要用回调…………
 	UpdateRunTime(new Date());
+	UpdateGameInfo();
 })
 //**----------------------------RunTimeShow-----------------------------------------------------
 ipcMain.on('update_run_time', () => [UpdateRunTime(new Date())])
@@ -842,7 +844,7 @@ ipcMain.on('add_app', (event, arg) => {
 	fs.writeFileSync(path.join(process.cwd(), 'AppInfo.json'), JSON.stringify(AppInfo))
 	UpdateRunTime();
 })
-//**----------------------------UpdateGameInfo-----------------------------------------------------
+//**----------------------------GameBooter-----------------------------------------------------
 function UpdateGameInfo() {
 	//**数据结构:[0]:Name,[1]:Icon,[2]:BGImage,[3]:Path
 
@@ -891,6 +893,148 @@ function UpdateGameInfo() {
 		))
 	).then((runTimeInfo) => { win.webContents.send("update_game_info", runTimeInfo); })
 }
+ipcMain.on('launch_game', async (event, arg) => {
+	exec('start ' + arg[1]);
+	// let isToKill = true;
+	// setTimeout(() => { pcs.kill() }, arg[1])
+	// setTimeout(() => { exec("taskkill /pid " + pcs.pid) }, 1000)
+	// !额直接用cmd可以kill但是不知道kill了哪个反正不是这个…………
+	// !嗯这样那可能是关掉了启动用的cmd…………
+	// setTimeout(() => { process.kill(pcs.pid) }, 1000)
+
+	let killTimer = setKiller(arg[2]);
+	if (arg[2] < 5) {
+		switch (dialog.showMessageBoxSync({
+			type: 'warning',
+			title: `游戏准备关闭！`,
+			message: `游戏将在${arg[2]}分钟后自动关闭`,
+			detail: '如需延长，请点击下方按钮',
+			buttons: ['取消限制', '延长10min', '确定']
+		})) {
+			case 0:
+				if (!arg[4]) {
+					dialog.showMessageBoxSync({
+						type: 'error',
+						title: '不许反悔！',
+						message: '说好了不允许中途延长的(￣_￣|||)'
+					})
+					return;
+				}
+				clearTimeout(killTimer);
+				break;
+			case 1:
+				if (!arg[4]) {
+					dialog.showMessageBoxSync({
+						type: 'error',
+						title: '不许反悔！',
+						message: '说好了不允许中途延长的(￣_￣|||)'
+					})
+					return;
+				}
+				clearTimeout(killTimer);
+				killTimer = setKiller(15);
+				break;
+			default:
+			// }
+			// )
+			// }
+		}
+	}
+	else {
+		setTimeout(async () => {
+			switch (dialog.showMessageBoxSync({
+				type: 'warning',
+				title: `游戏准备关闭！`,
+				message: `游戏将在5分钟后自动关闭`,
+				detail: '如需延长，请点击下方按钮',
+				buttons: ['取消限制', '延长10min', '确定']
+			})) {
+				case 0:
+					if (!arg[4]) {
+						dialog.showMessageBoxSync({
+							type: 'error',
+							title: '不许反悔！',
+							message: '说好了不允许中途延长的(￣_￣|||)'
+						})
+						return;
+					}
+					clearTimeout(killTimer);
+					break;
+				case 1:
+					if (!arg[4]) {
+						dialog.showMessageBoxSync({
+							type: 'error',
+							title: '不许反悔！',
+							message: '说好了不允许中途延长的(￣_￣|||)'
+						})
+						return;
+					}
+					clearTimeout(killTimer);
+					killTimer = setKiller(15)
+					while (true) {
+						try {
+							await new Promise((resolve, reject) => { warnLast5Min(resolve, reject) })
+						} catch {
+							break;
+						}
+					}
+					break;
+				default:
+			}
+		}, (arg[2] - 5) * 60 * 1000)
+	}
+	async function warnLast5Min(resolve, reject) {
+		setTimeout(() => {
+			switch (dialog.showMessageBoxSync({
+				type: 'warning',
+				title: `游戏准备关闭！`,
+				message: `游戏将在5分钟后自动关闭`,
+				detail: '如需延长，请点击下方按钮',
+				buttons: ['取消限制', '延长10min', '确定']
+			})) {
+				case 0:
+					if (!arg[4]) {
+						dialog.showMessageBoxSync({
+							type: 'error',
+							title: '不许反悔！',
+							message: '说好了不允许中途延长的(￣_￣|||)'
+						})
+						return;
+					}
+					clearTimeout(killTimer); reject();
+					break;
+				case 1:
+					if (!arg[4]) {
+						dialog.showMessageBoxSync({
+							type: 'error',
+							title: '不许反悔！',
+							message: '说好了不允许中途延长的(￣_￣|||)'
+						})
+						return;
+					}
+					clearTimeout(killTimer);
+					killTimer = setKiller(15);
+					break;
+				case 2: reject(); break;
+				default:
+			}
+			resolve();
+		}, 10 * 60 * 1000)//
+
+	}
+	function setKiller(min) {
+		return setTimeout(() => {
+			dialog.showMessageBoxSync({
+				type: 'warning',
+				title: `游戏即将关闭！`,
+				message: `点击确认后将退出`
+			});
+			exec("taskkill /im " + arg[0] + '.exe')
+		}, min * 60 * 1000)
+	}
+})
+
+// let killTimer = setTimeout(() => {exec("taskkill /im " + arg[0] + '.exe')}, 1000)
 //**----------------------------test-----------------------------------------------------
 module.exports = {
 	appConfig,
