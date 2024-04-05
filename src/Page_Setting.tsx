@@ -5,7 +5,7 @@ import SettingSwtich from './Components/Setting/SettingSwitch.tsx';
 import { Disclosure } from '@headlessui/react';
 import SettingInput from './Components/Setting/SettingInput.tsx';
 // import { VERSION } from '../main.js';
-const VERSION = '2.0';
+const VERSION = '2.1';
 // const dialog = window.require('electron').dialog;
 const ipcRenderer = window.require('electron').ipcRenderer;
 const defaultConfig = {

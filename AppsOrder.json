@@ -1,1 +1,36 @@
-{"GamesOrder":["yuanshen","bf2042","cod","stray"],"AppsOrder":["code","devenv","idea64","pixso","studio64","yuanshen","哔哩哔哩","cloudmusic","bf2042","blackopscoldwar","bfv","blackops3","cod","combatmaster","control_dx12","left4dead2","leigod","longtimenoaction","mirrorsedgecatalyst","msedge","notion","s2_mp64_ship","s2_sp64_ship","steam","stray","tslgame"]}
+{
+	"GamesOrder": [
+		"yuanshen",
+		"bf2042",
+		"cod",
+		"stray"
+	],
+	"AppsOrder": [
+		"code",
+		"msedge",
+		"哔哩哔哩",
+		"bf2042",
+		"yuanshen",
+		"blackopscoldwar",
+		"pixso",
+		"blackops3",
+		"s2_mp64_ship",
+		"s2_sp64_ship",
+		"cod",
+		"bfv",
+		"combatmaster",
+		"control_dx12",
+		"left4dead2",
+		"tslgame",
+		"stray",
+		"leigod",
+		"steam",
+		"notion",
+		"devenv",
+		"idea64",
+		"studio64",
+		"longtimenoaction",
+		"mirrorsedgecatalyst",
+		"cloudmusic"
+	]
+}

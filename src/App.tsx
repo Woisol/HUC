@@ -20,6 +20,7 @@ export default function App() {
   // })
   //**----------------------------DarkMode-----------------------------------------------------
   const [isDarkMode, setIsDarkMode] = useState(false);
+  // const DashBoardRef
   //~~----------------------------Setting-----------------------------------------------------
 
   ipcRenderer.on('MonitorStateChange', (event, arg) => {
@@ -33,6 +34,11 @@ export default function App() {
     setIsDarkMode(arg);
     // !初次启动可能无法设置…………
   })
+  // ipcRenderer.on('scoll_to_dashboard', () => {
+  //   window.scrollTo({
+  //     top: document.documentElement.scrollHeight
+  //   })
+  // })
   if (isDarkMode) document.body.classList.add('dark');
   else document.body.classList.remove('dark');
   // ${ isDarkMode ? 'dark' : '' }

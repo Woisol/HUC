@@ -10,7 +10,7 @@ const url = require("url");
 const iconv = require("iconv-lite");
 const fs = require('fs');
 //##----------------------------Initialize-----------------------------------------------------
-const VERSION = "2.0"
+const VERSION = "2.1"
 var win, tray, isToQuit = false;
 var MonitorPcs, MonitorState = true;
 var appConfig = require(path.join(process.cwd(), "config.json"));
@@ -427,7 +427,8 @@ ipcMain.on("UIInited", (event, arg) => {
 	UpdateLastSeven();
 	UpdateGameInfo();
 
-	win.webContents.send("get_app_config", appConfig);
+	// window.scrollTo(document.documentElement.scrollHeight)
+	// win.webContents.send('scoll_to_dashboard');
 })
 ipcMain.on('update_config', (event, arg) => {
 	if (Object.keys(arg).length === 0) return;
