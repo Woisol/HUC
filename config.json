@@ -3,7 +3,7 @@
     "RuntimeLogFileDir": "runtimeLog.rlf",
     "DATABASE_NAME": "HUC_AppUsageLog",
     "SQLUser": "root",
-    "SQLPassword": "60017089",
+    "SQLPassword": "",
     "SQLPort": "3306",
     "FollowSystemDarkMode": true,
     "StartBoot": false

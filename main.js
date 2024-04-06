@@ -28,10 +28,7 @@ var today = adjudgeDateBy4(new Date());
 //**----------------------------ContexMenu-----------------------------------------------------
 var ContextMenu_Fresh, ContextMenu_MainSwitch, ContextMenu_Console, ContextMenu_RunTime, ContextMenu_LastSeven, ContextMenu_EditAppInfo, ContextMenu_SingleAppInfo, ContextMenu_OpenAppsorder
 const { Menu } = require("electron");
-const { error } = require("console");
 const { exec } = require("child_process");
-const { postcss } = require("tailwindcss");
-const { kill } = require("process");
 // !用sql2/promise就是pool而不是原来的connection了（虽然也有）
 var connection = RunTimeDB.createConnection({
 	host: "localhost",
@@ -183,7 +180,7 @@ const createWindow = () => {
 	// const readLine = require("line-reader");
 	// ~~被迫引入模块…………
 	// ipcMain.once("GetRuntimeLog", DeliverContent)
-	// ！最后是改once解决的！！
+	// ~~最后是改once解决的！！
 	// runtimeLogFileStream.watch("./output.rlf", DeliverContent)
 	// !真奇怪，这个watch必须要vsc获得了焦点才能即时反应…………其它应用都不行…………希望实际打包以后能实现吧…………
 
@@ -565,7 +562,7 @@ ipcMain.on("MonitorPcsStdinWrite", (event, arg) => {
 // })
 // MonitorPcs.stdout.on("data", (data) => {
 // 	console.log(`stdout: ${data}`);
-// 	// !可以证明在运行…………但是就是无法写入文件…………
+// 	// ~~可以证明在运行…………但是就是无法写入文件…………
 // })
 //**----------------------------AppIcons-----------------------------------------------------
 // ！同时不要忘记加了这个以后只有启动第一次才能调试………………………………

@@ -18,7 +18,7 @@
 ## 软件介绍
 由于作者本人时常愧疚于对游戏的沉迷，又苦于市面上难以找到能够限制PC端应用运行时间的软件，因此作者在2024年1月大学的第一个寒假开始开发本软件，跨越接近半年的时间终于有了一个勉强过得去的界面和功能，现发布到Github作为纪念。
 
-此软件为新手制作，是作者第一个有着较大规模的，使用js开发的，使用前端技术结合Electron开发图形化界面的，使用MySQL数据库的，使用json作为配置文件的项目。界面、功能简陋，望如果有看到的大佬轻喷。
+此软件为新手制作，是作者第一个有着较大规模的，使用js开发的，使用前端技术结合Electron开发图形化界面的，使用MySQL数据库的，使用json作为配置文件的项目。界面、功能简陋，望如果有看到的大佬轻喷。当然如果愿意花费您宝贵的时间友好的提出意见，我也十分欢迎（真的有人提吗）
 
 本程序主要包含两大功能：**监视与展示应用运行时间**和**限制特定应用（设定为游戏）的运行时间**，具体见下：
 ### 监视与监督
@@ -37,9 +37,9 @@
 
 设定好预计的运行时间后，程序会在即将到达预计时间时**弹出提醒**，并在设定时间**强制结束**应用。
 
-本程序提供了**中途延长时间**的选项，当然，你也可以在一开始就放弃这个权力。
-
 ![](/Asset/README_Pic/Page_Game_Open.png)
+
+本程序提供了**中途延长时间**的选项，当然，你也可以在一开始就放弃这个权力。
 
 ## 使用教程
 ### 安装使用
@@ -176,3 +176,49 @@
 
 ## 更新日志
 咕咕咕
+
+## 技术相关
+### 涉及技术：
+
+Javascript, Typescript, Nodejs,Electron, React, TailwindCSS, MySQL
+
+Module方面还使用到了：
+
+Nodejs相关：child_process, jQuery(小部分使用), ~~less, jtest~~
+
+React相关: create-react-app, Echarts-for-React, HeadlessUI, React-Beautiful-dnd
+
+Electron相关: Electron-builder, ~~Electron-packager, Electron-forge~~
+
+### 实现路径
+
+监视进程在寒假时使用C#写成，基本原理极其简单，即不断使用Process.GetProcessesByName循环判断进程是否存在，再据此更新数据库数据。
+
+而在本项目中为了衔接使用child_process.spawn将C#控制台应用作为子进程启动
+
+为了降低进程通讯成本，数据展示方面使用nodejs再次查询数据并使用图形化界面进行展示。
+
+配置文件方面使用了json，利用js自带的JSON.parse(), JSON.stringify()进行数据转换。
+
+深色模式和响应式设计使用了tailwindcss提供的框架。
+
+进程间通讯，通知和对话框使用了Electron提供的api。
+
+打包方面尝试了Electron-packager和Electron-forge，但只有Electron-builder能较快打包并和React完美兼容
+
+关于打包有不少总结具体见下
+
+代码测试方面还不熟悉没有搞多少，现在能用先用着了（）
+
+关于Electron主进程的调试，参考官方文档
+
+### 经验总结（咕咕咕）
+
+main.js：
+#### SQL
+1. 注意sql的module似乎有不少版本，这个版本使用的是mysql，另外还有sql2，注意区分。
+2. 注意query的回调函数特别麻烦…………如果需要同步执行学会用Promise或者用sql2
+#### Electron
+1. 注意不能使用`import`，报错`Cannot use import outside of moudle`
+
+Web相关：
