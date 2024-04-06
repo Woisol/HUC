@@ -1,70 +1,178 @@
-# Getting Started with Create React App
+**简体中文** | **[English](README_en.md)**
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+适用版本：2.1
 
-## Available Scripts
+![](/src/Asset/Logo.svg)
 
-In the project directory, you can run:
+# 健康使用电脑（HUC）
+<!-- ~~啊这个为什么必须放在标题下面不然和 -->
+> 一个个人自用的PC软件监视与监督程序
 
-### `npm start`
+## 软件下载
+[V2.1]()
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+[V2.0]()
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+[V1.0]()
 
-### `npm test`
+## 软件介绍
+由于作者本人时常愧疚于对游戏的沉迷，又苦于市面上难以找到能够限制PC端应用运行时间的软件，因此作者在2024年1月大学的第一个寒假开始开发本软件，跨越接近半年的时间终于有了一个勉强过得去的界面和功能，现发布到Github作为纪念。
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+此软件为新手制作，是作者第一个有着较大规模的，使用js开发的，使用前端技术结合Electron开发图形化界面的，使用MySQL数据库的，使用json作为配置文件的项目。界面、功能简陋，望如果有看到的大佬轻喷。
 
-### `npm run build`
+本程序主要包含两大功能：**监视与展示应用运行时间**和**限制特定应用（设定为游戏）的运行时间**，具体见下：
+### 监视与监督
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+当本程序存在于后台时，可以**监测**设定需要监测应用的运行时间，并使用**图形化的界面**展示。
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+![](/Asset/README_Pic/PageDashBoard.png)
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+![](/Asset/README_Pic/Page_AppDetail.png)
 
-### `npm run eject`
+### 限制运行时间
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+当需要限制特定应用的运行时间时，可以从本程序的“**游戏启动器**”中启动。
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+![](/Asset/README_Pic/Page_Game.png)
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+设定好预计的运行时间后，程序会在即将到达预计时间时**弹出提醒**，并在设定时间**强制结束**应用。
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+本程序提供了**中途延长时间**的选项，当然，你也可以在一开始就放弃这个权力。
 
-## Learn More
+![](/Asset/README_Pic/Page_Game_Open.png)
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+## 使用教程
+### 安装使用
+由于个人能力以及时间问题，本程序并未实现开箱即用的功能，安装需要一些额外的配置，具体见下：
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+1. 首先确保你的设备安装上了**MySQL**，本程序开发环境MySQL的版本为**8.3.0**，不保证其它版本的兼容性。
 
-### Code Splitting
+	>如果你的设备上没有安装MySQL，可以在[SQL官网](https://dev.mysql.com/downloads/mysql/)下载社区版，具体如何安装MySQL请参考网上的文章。例如[MySQL数据库下载及安装教程（最最新版）-CSDN博客](https://blog.csdn.net/weixin_39289696/article/details/128850498)
+2. 安装完成后点击本程序的安装包，按照提示完成安装即可。
+3. 安装完后第一次打开应用，可能会出现`找不到config.json`的报错，这是正常现象，再次打开应用即可（汗）
+4. 第一次运行本程序，由于**没有配置本地SQL服务器的连接信息**，会弹出以下窗口：
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+   ![](/Asset/README_Pic/Help/FirstUse.png)
 
-### Analyzing the Bundle Size
+   点击“**打开配置文件**”后，会使用系统记事本打开配置文件：
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+   ![](/Asset/README_Pic/Help/Config.png)
 
-### Making a Progressive Web App
+   修改其中的**SQLUser**，**SQLPassword**为本地SQL服务器的信息（安装MySQL时应该已经输入），同时也可以修改**DATABASE_NAME**为本地已存在的数据库名（注意需要为空数据库，否则不保证程序正常运行），或者其它你期望的名称，
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+   保存后重启本程序，如果弹出以下窗口：
 
-### Advanced Configuration
+	![](/Asset/README_Pic/Help/CannotConnect.png)
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+	请检查配置文件以上信息是否已经正确设置
 
-### Deployment
+   重启后，如果配置文件中的**DATABASE_NAME**没有被创建，会弹出以下窗口：
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
+   ![](/Asset/README_Pic/Help/CreateDataBase.png)
 
-### `npm run build` fails to minify
+   你可以选择再次修改配置文件，也可以直接点击“**创建数据库**”。
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+5. 当数据库能够正常读取后，应该就可以正常使用本软件了。
+
+### 第一次使用
+
+本程序启动后的第一页，为**游戏启动器**，第一次打开可能是这样的场景：
+
+![](/Asset/README_Pic/Help/NoGame.png)
+
+如提示所说，现在还没有游戏可以启动，等我们后续设置时再进行说明
+
+页面左边有一个“**小蓝条**”，鼠标悬浮在其上可以展开**导航栏**。
+
+窗口拉宽时导航栏会**自动展开**
+
+鼠标轻轻向下滚动，或者点击刚刚提到的导航栏，来到第二页：**仪表盘**。在这里你可以查看监视器的信息。
+
+![](/Asset/README_Pic/Help/Page_DashBoard.png)
+
+再向下滑动来到**运行时间展示页**，在这里可以查看所有已监视应用**近7天的运行时间**以及**当日运行时段**，
+
+当然现在还没有监视任何应用，所以这里还什么都没有。
+
+![](/Asset/README_Pic/Help/Page_AppDetail.png)
+
+尝试将窗口拉宽，你会看到左边出现了一个**侧栏**，上面有一个**添加应用**的按钮：
+
+![](/Asset/README_Pic/Help/Page_AppDetail_2.png)
+
+点击后来到**添加应用界面**
+
+![](/Asset/README_Pic/Help/AddApp.png)
+
+输入你想监视的应用的**名称**，**应用类别**（自定，但是只有为**Game**时才能进入**游戏启动器**界面），**应用代表颜色**（自定），以及应用图标的Base64编码（需要自己获取），然后点击**确认**。
+
+现在你添加了本程序第一个监视的应用，不出意外的话你应该能看到后面的面板出现了一个新的应用。同时你可能会看到一个**监视器退出**的错误消息，请忽略它。
+
+如果监视器确实退出了，请在**仪表盘**页右键本程序LOGO样式的**监视器状态切换按钮**来重启监视器。重启大部分情况下都可以成功，如果无法重启，请直接重新启动本应用。
+
+如法炮制，你可以添加更多的应用。如果你想改变某个应用的信息，请点击该应用的图标，在弹出的界面中右键应用信息，点击**编辑**，就可以修改应用信息了。
+
+如果你想要将应用添加到**游戏启动器**，请将应用的类别设置为`Game`，并在弹出的Path属性中填上该应用的url，可以是文件路径，也可以是例如`steam://rungameid/00000`这样的url路径（在应用快捷方式属性中可以找到）。
+
+以上，你现在可以使用本程序的基本功能了，如果想了解更多用法，请参考下面的内容。
+### 页面介绍
+* #### 游戏启动器
+	软件启动时的第一个页面。
+
+	![](/Asset/README_Pic/Page_Game.png)
+
+	点击任意游戏后会弹出启动界面：
+
+	![](/Asset/README_Pic/Page_Game_Open.png)
+
+	在这里可以设定游戏的**预计使用时间**，并设置是否可以**中途延长**。
+
+	点击**启动**按钮后启动游戏并开始计时。
+
+	在到达预计时间前**5分钟**会弹出提示，此时可以选择**不再限制**或者**延长10分钟**。
+
+	![](/Asset/README_Pic/last5min.png)
+
+	如果之前设置不允许延长的话就会……
+
+	![](/Asset/README_Pic/NoRegret.png)
+
+	到达设定时间后，理论上会弹出提示框提示游戏时间已到，关闭提示框后你的游戏会被关闭，如果没有关闭的话…………至少你知道到时间了，靠你自觉喽😅
+
+	由于暂时无法得知设备上是否存在游戏，所以添加或删除列表中的游戏需要右键在配置文件中进行操作，等我后续优化（）
+* #### 仪表盘
+	当软件启动时，监视器便会自动在**后台运行**，你可以在本程序的第二页中查看监视器的信息。
+
+	![](/Asset/README_Pic/Page_DashBoard.png)
+
+	你可以根据上部的**监视器状态切换按钮**来判断监视器是否正在运行，点击该按钮可以**切换监视器的运行状态**。
+
+	你还可以查看**当前正在运行的应用**，他们显示在**监视器状态切换按钮**的下方
+
+	>（不要在乎右上角的“已监视应用”，这个功能暂时还未实现，咕咕咕。）
+
+	看到右边边界的黑色条状物了吗？点击它，你可以查看监视器的后台界面：
+
+	![](/Asset/README_Pic/Page_DashBoard_Console.png)
+
+	你可以在这里执行一些高级的操作，在下方输入框中输入`help`后可以查看命令帮助。当然除下方教程中提到的命令外不建议进行操作。
+
+	右上角有一个**深色模式切换**按钮，可以用来手动切换深色模式，当然你也可以在设置里面设置**跟随系统设置**。
+* #### 运行时间展示页
+	在本程序的第三页，你可以查看所有已监视应用**近7天的运行时间**以及**当日运行时段**：
+
+	![](/Asset/README_Pic/Page_AppDetail.png)
+
+	鼠标悬浮在对应的使用时间块上时，该块附近会展示当前时间块代表的**具体运行时间**。
+
+	点击应用图标，可以进入该应用的详细展示页，在这里可以查看当前应用**最近一段时间的使用情况**，也可以查看并编辑**应用属性**：
+
+	![](/Asset/README_Pic/AppDetail.png)
+
+* #### 设置页
+	可以在这里调整应用设置，例如开机自启，跟随系统深色模式，以及数据库相关设置。
+
+	![](/Asset/README_Pic/Page_Setting.png)
+
+## 更新日志
+咕咕咕

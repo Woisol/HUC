@@ -131,3 +131,28 @@ out/win-unpacked/Monitor/HUC_Backend.pdb
 out/win-unpacked/Monitor/HUC_Backend.runtimeconfig.json
 out/win-unpacked/Monitor/Microsoft.Extensions.Logging.Abstractions.dll
 out/win-unpacked/Monitor/MySqlConnector.dll
+out/HUC 2.1.0.exe
+out/HUC 2.1.0.exe.blockmap
+out/win-unpacked/Asset/GameBGImage/bf2042.jpg
+out/win-unpacked/Asset/GameBGImage/cod.jpg
+out/win-unpacked/Asset/GameBGImage/code.jpg
+out/win-unpacked/Asset/GameBGImage/stray.jpg
+out/win-unpacked/Asset/GameBGImage/yuanshen.jpg
+out/win-unpacked/Asset/README_Pic/AppDetail.png
+out/win-unpacked/Asset/README_Pic/last5min.png
+out/win-unpacked/Asset/README_Pic/NoRegret.png
+out/win-unpacked/Asset/README_Pic/Page_AppDetail.png
+out/win-unpacked/Asset/README_Pic/Page_DashBoard_Console.png
+out/win-unpacked/Asset/README_Pic/Page_DashBoard.png
+out/win-unpacked/Asset/README_Pic/Page_Game_Open.png
+out/win-unpacked/Asset/README_Pic/Page_Game.png
+out/win-unpacked/Asset/README_Pic/Page_Setting.png
+out/win-unpacked/Asset/README_Pic/Help/AddApp.png
+out/win-unpacked/Asset/README_Pic/Help/CannotConnect.png
+out/win-unpacked/Asset/README_Pic/Help/Config.png
+out/win-unpacked/Asset/README_Pic/Help/CreateDataBase.png
+out/win-unpacked/Asset/README_Pic/Help/FirstUse.png
+out/win-unpacked/Asset/README_Pic/Help/NoGame.png
+out/win-unpacked/Asset/README_Pic/Help/Page_AppDetail_2.png
+out/win-unpacked/Asset/README_Pic/Help/Page_AppDetail.png
+out/win-unpacked/Asset/README_Pic/Help/Page_DashBoard.png
