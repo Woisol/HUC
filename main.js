@@ -854,7 +854,7 @@ ipcMain.on('add_app', (event, arg) => {
 		}
 	};
 	fs.writeFileSync(path.join(process.cwd(), 'AppInfo.json'), JSON.stringify(AppInfo))
-	UpdateRunTime();
+	UpdateRunTime(new Date());
 })
 //**----------------------------GameBooter-----------------------------------------------------
 function UpdateGameInfo() {
